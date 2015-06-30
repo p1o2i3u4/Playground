@@ -64,6 +64,7 @@ def listRecentCategories(url):
 def listVideoCategories(url):
     try:
         print "requesting url " + url
+        url2=url
         req = urllib2.Request(url)
         req.add_header('User-Agent', tablet_UA)
         req.add_header('Accept-Langauge', 'ko')
@@ -73,8 +74,8 @@ def listVideoCategories(url):
         response.close()
         
         
-        match=re.compile('\t\t\t\t\t\t\t\t\t\t<img src="(.*?)" style="(.*?)"').findall(link)
-        match1=re.compile('<div class="ep_box">\n\t\t\t\t\t\t<a href="(.*?)" title="(.*?)">').findall(link)
+        match=re.compile('\n\t\t\t\t\t\t\t<img src="(.*?)" style="(.*?)"').findall(link)
+        match1=re.compile('<div class="ep_box">\n\t\t\t<a href="(.*?)" title="(.*?)">').findall(link)
         match3=[(x+y) for x,y in zip(match,match1)] #combine match and match2!
 
         for i in range(len(match3)):
@@ -84,19 +85,36 @@ def listVideoCategories(url):
         for name, url, thumbnail in match3:
             addDir(name, url, 'dramaCategoryContent', thumbnail)
 
-## soup를 통한 리스팅... 되긴 되는데 엄청 느림
-##        soup=BeautifulSoup(link)
-##        items = []
-##        for node in soup.findAll('div', {'class':'ep_box'}):
-##            items.append({'title':node.b.string, 'url':root_url+'/'+node.a['href'], 'thumbnail':node.img['src']})
-##
-##        for i in range(len(items)):
-##            items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
-##              
-##
-##        for name, url, thumbnail in items:
-##            addDir(name, url, 'dramaCategoryContent', thumbnail)
-##
+        addDir('아무것도 없으면 여길 누르세요', url2, 'listVideoCategoriesSoup', '')
+        
+    except urllib2.URLError:
+        addLink("성용이를 불러주세용.", '', '', '')
+
+def listVideoCategoriesSoup(url):
+    try:
+        print "requesting url " + url
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', tablet_UA)
+        req.add_header('Accept-Langauge', 'ko')
+        req.add_header('Cookie', 'language=kr')
+        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+        link=response.read()
+        response.close()
+        
+    
+ #soup를 통한 리스팅... 되긴 되는데 엄청 느림
+        soup=BeautifulSoup(link)
+        items = []
+        for node in soup.findAll('div', {'class':'ep_box'}):
+            items.append({'title':node.b.string, 'url':root_url+'/'+node.a['href'], 'thumbnail':node.img['src']})
+
+        for i in range(len(items)):
+            items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
+              
+
+        for name, url, thumbnail in items:
+            addDir(name, url, 'dramaCategoryContent', thumbnail)
+
         
         
     except urllib2.URLError:
@@ -298,6 +316,7 @@ def resolveAndPlayVideo(url):
 def listdramaCategories(url):
     try:
         print "requesting url " + url
+        url2=url
         req = urllib2.Request(url)
         req.add_header('User-Agent', tablet_UA)
         req.add_header('Accept-Langauge', 'ko')
@@ -311,8 +330,8 @@ def listdramaCategories(url):
 ##        for i in match1:
 ##            if i not in match2:
 ##                match2.append(i)
-        match=re.compile('\t\t\t\t\t\t\t\t\t\t<img src="(.*?)" style="(.*?)"').findall(link)
-        match1=re.compile('<div class="ep_box">\n\t\t\t\t\t\t<a href="(.*?)" title="(.*?)">').findall(link)
+        match=re.compile('\n\t\t\t\t\t\t\t<img src="(.*?)" style="(.*?)"').findall(link)
+        match1=re.compile('<div class="ep_box">\n\t\t\t<a href="(.*?)" title="(.*?)">').findall(link)
         match3=[(x+y) for x,y in zip(match,match1)] #combine match and match2!
 
         for i in range(len(match3)):
@@ -325,7 +344,7 @@ def listdramaCategories(url):
         for name, url, thumbnail in match3:
             addDir(name, url, 'dramaCategoryContent', thumbnail)
 
-        
+        addDir('아무것도 없으면 여길 누르세요', url2, 'listVideoCategoriesSoup', '')
         
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
@@ -754,6 +773,9 @@ else:
         listVideoCategories(urlUnquoted)
     elif params["mode"] == 'videoCategoryContent':
         listVideosInCategory(urlUnquoted)
+    elif params["mode"] == 'listVideoCategoriesSoup':
+        listVideoCategoriesSoup(urlUnquoted)
+
     elif params["mode"] == 'resolveAndPlayVideo':
         resolveAndPlayVideo(urlUnquoted)
 

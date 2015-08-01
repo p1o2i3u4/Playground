@@ -6,6 +6,7 @@
 import os
 import xbmcplugin, xbmcgui, sys
 import urllib2, urllib, re
+import json
 from xbmcswift2 import Plugin
 from YDStreamExtractor import getVideoInfo
 from BeautifulSoup import BeautifulSoup
@@ -77,6 +78,8 @@ def listVideoCategories(url):
         link=response.read()
         response.close()
         match=re.compile('<option value="(.+?)" > (.+?)</option>').findall(link)
+
+        addDir("최근 방영", "http://drama.baykoreans.net/drama", "EntCategoryContent", '')
         
         for i in range(len(match)):
 	    dramaurl = 'http://drama.baykoreans.net/index.php?mid=drama&category=' + match[i][0]
@@ -134,13 +137,9 @@ def listvideourl(url):
         link=response.read()
         response.close()
 
-        dmotion=re.compile('<a href="http://baykoreans.com/.+?/\?xink=(.+?)" class').findall(link)
-        for i in range(len(dmotion)):
-            dmotion_url = 'http://www.dailymotion.com/video/'+dmotion[i]
-            dmotion[i] = (dmotion_url, 'DMOTION')
-            
+        dmotion=re.compile('<a href="http://baykoreans.com/dmotion/\?xink=(.+?)" class=".*?" target=".*?"><span>(.+?) \| BayKoreans.com</span>').findall(link) 
         for url, title, in dmotion:
-            addLink(title, url, 'resolveAndPlayVideo', "")
+            addLink(title, url, 'playVideo', "")
 
         tudou=re.compile('<a href="baykoreans.com/tudou.y/\?xink=(.+?)" class="button black xLarge" target="_blank"><span>').findall(link)
         for url, title, in tudou:
@@ -156,6 +155,48 @@ def listvideourl(url):
 
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
+
+def playVideo(url):
+    listitem = xbmcgui.ListItem(path=getStreamUrl(url))
+    xbmcplugin.setResolvedUrl(_thisPlugin, True, listitem)
+
+
+def getStreamUrl(url):
+    content = getUrl2('http://www.dailymotion.com/embed/video/'+url)
+    if content.find('"statusCode":410') > 0 or content.find('"statusCode":403') > 0:
+        xbmc.executebuiltin('XBMC.Notification(Info:,'+translation(30022)+' (DailyMotion)!,5000)')
+        return ""
+    
+    else:
+        get_json_code = re.compile(r'dmp\.create\(document\.getElementById\(\'player\'\),\s*([^);]+)').findall(content)[0]
+        #print len(get_json_code)
+        cc= json.loads(get_json_code)['metadata']['qualities']  #['380'][0]['url']
+        #print cc
+        if '1080' in cc.keys():
+            #print 'found hd'
+            return cc['1080'][0]['url']
+        elif '720' in cc.keys():
+            return cc['720'][0]['url']
+        elif '480' in cc.keys():
+            return cc['480'][0]['url']
+        elif '380' in cc.keys():
+            return cc['380'][0]['url']
+        elif '240' in cc.keys():
+            return cc['240'][0]['url']
+        elif 'auto' in cc.keys():
+            return cc['auto'][0]['url']
+        else:
+            xbmc.executebuiltin('XBMC.Notification(Info:, No playable Link found (DailyMotion)!,5000)')
+
+def getUrl2(url):
+
+    req = urllib2.Request(url)
+    req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:22.0) Gecko/20100101 Firefox/22.0')
+    req.add_header('Cookie', 'language=kr') 
+    response = urllib2.urlopen(req)
+    link = response.read()
+    response.close()
+    return link
 
 
 def resolveAndPlayVideo(url):
@@ -439,6 +480,8 @@ else:
     elif params["mode"] == 'SearchedContent':
         listSearchedCategories(urlUnquoted)
 
+    elif params["mode"] == 'playVideo':
+        playVideo(urlUnquoted)
 
     elif params["mode"] == 'dramaDate':
         listdramaDate()  

@@ -8,7 +8,7 @@ import xbmcplugin, xbmcgui, sys
 import urllib2, urllib, re
 import json
 from xbmcswift2 import Plugin
-from YDStreamExtractor import getVideoInfo
+#from YDStreamExtractor import getVideoInfo
 from BeautifulSoup import BeautifulSoup
 
 # magic; id of this plugin's instance - cast to integer
@@ -198,32 +198,32 @@ def getUrl2(url):
     response.close()
     return link
 
-
-def resolveAndPlayVideo(url):
-    try:
-        quality = '2'
-        info = getVideoInfo(url, quality=quality, resolve_redirects=True)
-        
-        if info:
-            streams = info.streams()
-            plugin.log.debug("num of streams: %d" % len(streams))
-            from xbmcswift2 import xbmc, xbmcgui
-            pl = xbmc.PlayList( xbmc.PLAYLIST_VIDEO )
-            pl.clear()
-            for stream in streams:
-                li = xbmcgui.ListItem(stream['title'], iconImage="DefaultVideo.png")
-                li.setInfo( 'video', { "Title": stream['title'] } )
-                pl.add(stream['xbmc_url'], li)
-
-            #xbmc.Player().play(pl)
-
-            xbmcplugin.setResolvedUrl(_thisPlugin, True, li)
-        else:
-            plugin.log.warning('Fail to extract')
-            plugin.play_video({'path':url, 'is_playable':True})
-            
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
+##
+##def resolveAndPlayVideo(url):
+##    try:
+##        quality = '2'
+##        info = getVideoInfo(url, quality=quality, resolve_redirects=True)
+##        
+##        if info:
+##            streams = info.streams()
+##            plugin.log.debug("num of streams: %d" % len(streams))
+##            from xbmcswift2 import xbmc, xbmcgui
+##            pl = xbmc.PlayList( xbmc.PLAYLIST_VIDEO )
+##            pl.clear()
+##            for stream in streams:
+##                li = xbmcgui.ListItem(stream['title'], iconImage="DefaultVideo.png")
+##                li.setInfo( 'video', { "Title": stream['title'] } )
+##                pl.add(stream['xbmc_url'], li)
+##
+##            #xbmc.Player().play(pl)
+##
+##            xbmcplugin.setResolvedUrl(_thisPlugin, True, li)
+##        else:
+##            plugin.log.warning('Fail to extract')
+##            plugin.play_video({'path':url, 'is_playable':True})
+##            
+##    except urllib2.URLError:
+##        addLink("성용이를 불러주세용.", '', '', '')
 
 def listRecentCategories(url):
     try:

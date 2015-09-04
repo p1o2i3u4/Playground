@@ -168,10 +168,11 @@ def getStreamUrl(url):
         return ""
     
     else:
-        get_json_code = re.compile(r'dmp\.create\(document\.getElementById\(\'player\'\),\s*([^);]+)').findall(content)[0]
-        #print len(get_json_code)
+        get_json_code = re.compile(r'dmp\.create\(document\.getElementById\(\'player\'\),\s*(\{.*?)"\}\]\}.*\}\);').findall(content)[0]
+        get_json_code += '"}]}}}'
+        print get_json_code
         cc= json.loads(get_json_code)['metadata']['qualities']  #['380'][0]['url']
-        #print cc
+        print cc
         if '1080' in cc.keys():
             #print 'found hd'
             return cc['1080'][0]['url']

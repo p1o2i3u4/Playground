@@ -137,7 +137,7 @@ def listvideourl(url):
         link=response.read()
         response.close()
 
-        dmotion=re.compile('<a href="http://baykoreans.com/dmotion/\?xink=(.+?)" class=".*?" target=".*?"><span>(.+?) \| BayKoreans.com</span>').findall(link) 
+        dmotion=re.compile('<a href="http://baykoreans.com/dmotion/\?xink=(.+?)" class=".*?" target=".*?"><span>(.+?) \|').findall(link) 
         for url, title, in dmotion:
             addLink(title, url, 'playVideo', "")
 

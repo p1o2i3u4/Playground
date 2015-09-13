@@ -24,12 +24,12 @@ tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) Apple
 def listMainCategories():
 #    addDir("사랑만 할래", "http://drama.baykoreans.net/index.php?mid=drama&search_target=title&search_keyword=사랑만 할래", "EntCategoryContent", '')
 #s    addDir("내일도 칸타빌레", "http://drama.baykoreans.net/index.php?mid=drama&search_target=title&search_keyword=칸타빌레", "EntCategoryContent", '')
-    addDir("드라마", "http://drama.baykoreans.net/drama", "videoCategories", '')
+    addDir("드라마", "http://baykoreans.net/drama", "videoCategories", '')
     #addDir("드라마", " ", "dramaDate", '')
     addDir("예능/오락", " ", "varietyDate", '')
     addDir("시사/다큐", " ", "docuDate", '')
     addDir("기분 좋은 날", "http://baykoreans.net/index.php?mid=current&search_target=title&search_keyword=%EA%B8%B0%EB%B6%84%EC%A2%8B%EC%9D%80%EB%82%A0", 'videoCategoryContent', "")
-    addDir("스포츠", "http://drama.baykoreans.net/sports", "EntCategoryContent", '')
+    addDir("스포츠", "http://baykoreans.net/sports", "EntCategoryContent", '')
 
 #    addDir("영화", "http://drama.baykoreans.net/movie", "EntCategoryContent", '')
 #    addDir("세바퀴", "http://drama.baykoreans.net/?act=&vid=&mid=entertain&category=19114892319082&search_target=title&search_keyword=세바퀴", "EntCategoryContent", '')
@@ -37,7 +37,7 @@ def listMainCategories():
 #    addDir("영화", "http://baykoreans.net/movie", "MovieCategories", '')  
 
 def listdramaDate():
-    addDir("최근 방영", "http://drama.baykoreans.net/drama", "videoCategories", '') 
+    addDir("최근 방영", "http://baykoreans.net/drama", "videoCategories", '') 
     addDir("월요일", "http://live.hanindisk.com/tv_chart.php?week_day=2", "dramaCategories", '')  
     addDir("화요일", "http://live.hanindisk.com/tv_chart.php?week_day=3", "dramaCategories", '')
     addDir("수요일", "http://live.hanindisk.com/tv_chart.php?week_day=4", "dramaCategories", '')
@@ -47,7 +47,7 @@ def listdramaDate():
     addDir("일요일", "http://live.hanindisk.com/tv_chart.php?week_day=1", "dramaCategories", '')
 
 def listvarietyDate():
-    addDir("최근 방영", "http://drama.baykoreans.net/entertain", "EntCategoryContent", '') 
+    addDir("최근 방영", "http://baykoreans.net/entertain", "EntCategoryContent", '') 
     addDir("월요일", "http://live.hanindisk.com/tv_chart.php?week_day=2", "varietyCategories", '')  
     addDir("화요일", "http://live.hanindisk.com/tv_chart.php?week_day=3", "varietyCategories", '')
     addDir("수요일", "http://live.hanindisk.com/tv_chart.php?week_day=4", "varietyCategories", '')
@@ -57,7 +57,7 @@ def listvarietyDate():
     addDir("일요일", "http://live.hanindisk.com/tv_chart.php?week_day=1", "varietyCategories", '')
 
 def listdocuDate():
-    addDir("최근 방영", "http://drama.baykoreans.net/current", "EntCategoryContent", '') 
+    addDir("최근 방영", "http://baykoreans.net/current", "EntCategoryContent", '') 
     addDir("월요일", "http://live.hanindisk.com/tv_chart.php?week_day=2", "docuCategories", '')  
     addDir("화요일", "http://live.hanindisk.com/tv_chart.php?week_day=3", "docuCategories", '')
     addDir("수요일", "http://live.hanindisk.com/tv_chart.php?week_day=4", "docuCategories", '')
@@ -79,10 +79,10 @@ def listVideoCategories(url):
         response.close()
         match=re.compile('<option value="(.+?)" > (.+?)</option>').findall(link)
 
-        addDir("최근 방영", "http://drama.baykoreans.net/drama", "EntCategoryContent", '')
+        addDir("최근 방영", "http://baykoreans.net/drama", "EntCategoryContent", '')
         
         for i in range(len(match)):
-	    dramaurl = 'http://drama.baykoreans.net/index.php?mid=drama&category=' + match[i][0]
+	    dramaurl = 'http://baykoreans.net/index.php?mid=drama&category=' + match[i][0]
             match[i] = (dramaurl, match[i][1])
 
         
@@ -103,7 +103,7 @@ def listVideosInCategory(url):
         match=re.compile('<img src="(.*?)" alt.*?>\n.*?</div>\n.*?</a>\n.*?</div>\n\t\t\t\t\t\t.*?\n.*?\n.*?\n.*?\n.*?<p class="title">\n.*?<a href=".+?mid=(.+?)\&.+?document_srl=(.+?)" class="title" >(.*?)</a>').findall(link)
         
         for i in range(len(match)):
-            playurl = 'http://drama.baykoreans.net/' + match[i][1] +'/' + match[i][2]
+            playurl = 'http://baykoreans.net/' + match[i][1] +'/' + match[i][2]
             match[i] = (playurl, unicode(match[i][3], 'utf-8'), match[i][0])
     
         for url, title, thumbnail, in match:
@@ -238,7 +238,7 @@ def listRecentCategories(url):
         match=re.compile('<img src="(.*?)" alt="" />\n.*?</div>\n.*?</a>\n.*?</div>\n\t\t\t\t\t\t.*?\n.*?\n.*?\n.*?\n.*?<p class="title">\n.*?<a href="/(.*?)/(.*?)" class="title" >(.*?)</a>').findall(link)
         
         for i in range(len(match)):
-            playVideoUrl = 'http://drama.baykoreans.net/' + match[i][1] + '/' + match[i][2]
+            playVideoUrl = 'http://baykoreans.net/' + match[i][1] + '/' + match[i][2]
             match[i] = (playVideoUrl, unicode(match[i][3], 'utf-8'), match[i][0])
     
         for url, title, thumbnail, in match:
@@ -275,7 +275,7 @@ def listEntInCategory(url):
         #match=re.compile('<p class="title">\n.*?<a href=".+?mid=(.+?)\&.+?document_srl=(.+?)" class="title" >(.*?)</a>').findall(link)
         
         for i in range(len(match)):
-            playVideoUrl = 'http://drama.baykoreans.net/' + match[i][0] + '/' + match[i][1]
+            playVideoUrl = 'http://baykoreans.net/' + match[i][0] + '/' + match[i][1]
             match[i] = (playVideoUrl, unicode(match[i][2], 'utf-8'))
     
         for url, title in match:
@@ -283,7 +283,7 @@ def listEntInCategory(url):
 
         
         match2=re.compile('page=([0-9]+)">[0-9]+</a>').findall(link)
-        match3=re.compile('<a href="/(.+?)" class="prevEnd"').findall(link)
+        match3=re.compile('<a href="/(.*?)">첫 페이지</a>').findall(link)
         baseurl = 'http://baykoreans.net/index.php?mid=' + match3[0]
         
         addDir("1 페이지", baseurl, 'videoCategoryContent', "")

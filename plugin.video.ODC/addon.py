@@ -199,12 +199,12 @@ def resolveAndPlayVideo(url):
 ##            match2=match1.replace('http/','')
 ##            match3=match2.replace('480p','720p')
 ##            url0=match3.replace('1596k','2296k')
-            url1= 'http://sjcssd2.ondemandkorea.com/variety/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-            url2= 'http://sjcssd2.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-            url3= 'http://sjcs1.ondemandkorea.com/variety/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-            url4= 'http://sjcs1.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-            url5= 'http://sjcglu1.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-            url6= 'http://sjcglu1.ondemandkorea.com/variety/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
+##            url1= 'http://sjcssd2.ondemandkorea.com/variety/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
+##            url2= 'http://sjcssd2.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
+##            url3= 'http://sjcs1.ondemandkorea.com/variety/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
+##            url4= 'http://sjcs1.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
+##            url5= 'http://sjcglu1.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
+##            url6= 'http://sjcglu1.ondemandkorea.com/variety/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
             url7= 'http://sjcstor07.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
             url8= 'http://sjcstor07.ondemandkorea.com/variety/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
             url9= 'http://sjcstor03.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
@@ -219,36 +219,36 @@ def resolveAndPlayVideo(url):
             
             #url5= 'http://sjcs3.ondemandkorea.com/' + url0
             #sjcglu4
-            try:
-              f = urllib2.urlopen(urllib2.Request(url1))
-              deadLinkFound1 = False
-            except:
-              deadLinkFound1 = True
-            try:
-              f = urllib2.urlopen(urllib2.Request(url2))
-              deadLinkFound2 = False
-            except:
-              deadLinkFound2 = True
-            try:
-              f = urllib2.urlopen(urllib2.Request(url3))
-              deadLinkFound3 = False
-            except:
-              deadLinkFound3 = True
-            try:
-              f = urllib2.urlopen(urllib2.Request(url4))
-              deadLinkFound4 = False
-            except:
-              deadLinkFound4 = True
-            try:
-              f = urllib2.urlopen(urllib2.Request(url5))
-              deadLinkFound5 = False
-            except:
-              deadLinkFound5 = True
-            try:
-              f = urllib2.urlopen(urllib2.Request(url6))
-              deadLinkFound6 = False
-            except:
-              deadLinkFound6 = True
+##            try:
+##              f = urllib2.urlopen(urllib2.Request(url1))
+##              deadLinkFound1 = False
+##            except:
+##              deadLinkFound1 = True
+##            try:
+##              f = urllib2.urlopen(urllib2.Request(url2))
+##              deadLinkFound2 = False
+##            except:
+##              deadLinkFound2 = True
+##            try:
+##              f = urllib2.urlopen(urllib2.Request(url3))
+##              deadLinkFound3 = False
+##            except:
+##              deadLinkFound3 = True
+##            try:
+##              f = urllib2.urlopen(urllib2.Request(url4))
+##              deadLinkFound4 = False
+##            except:
+##              deadLinkFound4 = True
+##            try:
+##              f = urllib2.urlopen(urllib2.Request(url5))
+##              deadLinkFound5 = False
+##            except:
+##              deadLinkFound5 = True
+##            try:
+##              f = urllib2.urlopen(urllib2.Request(url6))
+##              deadLinkFound6 = False
+##            except:
+##              deadLinkFound6 = True
 
             try:
               f = urllib2.urlopen(urllib2.Request(url7))
@@ -273,44 +273,44 @@ def resolveAndPlayVideo(url):
               deadLinkFound10 = True
 
 
-            if deadLinkFound1==False:
-                listItem = xbmcgui.ListItem(path=str(url1))
-                listItem.setProperty('IsPlayable', 'true')
-                     
-                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+##            if deadLinkFound1==False:
+##                listItem = xbmcgui.ListItem(path=str(url1))
+##                listItem.setProperty('IsPlayable', 'true')
+##                     
+##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+##
+##
+##            elif deadLinkFound2==False:
+##                listItem = xbmcgui.ListItem(path=str(url2))
+##                listItem.setProperty('IsPlayable', 'true')
+##                     
+##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+##                
+##            elif deadLinkFound3==False:
+##                listItem = xbmcgui.ListItem(path=str(url3))
+##                listItem.setProperty('IsPlayable', 'true')
+##                     
+##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+##
+##            elif deadLinkFound4==False:
+##                listItem = xbmcgui.ListItem(path=str(url4))
+##                listItem.setProperty('IsPlayable', 'true')
+##                     
+##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+##
+##            elif deadLinkFound5==False:
+##                listItem = xbmcgui.ListItem(path=str(url5))
+##                listItem.setProperty('IsPlayable', 'true')
+##                     
+##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+##                
+##            elif deadLinkFound6==False:
+##                listItem = xbmcgui.ListItem(path=str(url6))
+##                listItem.setProperty('IsPlayable', 'true')
+##                     
+##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
 
-
-            elif deadLinkFound2==False:
-                listItem = xbmcgui.ListItem(path=str(url2))
-                listItem.setProperty('IsPlayable', 'true')
-                     
-                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-                
-            elif deadLinkFound3==False:
-                listItem = xbmcgui.ListItem(path=str(url3))
-                listItem.setProperty('IsPlayable', 'true')
-                     
-                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-
-            elif deadLinkFound4==False:
-                listItem = xbmcgui.ListItem(path=str(url4))
-                listItem.setProperty('IsPlayable', 'true')
-                     
-                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-
-            elif deadLinkFound5==False:
-                listItem = xbmcgui.ListItem(path=str(url5))
-                listItem.setProperty('IsPlayable', 'true')
-                     
-                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-                
-            elif deadLinkFound6==False:
-                listItem = xbmcgui.ListItem(path=str(url6))
-                listItem.setProperty('IsPlayable', 'true')
-                     
-                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-
-            elif deadLinkFound7==False:
+            if deadLinkFound7==False:
                 listItem = xbmcgui.ListItem(path=str(url7))
                 listItem.setProperty('IsPlayable', 'true')
                      
@@ -336,26 +336,26 @@ def resolveAndPlayVideo(url):
                 
         
             else:
-		url1= 'http://sjcssd2.ondemandkorea.com/drama/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-		url3= 'http://sjcs1.ondemandkorea.com/drama/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-		url4= 'http://sjcglu1.ondemandkorea.com/drama/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
+##		url1= 'http://sjcssd2.ondemandkorea.com/drama/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
+##		url3= 'http://sjcs1.ondemandkorea.com/drama/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
+##		url4= 'http://sjcglu1.ondemandkorea.com/drama/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
 		url5= 'http://sjcstor07.ondemandkorea.com/drama/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
 		
-                try:
-                  f = urllib2.urlopen(urllib2.Request(url1))
-                  dead = False
-                except:
-                  dead = True
-                try:
-                  f = urllib2.urlopen(urllib2.Request(url3))
-                  dead1 = False
-                except:
-                  dead1 = True
-                try:
-                  f = urllib2.urlopen(urllib2.Request(url4))
-                  dead2 = False
-                except:
-                  dead2 = True
+##                try:
+##                  f = urllib2.urlopen(urllib2.Request(url1))
+##                  dead = False
+##                except:
+##                  dead = True
+##                try:
+##                  f = urllib2.urlopen(urllib2.Request(url3))
+##                  dead1 = False
+##                except:
+##                  dead1 = True
+##                try:
+##                  f = urllib2.urlopen(urllib2.Request(url4))
+##                  dead2 = False
+##                except:
+##                  dead2 = True
 
                 try:
                   f = urllib2.urlopen(urllib2.Request(url5))
@@ -363,21 +363,21 @@ def resolveAndPlayVideo(url):
                 except:
                   dead2 = True
 				  
-                if dead==False:
-                    listItem = xbmcgui.ListItem(path=str(url1))
-                    listItem.setProperty('IsPlayable', 'true')
-                
-                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-                if dead1==False:
-                    listItem = xbmcgui.ListItem(path=str(url3))
-                    listItem.setProperty('IsPlayable', 'true')
-                
-                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-                if dead2==False:
-                    listItem = xbmcgui.ListItem(path=str(url4))
-                    listItem.setProperty('IsPlayable', 'true')
-                
-                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+##                if dead==False:
+##                    listItem = xbmcgui.ListItem(path=str(url1))
+##                    listItem.setProperty('IsPlayable', 'true')
+##                
+##                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+##                if dead1==False:
+##                    listItem = xbmcgui.ListItem(path=str(url3))
+##                    listItem.setProperty('IsPlayable', 'true')
+##                
+##                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+##                if dead2==False:
+##                    listItem = xbmcgui.ListItem(path=str(url4))
+##                    listItem.setProperty('IsPlayable', 'true')
+##                
+##                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
 
                 if dead2==False:
                     listItem = xbmcgui.ListItem(path=str(url5))

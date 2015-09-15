@@ -168,20 +168,21 @@ def resolveAndPlayVideo(url):
         link = resp.read()
         resp.close()
         
-        match=re.compile('http://haninlive.com/weblink/\'\+m_type\+\'/.*?\_(.*?)\'').search(link).group(1)
+##        match=re.compile('http://haninlive.com/weblink/\'\+m_type\+\'/.*?\_(.*?)\'').search(link).group(1)
 ##        match2=re.compile('576').findall(link)
 ##        if match2:
 ##            url='http://haninlive.com/weblink/576/' +match
 ##        else:
 ##            url='http://haninlive.com/weblink/352/' + match
-        url= 'http://haninlive.com/mobile_link.php?file_name=' + match
-        resp = opener.open(url)
-        link = resp.read()
-        resp.close()
-        
-        url2= 'http://haninlive.com/' + link
-        
-        listItem = xbmcgui.ListItem(path=str(url2))
+##        url= 'http://haninlive.com/mobile_link.php?file_name=' + match
+##        resp = opener.open(url)
+##        link = resp.read()
+##        resp.close()
+##        
+##        url2= 'http://haninlive.com/' + link
+        match=re.compile('http://haninlive.com/weblink/\'\+m_type\+\'/(.*?)\'').search(link).group(1)
+        url='http://haninlive.com/weblink/352/' + match
+        listItem = xbmcgui.ListItem(path=str(url))
         listItem.setProperty('IsPlayable', 'true')
         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
 

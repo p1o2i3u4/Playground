@@ -162,7 +162,7 @@ def resolveAndPlayVideo(url):
             match3=match2.replace('480p','720p')
             url0=match3.replace('1596k','2296k')
             url1=url0.replace('360p','720p')
-            url2=url1.replace('1196k','2296k')
+            url2=url1.replace('1296k','2296k')
             url= 'http://' + url2 + '.mp4'
             try:
                 f = urllib2.urlopen(urllib2.Request(url))

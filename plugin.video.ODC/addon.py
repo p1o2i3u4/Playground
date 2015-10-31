@@ -447,6 +447,8 @@ def listdramaInCategory(url):
 	    playVideoUrl = 'http://www.ondemandkorea.com/' + match[i][0]
 	    poster = 'http://max.ondemandkorea.com/' + match[i][2] + '_'+ match[i][3] +'_' + match[i][4]
 	    title = unicode(match[i][1], 'utf-8')  + " - " + match[i][3]
+	    title = title.replace('.480p.1596k','')
+	    title = title.replace('amp;','')
             match[i] = (title, playVideoUrl, poster)
 
         for title, url, thumbnail, in match:

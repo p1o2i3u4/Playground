@@ -180,8 +180,8 @@ def resolveAndPlayVideo(url):
 ##        resp.close()
 ##        
 ##        url2= 'http://haninlive.com/' + link
-        match=re.compile('http://haninlive.com/weblink/\'\+m_type\+\'/(.*?)\'').search(link).group(1)
-        url='http://haninlive.com/weblink/352/' + match
+        match=re.compile('http://live2.hanindisk.com/weblink/\'\+m_type\+\'/(.*?)\'').search(link).group(1)
+        url='http://live2.hanindisk.com/weblink/352/' + match
         listItem = xbmcgui.ListItem(path=str(url))
         listItem.setProperty('IsPlayable', 'true')
         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)

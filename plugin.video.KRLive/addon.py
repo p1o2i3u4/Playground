@@ -2,11 +2,18 @@
 """
     KR Live
 """
-
+from xbmcswift2 import Plugin
 import os
 import xbmcplugin, xbmcgui, sys
 import urllib2, urllib, re, cookielib
 from BeautifulSoup import BeautifulSoup
+
+plugin = Plugin()
+_L = plugin.get_string
+
+plugin_path = plugin.addon.getAddonInfo('path')
+lib_path = os.path.join(plugin_path, 'resources', 'lib')
+sys.path.append(lib_path)
 
 username = 'anonymous'
 password = 'anonymous'
@@ -182,8 +189,11 @@ def resolveAndPlayVideo(url):
 ##        url2= 'http://haninlive.com/' + link
         match=re.compile('file\': \'http://(.*?).flv').search(link).group(1)
         #match=re.compile('http://(.*?)\'\+m_type\+\'/(.*?)\'').findall(link)
-        print match
-        url2 = match.replace('\'+m_type+\'','352')
+        HD = plugin.get_setting('HD', bool)
+        if HD:
+            url2 = match.replace('\'+m_type+\'','576')
+        else:
+            url2 = match.replace('\'+m_type+\'','352')
         url = 'http://' +url2 +'.flv'
         #url= match[0] + '352/' + match[1]
         listItem = xbmcgui.ListItem(path=str(url))

@@ -45,13 +45,15 @@ def listRecentCategories(url):
         link=response.read()
         response.close()
         match=re.compile('<div class="entry.*?">\n\t\t\t\t\t\t\t\t\t\t\t<a href="(.+?)" title="(.+?)">').findall(link)
-        match2=re.compile('<img src="(.+?)">\n\t\t\t\t\t\t\t\t\t\t\t\t<div class="ep_title"><b>.+?</b></div>\n\t\t\t\t\t\t\t\t\t\t\t\t<div class="ep_date">(.+?)</div>').findall(link,0)
+        match2=re.compile('<img src=".*?src=(.+?)">\n\t\t\t\t\t\t\t\t\t\t\t\t<div class="ep_title"><b>.+?</b></div>\n\t\t\t\t\t\t\t\t\t\t\t\t<div class="ep_date">(.+?)</div>').findall(link,0)
         match3=[(x+y) for x,y in zip(match,match2)] #combine match and match2!
         
         for i in range(len(match3)):
-              playVideoUrl = 'http://www.ondemandkorea.com' + match3[i][0]
-              title = unicode(match3[i][1], 'utf-8')  + " - " + match3[i][3]
-              match3[i] = (playVideoUrl, title, match3[i][2])
+            thumb = "http://max.ondemandkorea.com" + match3[i][2]
+            playVideoUrl = 'http://www.ondemandkorea.com' + match3[i][0]
+            title = unicode(match3[i][1], 'utf-8')  + " - " + match3[i][3]
+            title = title.replace('amp;','')
+            match3[i] = (playVideoUrl, title, thumb)
 
         #match.sort(reverse=True)
         
@@ -74,13 +76,14 @@ def listVideoCategories(url):
         response.close()
         
         
-        match=re.compile('\n\t\t\t\t\t\t\t<img src="(.*?)" style="(.*?)"').findall(link)
+        match=re.compile('\n\t\t\t\t\t\t\t<img src=".*?src=(.+?)" style="(.*?)"').findall(link)
         match1=re.compile('<div class="ep_box">\n\t\t\t<a href="(.*?)" title="(.*?)">').findall(link)
         match3=[(x+y) for x,y in zip(match,match1)] #combine match and match2!
 
         for i in range(len(match3)):
+            thumb = "http://max.ondemandkorea.com" + match3[i][0]
 	    dramaurl = 'http://www.ondemandkorea.com/' + match3[i][2]
-            match3[i] = (unicode(match3[i][3], 'utf-8'), dramaurl, match3[i][0])
+            match3[i] = (unicode(match3[i][3], 'utf-8'), dramaurl, thumb)
 
         for name, url, thumbnail in match3:
             addDir(name, url, 'dramaCategoryContent', thumbnail)
@@ -155,7 +158,7 @@ def resolveAndPlayVideo(url):
         response = urllib2.urlopen(req, timeout = _connectionTimeout)
         link=response.read()
         response.close()
-        match=re.compile('"http://(.*?).mp4\"').search(link)
+        match=re.compile('src="http://(.*?).mp4\"').search(link)
         if match:
             match2=match.group(1)
             urllow='http://' + match2 + '.mp4'
@@ -405,13 +408,14 @@ def listdramaCategories(url):
 ##        for i in match1:
 ##            if i not in match2:
 ##                match2.append(i)
-        match=re.compile('\n\t\t\t\t\t\t\t<img src="(.*?)" style="(.*?)"').findall(link)
+        match=re.compile('\n\t\t\t\t\t\t\t<img src=".*?src=(.+?)" style="(.*?)"').findall(link)
         match1=re.compile('<div class="ep_box">\n\t\t\t<a href="(.*?)" title="(.*?)">').findall(link)
         match3=[(x+y) for x,y in zip(match,match1)] #combine match and match2!
 
         for i in range(len(match3)):
+            thumb = "http://max.ondemandkorea.com" + match3[i][0]
 	    dramaurl = 'http://www.ondemandkorea.com/' + match3[i][2]
-            match3[i] = (unicode(match3[i][3], 'utf-8'), dramaurl, match3[i][0])
+            match3[i] = (unicode(match3[i][3], 'utf-8'), dramaurl, thumb)
               
 ##        addDir('하녀들', 'http://www.dramafever.com/drama/4546/Maids/', 'dramafever', '') ##ODK 에 없는 JTBC 드라마 dramafever 에서 추가
 ##        addDir('블러드', 'http://www.dramafever.com/drama/4640/Blood/', 'dramafever', '')   

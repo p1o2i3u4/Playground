@@ -180,8 +180,12 @@ def resolveAndPlayVideo(url):
 ##        resp.close()
 ##        
 ##        url2= 'http://haninlive.com/' + link
-        match=re.compile('http://live2.hanindisk.com/weblink/\'\+m_type\+\'/(.*?)\'').search(link).group(1)
-        url='http://live2.hanindisk.com/weblink/352/' + match
+        match=re.compile('file\': \'http://(.*?).flv').search(link).group(1)
+        #match=re.compile('http://(.*?)\'\+m_type\+\'/(.*?)\'').findall(link)
+        print match
+        url2 = match.replace('\'+m_type+\'','352')
+        url = 'http://' +url2 +'.flv'
+        #url= match[0] + '352/' + match[1]
         listItem = xbmcgui.ListItem(path=str(url))
         listItem.setProperty('IsPlayable', 'true')
         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)

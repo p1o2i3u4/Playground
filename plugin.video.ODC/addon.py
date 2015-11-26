@@ -25,12 +25,14 @@ def listMainCategories():
     #addDir("뷰티/패션", "http://www.ondemandkorea.com/beauty", "videoCategories", '')
     addDir("여성", "http://www.ondemandkorea.com/women", "videoCategories", '')
     addDir("건강", "http://www.ondemandkorea.com/health", "videoCategories", '')
+
+        
     #addDir("스포츠", "http://www.ondemandkorea.com/sports", "videoCategories", '')    
     #addDir("경제", "http://www.ondemandkorea.com/economy", "videoCategories", '')    
     #addDir("종교", "http://www.ondemandkorea.com/religion", "videoCategories", '')    
     #addDir("음악", "http://www.ondemandkorea.com/kmuze", "videoCategories", '')
     #addDir("게임", "http://www.ondemandkorea.com/games", "videoCategories", '')
-    #addDir("영화", "http://www.ondemandkorea.com/movie", "MovieCategories", '')
+    addDir("한국 영화", "http://www.ondemandkorea.com/movie", "MovieCategories", '')
     #addDir("드라마 (저화질)", "http://www.ondemandkorea.com/drama", "videoCategoriesLow", '')
     #addDir("예능/오락 (저화질)", "http://www.ondemandkorea.com/variety", "videoCategoriesLow", '')
     #addDir("시사/다큐 (저화질)", "http://www.ondemandkorea.com/documentary", "videoCategoriesLow", '')
@@ -87,41 +89,23 @@ def listVideoCategories(url):
 
         for name, url, thumbnail in match3:
             addDir(name, url, 'dramaCategoryContent', thumbnail)
+            
+        if len(match3)<1:
+            soup=BeautifulSoup(link)
+            items = []
+            for node in soup.findAll('div', {'class':'ep_box'}):
+                items.append({'title':node.b.string, 'url':root_url+'/'+node.a['href'], 'thumbnail':node.img['src']})
 
-        addDir('아무것도 없으면 여길 누르세요', url2, 'listVideoCategoriesSoup', '')
-        
+            for i in range(len(items)):
+                items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
+                  
+
+            for name, url, thumbnail in items:
+                addDir(name, url, 'dramaCategoryContent', thumbnail)
+                
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
 
-def listVideoCategoriesSoup(url):
-    try:
-        print "requesting url " + url
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', tablet_UA)
-        req.add_header('Accept-Langauge', 'ko')
-        req.add_header('Cookie', 'language=kr')
-        response = urllib2.urlopen(req, timeout = _connectionTimeout)
-        link=response.read()
-        response.close()
-        
-    
- #soup를 통한 리스팅... 되긴 되는데 엄청 느림
-        soup=BeautifulSoup(link)
-        items = []
-        for node in soup.findAll('div', {'class':'ep_box'}):
-            items.append({'title':node.b.string, 'url':root_url+'/'+node.a['href'], 'thumbnail':node.img['src']})
-
-        for i in range(len(items)):
-            items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
-              
-
-        for name, url, thumbnail in items:
-            addDir(name, url, 'dramaCategoryContent', thumbnail)
-
-        
-        
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
         
 ##def listVideosInCategory(url):
 ##    try:
@@ -446,7 +430,7 @@ def listdramaInCategory(url):
 ##                match2.append(i)
 ##                
         match=re.compile('<div class="ep.*?">\n\t\t\t\t<a href="(.*?)" title="(.*?)">\n\t\t\t\t\t\n\t\t\t\t\t<img src=".*?src=(.*?)_(.*?)_(.*?)"').findall(link)
-
+        
         for i in range(len(match)):
 	    playVideoUrl = 'http://www.ondemandkorea.com/' + match[i][0]
 	    poster = 'http://max.ondemandkorea.com/' + match[i][2] + '_'+ match[i][3] +'_' + match[i][4]
@@ -457,7 +441,27 @@ def listdramaInCategory(url):
 
         for title, url, thumbnail, in match:
             addLink(title, url, 'resolveAndPlayVideo', thumbnail)
+        
+     #soup를 통한 리스팅...
+        if len(match)<1:
+            soup=BeautifulSoup(link)
+            items = []
+            for node in soup.findAll('div', {'class':re.compile('^(?:ep|ep_last)$')}):
+                if not node.b:
+                    continue
+                title = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>')
+                thumb = node.find('img', {'title':True})['src']
+                dt = node.b.findNextSibling(text=True)
+                bdate = dt.string.split(':',1)[1].strip() if dt else ''
+                items.append({'title':title, 'broad_date':bdate, 'url':root_url+node.a['href'], 'thumbnail':node.img['src']})
+           
+            for i in range(len(items)):
+                items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
+                  
 
+            for name, url, thumbnail in items:
+                addLink(name, url, 'resolveAndPlayVideo', thumbnail)
+        
         #페이지 추가
         match1=re.compile('cat: \'(.*?)\',id: (.*?),').findall(link)
         page='http://www.ondemandkorea.com/includes/episode_page.php?cat='+match1[0][0]+'&id=' +match1[0][1]+'&page=99'
@@ -469,7 +473,8 @@ def listdramaInCategory(url):
 
         match2=re.compile('"num_pages":([1-9]+),').findall(link)
         if int(match2[0])>1:
-            for i in range(1,int(match2[0])): 
+            pg=int(match2[0])+1
+            for i in range(1,pg): 
                 if i<5: #너무 오래 걸려서 4페이지까지 제한... 
                     Pgurl = 'http://www.ondemandkorea.com/includes/episode_page.php?cat='+match1[0][0]+'&id=' +match1[0][1]+'&page='+str(i)
                     req = urllib2.Request(Pgurl)
@@ -479,51 +484,52 @@ def listdramaInCategory(url):
                     Pgurl='http://www.ondemandkorea.com/'+match
                     name=str(i) +' 페이지'
                     addDir(name, Pgurl, 'dramaCategoryContent', "")
-   
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-   
-def listdramafever(url):
-    try:
-        print "requesting url " + url
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req, timeout = _connectionTimeout)
-        link=response.read()
-        response.close()
-        match=re.compile('><i class="icon-ok watched-.*?" data-sid="(.*?)" data-eid="(.*?)">').findall(link)
         
-        for i in range(len(match)):
-	    dramaurl = 'http://www.dramafever.com/amp/episode/feed.json?guid=' + match[i][0] + '.' + match[i][1]
-	    title = match[i][1] + '화'
-            match[i] = (title, dramaurl)
-
-        
-        for name, url in match:
-            addLink(name, url, 'dramafeverPlay', '')
-            
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-
-def dramafeverPlay(url):
-    try:
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req, timeout = _connectionTimeout)
-        link=response.read()
-        response.close()
-        match=re.compile(', {"@attributes": {"url": "(.*?)", "duration": ".*?", "medium": ".*?", "type": "application/x-mpegURL"').search(link)
-
-        match2=match.group(1)
-        url= match2
-        listItem = xbmcgui.ListItem(path=str(url))
-        listItem.setProperty('IsPlayable', 'true')
-    
-        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-
-        
-
+       
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
         
+##def listdramafever(url):
+##    try:
+##        print "requesting url " + url
+##        req = urllib2.Request(url)
+##        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+##        link=response.read()
+##        response.close()
+##        match=re.compile('><i class="icon-ok watched-.*?" data-sid="(.*?)" data-eid="(.*?)">').findall(link)
+##        
+##        for i in range(len(match)):
+##	    dramaurl = 'http://www.dramafever.com/amp/episode/feed.json?guid=' + match[i][0] + '.' + match[i][1]
+##	    title = match[i][1] + '화'
+##            match[i] = (title, dramaurl)
+##
+##        
+##        for name, url in match:
+##            addLink(name, url, 'dramafeverPlay', '')
+##            
+##    except urllib2.URLError:
+##        addLink("성용이를 불러주세용.", '', '', '')
+##
+##def dramafeverPlay(url):
+##    try:
+##        req = urllib2.Request(url)
+##        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+##        link=response.read()
+##        response.close()
+##        match=re.compile(', {"@attributes": {"url": "(.*?)", "duration": ".*?", "medium": ".*?", "type": "application/x-mpegURL"').search(link)
+##
+##        match2=match.group(1)
+##        url= match2
+##        listItem = xbmcgui.ListItem(path=str(url))
+##        listItem.setProperty('IsPlayable', 'true')
+##    
+##        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+##
+##        
+##
+##    except urllib2.URLError:
+##        addLink("성용이를 불러주세용.", '', '', '')
+##        
 
 ##def listvarietyCategories(url):
 ##    try:
@@ -687,116 +693,63 @@ def dramafeverPlay(url):
 ##    except urllib2.URLError:
 ##        addLink("성용이를 불러주세용.", '', '', '')
 ##
-##def listMovieCategories(url):
-##    try:
-##        print "requesting url " + url
-##        req = urllib2.Request(url)
-##        req.add_header('User-Agent', _header)
-##        req.add_header('Accept-Langauge', 'ko')
-##        req.add_header('Cookie', 'language=kr')  
-##        response = urllib2.urlopen(req, timeout = _connectionTimeout)
-##        link=response.read()
-##        response.close()
-##        match=re.compile('<dl>\n\t\t\t\t\t\t<dt><a href="(.+?)">(.+?)</a></dt>\n\t\t\t\t\t\t<dd class="thumb"><a href=".+?"><img src="(.+?)" alt=".+?">').findall(link)
-##        
-##        for i in range(len(match)):
-##            playVideoUrl = 'http://www.ondemandkorea.com/' + match[i][0]
-##	    title = unicode(match[i][1], 'utf-8')
-##            match[i] = (playVideoUrl, title, match[i][2])
-##        
-##        for url, name, thumbnail in match:
-##            addLink(name, url, 'resolveAndPlayMovie', thumbnail)
-##    except urllib2.URLError:
-##        addLink("성용이를 불러주세용.", '', '', '')
-##
-##def resolveAndPlayMovie(url):
-##    try:
-##        tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
-##
-##        req = urllib2.Request(url)
-##        req.add_header('User-Agent', tablet_UA)
-##        req.add_header('Accept-Langauge', 'ko')
-##        req.add_header('Cookie', 'language=kr')
-##            
-##        response = urllib2.urlopen(req, timeout = _connectionTimeout)
-##        link=response.read()
-##        response.close()
-##        match=re.compile('http://(.*?).mp4\"').search(link)
-##        if match:
-##            match2=match.group(1)
-##            match3=match2.replace('480p','720p')
-##            url2=match3.replace('1596k','2296k')
-##            url= 'http://' + url2 + '.mp4'
-##            listItem = xbmcgui.ListItem(path=str(url))
-##            listItem.setProperty('IsPlayable', 'true')
-##        
-##            xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-##        else:
-##            #Thumblink=re.compile('thumbnail/(.+?)_([0-9][0-9][0-9][0-9][0-9][0-9]+?).*?.jpg"').search(link)
-##            #episode=Thumblink.group(1)
-##            #date=Thumblink.group(2)
-##            
-##            #url = 'http://sjcssd2.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-##            postid=re.compile('.*?post_id=([0-9]*)\&').search(link).group(1)
-##            
-##            url='http://www.ondemandkorea.com/includes/playlist.php?token=' + postid
-##            req = urllib2.Request(url)
-##            response = urllib2.urlopen(req, timeout = _connectionTimeout)
-##            link=response.read()
-##            response.close()
-##            
-##            match=re.compile('src="(.*?)"').search(link).group(1)
-##            match0=match.replace('mp4:','')
-##            match1=match0.replace('http2/','')
-##            url0=match1.replace('http/','')
-##
-##            url1= 'http://sjcssd2.ondemandkorea.com/' + url0
-##            #url2= 'http://sjcssd1.ondemandkorea.com/' + url0
-##            url3= 'http://sjcs1.ondemandkorea.com/' + url0
-##            #url4= 'http://sjcs2.ondemandkorea.com/' + url0
-##            #url5= 'http://sjcs3.ondemandkorea.com/' + url0
-##            
-##            try:
-##              f = urllib2.urlopen(urllib2.Request(url1))
-##              deadLinkFound1 = False
-##            except:
-##              deadLinkFound1 = True
-##            ##try:
-##            ##  f = urllib2.urlopen(urllib2.Request(url2))
-##            ##  deadLinkFound2 = False
-##            ##except:
-##            ##  deadLinkFound2 = True
-##            try:
-##              f = urllib2.urlopen(urllib2.Request(url3))
-##              deadLinkFound3 = False
-##            except:
-##              deadLinkFound3 = True
-##            #try:
-##            #  f = urllib2.urlopen(urllib2.Request(url4))
-##            #  deadLinkFound4 = False
-##            #except:
-##            #  deadLinkFound4 = True
-##            ##try:
-##            ##  f = urllib2.urlopen(urllib2.Request(url5))
-##            ##  deadLinkFound5 = False
-##            ##except:
-##              #deadLinkFound5 = True
-##
-##            if deadLinkFound1==False:
-##                listItem = xbmcgui.ListItem(path=str(url1))
-##                listItem.setProperty('IsPlayable', 'true')
-##            
-##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-##
-##            if deadLinkFound3==False:
-##                listItem = xbmcgui.ListItem(path=str(url3))
-##                listItem.setProperty('IsPlayable', 'true')
-##                     
-##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-##            
-##
-##    except urllib2.URLError:
-##        addLink("성용이를 불러주세용.", '', '', '')
+def listMovieCategories(url):
+    try:
+        print "requesting url " + url
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', _header)
+        req.add_header('Accept-Langauge', 'ko')
+        req.add_header('Cookie', 'language=kr')  
+        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+        link=response.read()
+        response.close()
+        match=re.compile('<dl>\n\t\t\t\t\t\t<dt><a href="(.+?)">(.+?)</a></dt>\n\t\t\t\t\t\t<dd class="thumb"><a href=".+?"><img src="(.+?)" alt=".+?">').findall(link)
+        
+        for i in range(len(match)):
+            playVideoUrl = 'http://www.ondemandkorea.com/' + match[i][0]
+	    title = unicode(match[i][1], 'utf-8')
+            match[i] = (playVideoUrl, title, match[i][2])
+            
+        addLink("사도", "http://www.ondemandkorea.com/the-throne.html", 'resolveAndPlayMovie', "http://max.ondemandkorea.com/wp-content/themes/ondemandkorea/uploads/poster/the-throne_poster.jpg")
+        
+        for url, name, thumbnail in match:
+            addLink(name, url, 'resolveAndPlayMovie', thumbnail)
+    except urllib2.URLError:
+        addLink("성용이를 불러주세용.", '', '', '')
+
+def resolveAndPlayMovie(url):
+    try:
+        tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
+
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', tablet_UA)
+        req.add_header('Accept-Langauge', 'ko')
+        req.add_header('Cookie', 'language=kr')
+            
+        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+        link=response.read()
+        response.close()
+        match=re.compile('cat: \'.*?\',id: (.*?),').findall(link)
+        url='http://www.ondemandkorea.com/includes/playlist.php?token=' + match[0]
+        req = urllib2.Request(url)
+        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+        link=response.read()
+        response.close()
+        
+        match=re.compile('src="(.*?)"').findall(link)
+        match0=match[0].replace('mp4:','')
+        match1=match0.replace('http2/','')
+        url0=match1.replace('http/','')
+
+        url1= 'http://sjcstor03.ondemandkorea.com/' + url0
+        listItem = xbmcgui.ListItem(path=str(url1))
+        listItem.setProperty('IsPlayable', 'true')
+        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+        
+                
+
+    except urllib2.URLError:
+        addLink("성용이를 불러주세용.", '', '', '')
     
 def addLink(name,url,mode,iconimage):
     u=_pluginName+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)
@@ -854,16 +807,14 @@ else:
         listVideoCategories(urlUnquoted)
     elif params["mode"] == 'videoCategoryContent':
         listVideosInCategory(urlUnquoted)
-    elif params["mode"] == 'listVideoCategoriesSoup':
-        listVideoCategoriesSoup(urlUnquoted)
-
+        
     elif params["mode"] == 'resolveAndPlayVideo':
         resolveAndPlayVideo(urlUnquoted)
-
-    elif params["mode"] == 'dramafever':
-        listdramafever(urlUnquoted)
-    elif params["mode"] == 'dramafeverPlay':
-        dramafeverPlay(urlUnquoted)
+##
+##    elif params["mode"] == 'dramafever':
+##        listdramafever(urlUnquoted)
+##    elif params["mode"] == 'dramafeverPlay':
+##        dramafeverPlay(urlUnquoted)
         
     elif params["mode"] == 'dramaCategories':
         listdramaCategories(urlUnquoted)   
@@ -885,9 +836,9 @@ else:
         
     elif params["mode"] == 'RecentCategories':
         listRecentCategories(urlUnquoted)
-##    elif params["mode"] == 'MovieCategories':
-##        listMovieCategories(urlUnquoted)
-##    elif params["mode"] == 'resolveAndPlayMovie':
-##        resolveAndPlayMovie(urlUnquoted)
+    elif params["mode"] == 'MovieCategories':
+        listMovieCategories(urlUnquoted)
+    elif params["mode"] == 'resolveAndPlayMovie':
+        resolveAndPlayMovie(urlUnquoted)
         
 xbmcplugin.endOfDirectory(_thisPlugin)        

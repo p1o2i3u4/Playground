@@ -445,7 +445,7 @@ def listdramaInCategory(url):
 ##            if i not in match2:
 ##                match2.append(i)
 ##                
-        match=re.compile('<div class="ep.*?">\n\t\t\t\t<a href="(.*?)" title="(.*?)">\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<img src=".*?src=(.*?)_(.*?)_(.*?)"').findall(link)
+        match=re.compile('<div class="ep.*?">\n\t\t\t\t<a href="(.*?)" title="(.*?)">\n\t\t\t\t\t\n\t\t\t\t\t<img src=".*?src=(.*?)_(.*?)_(.*?)"').findall(link)
 
         for i in range(len(match)):
 	    playVideoUrl = 'http://www.ondemandkorea.com/' + match[i][0]

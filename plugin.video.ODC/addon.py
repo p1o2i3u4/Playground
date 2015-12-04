@@ -46,62 +46,62 @@ def listRecentCategories(url):
         response = urllib2.urlopen(req, timeout = _connectionTimeout)
         link=response.read()
         response.close()
-        match=re.compile('<div class="entry.*?">\n\t\t\t\t\t\t\t\t\t\t\t<a href="(.+?)" title="(.+?)">').findall(link)
-        match2=re.compile('<img src=".*?src=(.+?)">\n\t\t\t\t\t\t\t\t\t\t\t\t<div class="ep_title"><b>.+?</b></div>\n\t\t\t\t\t\t\t\t\t\t\t\t<div class="ep_date">(.+?)</div>').findall(link,0)
-        match3=[(x+y) for x,y in zip(match,match2)] #combine match and match2!
-        
-        for i in range(len(match3)):
-            thumb = "http://max.ondemandkorea.com" + match3[i][2]
-            playVideoUrl = 'http://www.ondemandkorea.com' + match3[i][0]
-            title = unicode(match3[i][1], 'utf-8')  + " - " + match3[i][3]
-            title = title.replace('.480p.1596k','').replace('amp;','').replace('&#039;','\'').replace('&lt;','<').replace('&gt;','>')
-            match3[i] = (playVideoUrl, title, thumb)
-
-        #match.sort(reverse=True)
-
-        
-        for url, title, thumbnail in match3:
-            addLink(title, url, 'resolveAndPlayVideo', thumbnail)
+##        match=re.compile('<div class="entry.*?">\n\t\t\t\t\t\t\t\t\t<a href="(.+?)" title="(.+?)">').findall(link)
+##        match2=re.compile('<img src=".*?src=(.+?)">\n\t\t\t\t\t\t\t\t\t\t<div class="ep_title"><b>.+?</b></div>\n\t\t\t\t\t\t\t\t\t\t<div class="ep_date">(.+?)</div>').findall(link,0)
+##        match3=[(x+y) for x,y in zip(match,match2)] #combine match and match2!
+##        
+##        for i in range(len(match3)):
+##            thumb = "http://max.ondemandkorea.com" + match3[i][2]
+##            playVideoUrl = 'http://www.ondemandkorea.com' + match3[i][0]
+##            title = unicode(match3[i][1], 'utf-8')  + " - " + match3[i][3]
+##            title = title.replace('.480p.1596k','').replace('amp;','').replace('&#039;','\'').replace('&lt;','<').replace('&gt;','>')
+##            match3[i] = (playVideoUrl, title, thumb)
+##
+##        #match.sort(reverse=True)
+##
+##        
+##        for url, title, thumbnail in match3:
+##            addLink(title, url, 'resolveAndPlayVideo', thumbnail)
             
      #soup를 통한 리스팅...
-        if len(match)<1:
-            soup=BeautifulSoup(link)
-            
-            items = []
-            drama=soup.find('div', {'class':re.compile('^(?:iosSlider contents drama)$')})
-            for node in drama.findAll('div', {'class':re.compile('^(?:entry |entry last)$')}):
-                if not node.b:
-                    continue
-                title = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
-                thumb = node.find('img')['src']
-                dt = node.b.findNextSibling(text=True)
-                bdate = dt.string.split(':',1)[1].strip() if dt else ''
-                items.append({'title':title, 'broad_date':bdate, 'url':root_url+node.a['href'], 'thumbnail':node.img['src']})
-           
-            for i in range(len(items)):
-                items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
-                  
+        #if len(match)<1:
+        soup=BeautifulSoup(link)
+        
+        items = []
+        drama=soup.find('div', {'class':re.compile('^(?:iosSlider contents drama)$')})
+        for node in drama.findAll('div', {'class':re.compile('^(?:entry |entry last)$')}):
+            if not node.b:
+                continue
+            title = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
+            thumb = node.find('img')['src']
+            dt = node.b.findNextSibling(text=True)
+            bdate = dt.string.split(':',1)[1].strip() if dt else ''
+            items.append({'title':title, 'broad_date':bdate, 'url':root_url+node.a['href'], 'thumbnail':node.img['src']})
+       
+        for i in range(len(items)):
+            items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
+              
 
-            for name, url, thumbnail in items:
-                addLink(name, url, 'resolveAndPlayVideo', thumbnail)
+        for name, url, thumbnail in items:
+            addLink(name, url, 'resolveAndPlayVideo', thumbnail)
 
-            items2 = []
-            variety=soup.find('div', {'class':re.compile('^(?:iosSlider contents variety)$')})
-            for node in variety.findAll('div', {'class':re.compile('^(?:entry |entry last)$')}):
-                if not node.b:
-                    continue
-                title = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
-                thumb = node.find('img')['src']
-                dt = node.b.findNextSibling(text=True)
-                bdate = dt.string.split(':',1)[1].strip() if dt else ''
-                items2.append({'title':title, 'broad_date':bdate, 'url':root_url+node.a['href'], 'thumbnail':node.img['src']})
-           
-            for i in range(len(items2)):
-                items2[i] = (items2[i]['title'], items2[i]['url'], items2[i]['thumbnail'])
-                  
+        items2 = []
+        variety=soup.find('div', {'class':re.compile('^(?:iosSlider contents variety)$')})
+        for node in variety.findAll('div', {'class':re.compile('^(?:entry |entry last)$')}):
+            if not node.b:
+                continue
+            title = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
+            thumb = node.find('img')['src']
+            dt = node.b.findNextSibling(text=True)
+            bdate = dt.string.split(':',1)[1].strip() if dt else ''
+            items2.append({'title':title, 'broad_date':bdate, 'url':root_url+node.a['href'], 'thumbnail':node.img['src']})
+       
+        for i in range(len(items2)):
+            items2[i] = (items2[i]['title'], items2[i]['url'], items2[i]['thumbnail'])
+              
 
-            for name, url, thumbnail in items2:
-                addLink(name, url, 'resolveAndPlayVideo', thumbnail)
+        for name, url, thumbnail in items2:
+            addLink(name, url, 'resolveAndPlayVideo', thumbnail)
 
                         
     except urllib2.URLError:

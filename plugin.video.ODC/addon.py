@@ -22,8 +22,8 @@ def listMainCategories():
     addDir("예능/오락", "http://www.ondemandkorea.com/variety", "videoCategories", '')
     addDir("시사/다큐", "http://www.ondemandkorea.com/documentary", "videoCategories", '')
     addDir("음식/요리", "http://www.ondemandkorea.com/food", "videoCategories", '')
-    #addDir("뷰티/패션", "http://www.ondemandkorea.com/beauty", "videoCategories", '')
-    addDir("여성", "http://www.ondemandkorea.com/women", "videoCategories", '')
+    addDir("뷰티/패션", "http://www.ondemandkorea.com/beauty", "videoCategories", '')
+    #addDir("여성", "http://www.ondemandkorea.com/women", "videoCategories", '')
     addDir("건강", "http://www.ondemandkorea.com/health", "videoCategories", '')
 
         
@@ -54,14 +54,56 @@ def listRecentCategories(url):
             thumb = "http://max.ondemandkorea.com" + match3[i][2]
             playVideoUrl = 'http://www.ondemandkorea.com' + match3[i][0]
             title = unicode(match3[i][1], 'utf-8')  + " - " + match3[i][3]
-            title = title.replace('amp;','')
+            title = title.replace('.480p.1596k','').replace('amp;','').replace('&#039;','\'').replace('&lt;','<').replace('&gt;','>')
             match3[i] = (playVideoUrl, title, thumb)
 
         #match.sort(reverse=True)
+
         
         for url, title, thumbnail in match3:
             addLink(title, url, 'resolveAndPlayVideo', thumbnail)
+            
+     #soup를 통한 리스팅...
+        if len(match)<1:
+            soup=BeautifulSoup(link)
+            
+            items = []
+            drama=soup.find('div', {'class':re.compile('^(?:iosSlider contents drama)$')})
+            for node in drama.findAll('div', {'class':re.compile('^(?:entry |entry last)$')}):
+                if not node.b:
+                    continue
+                title = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
+                thumb = node.find('img')['src']
+                dt = node.b.findNextSibling(text=True)
+                bdate = dt.string.split(':',1)[1].strip() if dt else ''
+                items.append({'title':title, 'broad_date':bdate, 'url':root_url+node.a['href'], 'thumbnail':node.img['src']})
+           
+            for i in range(len(items)):
+                items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
+                  
 
+            for name, url, thumbnail in items:
+                addLink(name, url, 'resolveAndPlayVideo', thumbnail)
+
+            items2 = []
+            variety=soup.find('div', {'class':re.compile('^(?:iosSlider contents variety)$')})
+            for node in variety.findAll('div', {'class':re.compile('^(?:entry |entry last)$')}):
+                if not node.b:
+                    continue
+                title = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
+                thumb = node.find('img')['src']
+                dt = node.b.findNextSibling(text=True)
+                bdate = dt.string.split(':',1)[1].strip() if dt else ''
+                items2.append({'title':title, 'broad_date':bdate, 'url':root_url+node.a['href'], 'thumbnail':node.img['src']})
+           
+            for i in range(len(items2)):
+                items2[i] = (items2[i]['title'], items2[i]['url'], items2[i]['thumbnail'])
+                  
+
+            for name, url, thumbnail in items2:
+                addLink(name, url, 'resolveAndPlayVideo', thumbnail)
+
+                        
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
         
@@ -435,9 +477,8 @@ def listdramaInCategory(url):
 	    playVideoUrl = 'http://www.ondemandkorea.com/' + match[i][0]
 	    poster = 'http://max.ondemandkorea.com/' + match[i][2] + '_'+ match[i][3] +'_' + match[i][4]
 	    title = unicode(match[i][1], 'utf-8')  + " - " + match[i][3]
-	    title = title.replace('.480p.1596k','')
-	    title = title.replace('amp;','')
-            match[i] = (title, playVideoUrl, poster)
+	    title = title.replace('.480p.1596k','').replace('amp;','').replace('&#039;','\'').replace('&lt;','<').replace('&gt;','>')
+	    match[i] = (title, playVideoUrl, poster)
 
         for title, url, thumbnail, in match:
             addLink(title, url, 'resolveAndPlayVideo', thumbnail)
@@ -449,7 +490,7 @@ def listdramaInCategory(url):
             for node in soup.findAll('div', {'class':re.compile('^(?:ep|ep_last)$')}):
                 if not node.b:
                     continue
-                title = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>')
+                title = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
                 thumb = node.find('img', {'title':True})['src']
                 dt = node.b.findNextSibling(text=True)
                 bdate = dt.string.split(':',1)[1].strip() if dt else ''

@@ -73,7 +73,7 @@ def listRecentCategories(url):
             if not node.b:
                 continue
             title = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
-            thumb = node.find('img')['src']
+            thumb = node.find('img', {'src':re.compile(r'(jpe?g)|(png32)$')})
             dt = node.b.findNextSibling(text=True)
             bdate = dt.string.split(':',1)[1].strip() if dt else ''
             items.append({'title':title, 'broad_date':bdate, 'url':root_url+node.a['href'], 'thumbnail':node.img['src']})
@@ -513,20 +513,22 @@ def listdramaInCategory(url):
         link=response.read()
 
         match2=re.compile('"num_pages":([1-9]+),').findall(link)
-        if int(match2[0])>1:
-            pg=int(match2[0])+1
-            for i in range(1,pg): 
-                if i<5: #너무 오래 걸려서 4페이지까지 제한... 
-                    Pgurl = 'http://www.ondemandkorea.com/includes/episode_page.php?cat='+match1[0][0]+'&id=' +match1[0][1]+'&page='+str(i)
-                    req = urllib2.Request(Pgurl)
-                    response = urllib2.urlopen(req)
-                    link=response.read()
-                    match=re.compile('"url":"(.*?)"').search(link).group(1)
-                    Pgurl='http://www.ondemandkorea.com/'+match
-                    name=str(i) +' 페이지'
-                    addDir(name, Pgurl, 'dramaCategoryContent', "")
+        if match2:
+            if int(match2[0])>1:
+                pg=int(match2[0])+1
+                for i in range(1,pg): 
+                    if i<5: #너무 오래 걸려서 4페이지까지 제한... 
+                        Pgurl = 'http://www.ondemandkorea.com/includes/episode_page.php?cat='+match1[0][0]+'&id=' +match1[0][1]+'&page='+str(i)
+                        req = urllib2.Request(Pgurl)
+                        response = urllib2.urlopen(req)
+                        link=response.read()
+                        match=re.compile('"url":"(.*?)"').search(link).group(1)
+                        Pgurl='http://www.ondemandkorea.com/'+match
+                        name=str(i) +' 페이지'
+                        addDir(name, Pgurl, 'dramaCategoryContent', "")
+      
         
-       
+           
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
         

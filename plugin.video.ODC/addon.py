@@ -184,7 +184,8 @@ def resolveAndPlayVideo(url):
         response = urllib2.urlopen(req, timeout = _connectionTimeout)
         link=response.read()
         response.close()
-        match=re.compile('src="http://(.*?).mp4\"').search(link)
+        match=re.compile('\"http://(.*?).mp4\"').search(link)
+        print match
         if match:
             match2=match.group(1)
             urllow='http://' + match2 + '.mp4'

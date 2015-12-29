@@ -26,45 +26,47 @@ def listMainCategories():
 #s    addDir("내일도 칸타빌레", "http://drama.baykoreans.net/index.php?mid=drama&search_target=title&search_keyword=칸타빌레", "EntCategoryContent", '')
     addDir("드라마", "http://baykoreans.net/drama", "videoCategories", '')
     #addDir("드라마", " ", "dramaDate", '')
-    addDir("예능/오락", " ", "varietyDate", '')
-    addDir("시사/다큐", " ", "docuDate", '')
+    #addDir("예능/오락", " ", "varietyDate", '')
+    addDir("예능/오락", "http://baykoreans.net/entertain", "EntCategoryContent", '')
+    #addDir("시사/다큐", " ", "docuDate", '')
+    addDir("시사/다큐", "http://baykoreans.net/current", "EntCategoryContent", '') 
     addDir("기분 좋은 날", "http://baykoreans.net/index.php?mid=current&search_target=title&search_keyword=%EA%B8%B0%EB%B6%84%EC%A2%8B%EC%9D%80%EB%82%A0", 'videoCategoryContent', "")
-    addDir("스포츠", "http://baykoreans.net/sports", "EntCategoryContent", '')
+    #addDir("스포츠", "http://baykoreans.net/sports", "EntCategoryContent", '')
 
 #    addDir("영화", "http://drama.baykoreans.net/movie", "EntCategoryContent", '')
 #    addDir("세바퀴", "http://drama.baykoreans.net/?act=&vid=&mid=entertain&category=19114892319082&search_target=title&search_keyword=세바퀴", "EntCategoryContent", '')
 #    addDir("시사/다큐", "http://baykoreans.net/current", "videoCategories", '')
 #    addDir("영화", "http://baykoreans.net/movie", "MovieCategories", '')  
 
-def listdramaDate():
-    addDir("최근 방영", "http://baykoreans.net/drama", "videoCategories", '') 
-    addDir("월요일", "http://live.hanindisk.com/tv_chart.php?week_day=2", "dramaCategories", '')  
-    addDir("화요일", "http://live.hanindisk.com/tv_chart.php?week_day=3", "dramaCategories", '')
-    addDir("수요일", "http://live.hanindisk.com/tv_chart.php?week_day=4", "dramaCategories", '')
-    addDir("목요일", "http://live.hanindisk.com/tv_chart.php?week_day=5", "dramaCategories", '')
-    addDir("금요일", "http://live.hanindisk.com/tv_chart.php?week_day=6", "dramaCategories", '')
-    addDir("토요일", "http://live.hanindisk.com/tv_chart.php?week_day=7", "dramaCategories", '')
-    addDir("일요일", "http://live.hanindisk.com/tv_chart.php?week_day=1", "dramaCategories", '')
-
-def listvarietyDate():
-    addDir("최근 방영", "http://baykoreans.net/entertain", "EntCategoryContent", '') 
-    addDir("월요일", "http://live.hanindisk.com/tv_chart.php?week_day=2", "varietyCategories", '')  
-    addDir("화요일", "http://live.hanindisk.com/tv_chart.php?week_day=3", "varietyCategories", '')
-    addDir("수요일", "http://live.hanindisk.com/tv_chart.php?week_day=4", "varietyCategories", '')
-    addDir("목요일", "http://live.hanindisk.com/tv_chart.php?week_day=5", "varietyCategories", '')
-    addDir("금요일", "http://live.hanindisk.com/tv_chart.php?week_day=6", "varietyCategories", '')
-    addDir("토요일", "http://live.hanindisk.com/tv_chart.php?week_day=7", "varietyCategories", '')
-    addDir("일요일", "http://live.hanindisk.com/tv_chart.php?week_day=1", "varietyCategories", '')
-
-def listdocuDate():
-    addDir("최근 방영", "http://baykoreans.net/current", "EntCategoryContent", '') 
-    addDir("월요일", "http://live.hanindisk.com/tv_chart.php?week_day=2", "docuCategories", '')  
-    addDir("화요일", "http://live.hanindisk.com/tv_chart.php?week_day=3", "docuCategories", '')
-    addDir("수요일", "http://live.hanindisk.com/tv_chart.php?week_day=4", "docuCategories", '')
-    addDir("목요일", "http://live.hanindisk.com/tv_chart.php?week_day=5", "docuCategories", '')
-    addDir("금요일", "http://live.hanindisk.com/tv_chart.php?week_day=6", "docuCategories", '')
-    addDir("토요일", "http://live.hanindisk.com/tv_chart.php?week_day=7", "docuCategories", '')
-    addDir("일요일", "http://live.hanindisk.com/tv_chart.php?week_day=1", "docuCategories", '')
+##def listdramaDate():
+##    addDir("최근 방영", "http://baykoreans.net/drama", "videoCategories", '') 
+##    addDir("월요일", "http://live.hanindisk.com/tv_chart.php?week_day=2", "dramaCategories", '')  
+##    addDir("화요일", "http://live.hanindisk.com/tv_chart.php?week_day=3", "dramaCategories", '')
+##    addDir("수요일", "http://live.hanindisk.com/tv_chart.php?week_day=4", "dramaCategories", '')
+##    addDir("목요일", "http://live.hanindisk.com/tv_chart.php?week_day=5", "dramaCategories", '')
+##    addDir("금요일", "http://live.hanindisk.com/tv_chart.php?week_day=6", "dramaCategories", '')
+##    addDir("토요일", "http://live.hanindisk.com/tv_chart.php?week_day=7", "dramaCategories", '')
+##    addDir("일요일", "http://live.hanindisk.com/tv_chart.php?week_day=1", "dramaCategories", '')
+##
+##def listvarietyDate():
+##    addDir("최근 방영", "http://baykoreans.net/entertain", "EntCategoryContent", '') 
+##    addDir("월요일", "http://live.hanindisk.com/tv_chart.php?week_day=2", "varietyCategories", '')  
+##    addDir("화요일", "http://live.hanindisk.com/tv_chart.php?week_day=3", "varietyCategories", '')
+##    addDir("수요일", "http://live.hanindisk.com/tv_chart.php?week_day=4", "varietyCategories", '')
+##    addDir("목요일", "http://live.hanindisk.com/tv_chart.php?week_day=5", "varietyCategories", '')
+##    addDir("금요일", "http://live.hanindisk.com/tv_chart.php?week_day=6", "varietyCategories", '')
+##    addDir("토요일", "http://live.hanindisk.com/tv_chart.php?week_day=7", "varietyCategories", '')
+##    addDir("일요일", "http://live.hanindisk.com/tv_chart.php?week_day=1", "varietyCategories", '')
+##
+##def listdocuDate():
+##    addDir("최근 방영", "http://baykoreans.net/current", "EntCategoryContent", '') 
+##    addDir("월요일", "http://live.hanindisk.com/tv_chart.php?week_day=2", "docuCategories", '')  
+##    addDir("화요일", "http://live.hanindisk.com/tv_chart.php?week_day=3", "docuCategories", '')
+##    addDir("수요일", "http://live.hanindisk.com/tv_chart.php?week_day=4", "docuCategories", '')
+##    addDir("목요일", "http://live.hanindisk.com/tv_chart.php?week_day=5", "docuCategories", '')
+##    addDir("금요일", "http://live.hanindisk.com/tv_chart.php?week_day=6", "docuCategories", '')
+##    addDir("토요일", "http://live.hanindisk.com/tv_chart.php?week_day=7", "docuCategories", '')
+##    addDir("일요일", "http://live.hanindisk.com/tv_chart.php?week_day=1", "docuCategories", '')
 
 
 def listVideoCategories(url):
@@ -100,14 +102,39 @@ def listVideosInCategory(url):
         response = urllib2.urlopen(req, timeout = _connectionTimeout)
         link=response.read()
         response.close()
-        match=re.compile('<img src="(.*?)" alt.*?>\n.*?</div>\n.*?</a>\n.*?</div>\n\t\t\t\t\t\t.*?\n.*?\n.*?\n.*?\n.*?<p class="title">\n.*?<a href=".+?mid=(.+?)\&.+?document_srl=(.+?)" class="title" >(.*?)</a>').findall(link)
-        
-        for i in range(len(match)):
-            playurl = 'http://baykoreans.net/' + match[i][1] +'/' + match[i][2]
-            match[i] = (playurl, unicode(match[i][3], 'utf-8'), match[i][0])
-    
-        for url, title, thumbnail, in match:
+        soup=BeautifulSoup(link, fromEncoding='utf-8')
+        #match=re.compile('<img src="(.*?)" alt.*?>\n.*?</div>\n.*?</a>\n.*?</div>\n\t\t\t\t\t\t.*?\n.*?\n.*?\n.*?\n.*?<p class="title">\n.*?<a href=".+?mid=(.+?)\&.+?document_srl=(.+?)" class="title" >(.*?)</a>').findall(link)
+        items = []
+            # looking for tags td and something that has attribute class="title"
+        for item in soup.findAll("td", {"class":"title"}):
+            thumb = ""
+            if item.div:
+                thumb = item.div.img['src']
+            if item.p.a:
+                if not item.p.a.string:
+                    continue
+                title = item.p.a.string.replace('&amp;','&').encode('utf-8')
+                date,title = re.compile('^(\d*)\s*(.*)').search(title).group(1,2)
+                if date:
+                    title = date + " " + title
+                url = item.p.a['href']        
+                items.append({'title':title.decode('utf-8'), 'url':url, 'thumbnail':thumb})
+
+
+        for i in range(len(items)):
+            items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
+                  
+
+        for title, url, thumbnail in items:
             addDir(title, url, 'listvideourl2', thumbnail)
+
+
+##        for i in range(len(match)):
+##            playurl = 'http://baykoreans.net/' + match[i][1] +'/' + match[i][2]
+##            match[i] = (playurl, unicode(match[i][3], 'utf-8'), match[i][0])
+##    
+##        for url, title, thumbnail, in match:
+##            addDir(title, url, 'listvideourl2', thumbnail)
         
 #        match2=re.compile('page=(.+?)">.+?</a> <a href').findall(link)
 #        match3=re.compile('<div class="pagination"> <a href=".+?category=(.+?)"').findall(link)
@@ -141,9 +168,14 @@ def listvideourl(url):
         for url, title, in dmotion:
             addLink(title, url, 'playVideo', "")
 
-        tudou=re.compile('<a href="baykoreans.com/tudou.y/\?xink=(.+?)" class="button black xLarge" target="_blank"><span>').findall(link)
-        for url, title, in tudou:
-            addLink(title, url, 'resolveAndPlayVideo', "")
+        hdmotion=re.compile('<a href="http://baykoreans.com/dmotion/\?xink=(.+?)" class="button red xLarge" target=".*?">').findall(link)
+
+##        link1=getStreamUrl(hdmotion[0])
+##        link2=getStreamUrl(hdmotion[1])
+##        vidlist=link1+"|"+link2
+##        print vidlist
+        #addLink('고화질', vidlist, 'playVideo2', "")
+
         
         #tudou2=re.compile('<a href="http://baykoreans.com/tudou.y/\?xink=(.+?)" class="button black xLarge" target="_blank"><span>(.+?) \|').findall(link)
         #for i in range(len(dmotion)):
@@ -160,7 +192,38 @@ def playVideo(url):
     listitem = xbmcgui.ListItem(path=getStreamUrl(url))
     xbmcplugin.setResolvedUrl(_thisPlugin, True, listitem)
 
+def playVideo2(url):
+    print url
+    links=url.split('|')
+    print "split here"
+    print links
+    pDialog = xbmcgui.DialogProgress()
+    ret = pDialog.create('Loading playlist...')
+    totalLinks = len(links)-1
+    loadedLinks = 0
+    remaining_display = 'Videos loaded :: [B]'+str(loadedLinks)+' / '+str(totalLinks)+'[/B] into XBMC player playlist.'
+    pDialog.update(0,'Please wait for the process to retrieve video link.',remaining_display)
+    
+    pl=xbmc.PlayList(1)
+    pl.clear()
+    for vidlink in links:
+        CreateList(vidlink)
+        loadedLinks = loadedLinks + 1
+        percent = (loadedLinks * 100)/totalLinks
+        #print percent
+        remaining_display = 'Videos loaded :: [B]'+str(loadedLinks)+' / '+str(totalLinks)+'[/B] into XBMC player playlist.'
+        pDialog.update(percent,'Please wait for the process to retrieve video link.',remaining_display)
+        if (pDialog.iscanceled()):
+                return False   
+    xbmcPlayer = xbmc.Player()
+    xbmcPlayer.play(pl)
+    #xbmcplugin.setResolvedUrl(_thisPlugin, True, playList)
+    return True
 
+def CreateList(vidlink):
+        listitem = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
+        xbmc.PlayList(1).add(url=vidlink, listitem=listitem)
+        
 def getStreamUrl(url):
     content = getUrl2('http://www.dailymotion.com/embed/video/'+url)
     if content.find('"statusCode":410') > 0 or content.find('"statusCode":403') > 0:
@@ -170,9 +233,9 @@ def getStreamUrl(url):
     else:
         get_json_code = re.compile(r'dmp\.create\(document\.getElementById\(\'player\'\),\s*(\{.*?)"\}\]\}.*\}\);').findall(content)[0]
         get_json_code += '"}]}}}'
-        print get_json_code
+        #print get_json_code
         cc= json.loads(get_json_code)['metadata']['qualities']  #['380'][0]['url']
-        print cc
+        #print cc
         if '1080' in cc.keys():
             #print 'found hd'
             return cc['1080'][0]['url']
@@ -271,15 +334,40 @@ def listEntInCategory(url):
         response = urllib2.urlopen(req, timeout = _connectionTimeout)
         link=response.read()
         response.close()
-        match=re.compile('<p class="title">\n.*?<a href="/(.*?)/(.*?)" class=.*?>(.*?)</a>').findall(link)
-        #match=re.compile('<p class="title">\n.*?<a href=".+?mid=(.+?)\&.+?document_srl=(.+?)" class="title" >(.*?)</a>').findall(link)
-        
-        for i in range(len(match)):
-            playVideoUrl = 'http://baykoreans.net/' + match[i][0] + '/' + match[i][1]
-            match[i] = (playVideoUrl, unicode(match[i][2], 'utf-8'))
-    
-        for url, title in match:
-            addDir(title, url, 'listvideourl2', "")
+        soup=BeautifulSoup(link, fromEncoding='utf-8')
+        #match=re.compile('<img src="(.*?)" alt.*?>\n.*?</div>\n.*?</a>\n.*?</div>\n\t\t\t\t\t\t.*?\n.*?\n.*?\n.*?\n.*?<p class="title">\n.*?<a href=".+?mid=(.+?)\&.+?document_srl=(.+?)" class="title" >(.*?)</a>').findall(link)
+        items = []
+            # looking for tags td and something that has attribute class="title"
+        for item in soup.findAll("td", {"class":"title"}):
+            thumb = ""
+            if item.div:
+                thumb = item.div.img['src']
+            if item.p.a:
+                if not item.p.a.string:
+                    continue
+                title = item.p.a.string.replace('&amp;','&').encode('utf-8')
+                date,title = re.compile('^(\d*)\s*(.*)').search(title).group(1,2)
+                if date:
+                    title = date + " " + title
+                url = item.p.a['href']        
+                items.append({'title':title.decode('utf-8'), 'url':url, 'thumbnail':thumb})
+
+
+        for i in range(len(items)):
+            items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
+                  
+
+        for title, url, thumbnail in items:
+            addDir(title, url, 'listvideourl2', thumbnail)
+##        match=re.compile('<p class="title">\n.*?<a href="/(.*?)/(.*?)" class=.*?>(.*?)</a>').findall(link)
+##        #match=re.compile('<p class="title">\n.*?<a href=".+?mid=(.+?)\&.+?document_srl=(.+?)" class="title" >(.*?)</a>').findall(link)
+##        
+##        for i in range(len(match)):
+##            playVideoUrl = 'http://baykoreans.net/' + match[i][0] + '/' + match[i][1]
+##            match[i] = (playVideoUrl, unicode(match[i][2], 'utf-8'))
+##    
+##        for url, title in match:
+##            addDir(title, url, 'listvideourl2', "")
 
         
         match2=re.compile('page=([0-9]+)">[0-9]+</a>').findall(link)
@@ -298,7 +386,7 @@ def listEntInCategory(url):
             for url, name in match2:
                 addDir(name, url, 'videoCategoryContent', "")
 
-        print match2
+        #print match2
         
         
 
@@ -483,7 +571,9 @@ else:
 
     elif params["mode"] == 'playVideo':
         playVideo(urlUnquoted)
-
+    elif params["mode"] == 'playVideo2':
+        playVideo2(urlUnquoted)
+        
     elif params["mode"] == 'dramaDate':
         listdramaDate()  
     elif params["mode"] == 'varietyDate':

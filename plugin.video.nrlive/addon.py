@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    Ondemand Korea
+    NR live
 """
 
 import os
@@ -23,459 +23,170 @@ def listMainCategories():
     
 def High_list(url):
     try:
-        schedule='http://sports.news.naver.com/tv/onairScheduleList.nhn'
-        req = urllib2.Request(schedule)
-        response = urllib2.urlopen(req)
-        onair=response.read()
-        response.close()
-        match=re.search('피츠버그',onair)
-        if match:
-            schedule='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch10%2F_definst_%2Fch10_2000.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(schedule)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            print link
-            addLink('Pittsburg Pirates 중계', link, 'resolveAndPlayVideo', '') 
-        
-        match=re.search('다저스',onair)
-        if match:
-            url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad9%2Fad9_2000.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            addLink('LA Dodgers 중계', link, 'resolveAndPlayVideo', '')
-
-        match=re.search('텍사스',onair)
-        if match:
-            url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad8%2Fad8_2000.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            addLink('Texas Rangers 중계', link, 'resolveAndPlayVideo', '')
-
-
-        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch14%2F_definst_%2Fch14_2000.stream%2Fplaylist.m3u8'
+        url='http://sports.news.naver.com/tv/onairScheduleList.nhn?gameId=&isScoreOn=true'
         req = urllib2.Request(url)
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
-        addLink('SPOTV Games', link, 'resolveAndPlayVideo', '')
+    
+        live=re.compile('<span class="blind" id=".*?">(.*?)</span>').findall(link)
+        url=re.compile('params2="(.*?)"').findall(link)
+        sport=re.compile('\r\n                            \r\n                            (.*?)\r\n').findall(link)
+        title=re.compile('<span class="tema_live tit_event"><strong>(.*?)</strong>').findall(link)
+        title2=[(a+' '+b) for a,b in zip(sport,title)]
+       
 
-        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch200%2F_definst_%2Fch200_2000.stream%2Fplaylist.m3u8'
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        addLink('YTN', link, 'resolveAndPlayVideo', '')
+        match3=list(zip(live, title2, url))
 
-        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch201%2F_definst_%2Fch201_2000.stream%2Fplaylist.m3u8'
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        addLink('JTBC', link, 'resolveAndPlayVideo', '')
+        for i in range(len(match3)):
+            if match3[i][0]=='STARTEDY':
+                addLink(match3[i][1], match3[i][2], 'resolveAndPlayVideo', '')
+            else:
+                continue
 
-##        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad10%2Fad10_2000.stream%2Fplaylist.m3u8'
-##        req = urllib2.Request(url)
-##        req.add_header('User-Agent', _header)
-##        req.add_header('Accept-Langauge', 'ko')
-##        req.add_header('Cookie', 'language=kr')
-##        response = urllib2.urlopen(req)
-##        link=response.read()
-##        response.close()
-##        addLink('SBS Sports', link, 'resolveAndPlayVideo', '')
-        
-##        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad12%2Fad12_2000.stream%2Fplaylist.m3u8'
-##        req = urllib2.Request(url)
-##        req.add_header('User-Agent', _header)
-##        req.add_header('Accept-Langauge', 'ko')
-##        req.add_header('Cookie', 'language=kr')
-##        response = urllib2.urlopen(req)
-##        link=response.read()
-##        response.close()
-##        addLink('SBS', link, 'resolveAndPlayVideo', '')
+        addLink('SBS', 'rtmp://rtmpplay3.idol001.com/live/korea_sbs', 'livetv', '')
+        addLink('MBC', 'rtmp://rtmpplay3.idol001.com/live/korea_mbc', 'livetv', '')
+        addLink('KBS1', 'rtmp://rtmpplay3.idol001.com/live/korea_kbs1', 'livetv', '')
+        addLink('KBS2', 'rtmp://rtmpplay3.idol001.com/live/korea_kbs2', 'livetv', '')
+        addLink('JTBC', 'rtmp://rtmpplay3.idol001.com/live/korea_jtbc', 'livetv', '')
+        addLink('ONSTYLE', 'rtmp://rtmpplay3.idol001.com/live/korea_onstyle', 'livetv', '')
+        addLink('MBC MUSIC', 'rtmp://rtmpplay3.idol001.com/live/korea_mbcmusic', 'livetv', '')
+        addLink('Mnet', 'rtmp://rtmpplay3.idol001.com/live/korea_mnet', 'livetv', '')
+        addLink('TVN', 'rtmp://rtmpplay3.idol001.com/live/korea_tvn', 'livetv', '')
+        addLink('arirang', 'rtmp://rtmpplay3.idol001.com/live/korea_arirang', 'livetv', '')
+        addLink('SBS MTV', 'rtmp://rtmpplay3.idol001.com/live/korea_sbsmtv', 'livetv', '')
+        addLink('MBC everyone', 'rtmp://rtmpplay3.idol001.com/live/korea_mbcevery1', 'livetv', '')
 
-        addDir('현재 생방송 목록 (채널명 모름)',' ','High_Live', '')
-        
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
 
 def Med_list(url):
     try:
-        schedule='http://sports.news.naver.com/tv/onairScheduleList.nhn'
-        req = urllib2.Request(schedule)
-        response = urllib2.urlopen(req)
-        onair=response.read()
-        response.close()
-        match=re.search('피츠버그',onair)
-        if match:
-            schedule='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch10%2F_definst_%2Fch10_800.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(schedule)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            print link
-            addLink('Pittsburg Pirates 중계', link, 'resolveAndPlayVideo', '') 
-        
-        match=re.search('다저스',onair)
-        if match:
-            url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad9%2Fad9_800.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            addLink('LA Dodgers 중계', link, 'resolveAndPlayVideo', '')
-
-        match=re.search('텍사스',onair)
-        if match:
-            url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad8%2Fad8_800.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            addLink('Texas Rangers 중계', link, 'resolveAndPlayVideo', '')
-                
-        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch14%2F_definst_%2Fch14_800.stream%2Fplaylist.m3u8'
+        url='http://sports.news.naver.com/tv/onairScheduleList.nhn?gameId=&isScoreOn=true'
         req = urllib2.Request(url)
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
-        addLink('SPOTV Games', link, 'resolveAndPlayVideo', '')
+    
+        live=re.compile('<span class="blind" id=".*?">(.*?)</span>').findall(link)
+        url=re.compile('params2="(.*?)"').findall(link)
+        sport=re.compile('\r\n                            \r\n                            (.*?)\r\n').findall(link)
+        title=re.compile('<span class="tema_live tit_event"><strong>(.*?)</strong>').findall(link)
+        title2=[(a+' '+b) for a,b in zip(sport,title)]
+       
 
-        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch200%2F_definst_%2Fch200_800.stream%2Fplaylist.m3u8'
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        addLink('YTN', link, 'resolveAndPlayVideo', '')
+        match3=list(zip(live, title2, url))
 
-        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch201%2F_definst_%2Fch201_800.stream%2Fplaylist.m3u8'
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        addLink('JTBC', link, 'resolveAndPlayVideo', '')
-
-        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad10%2Fad10_800.stream%2Fplaylist.m3u8'
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        addLink('SBS Sports', link, 'resolveAndPlayVideo', '')
-        
-##        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad12%2Fad12_800.stream%2Fplaylist.m3u8'
-##        req = urllib2.Request(url)
-##        req.add_header('User-Agent', _header)
-##        req.add_header('Accept-Langauge', 'ko')
-##        req.add_header('Cookie', 'language=kr')
-##        response = urllib2.urlopen(req)
-##        link=response.read()
-##        response.close()
-##        addLink('SBS', link, 'resolveAndPlayVideo', '')
-##        
+        for i in range(len(match3)):
+            if match3[i][0]=='STARTEDY':
+                addLink(match3[i][1], match3[i][2], 'resolveAndPlayVideo_med', '')
+            else:
+                continue
+            
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
 
 def Low_list(url):
     try:
-        schedule='http://sports.news.naver.com/tv/onairScheduleList.nhn'
-        req = urllib2.Request(schedule)
-        response = urllib2.urlopen(req)
-        onair=response.read()
-        response.close()
-        match=re.search('피츠버그',onair)
-        if match:
-            schedule='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch10%2F_definst_%2Fch10_300.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(schedule)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            print link
-            addLink('Pittsburg Pirates 중계', link, 'resolveAndPlayVideo', '') 
-        
-        match=re.search('다저스',onair)
-        if match:
-            url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad9%2Fad9_300.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            addLink('LA Dodgers 중계', link, 'resolveAndPlayVideo', '')
-
-        match=re.search('텍사스',onair)
-        if match:
-            url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad8%2Fad8_300.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            addLink('Texas Rangers 중계', link, 'resolveAndPlayVideo', '')
-
-        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch14%2F_definst_%2Fch14_300.stream%2Fplaylist.m3u8'
+        url='http://sports.news.naver.com/tv/onairScheduleList.nhn?gameId=&isScoreOn=true'
         req = urllib2.Request(url)
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
-        addLink('SPOTV Games', link, 'resolveAndPlayVideo', '')
+    
+        live=re.compile('<span class="blind" id=".*?">(.*?)</span>').findall(link)
+        url=re.compile('params2="(.*?)"').findall(link)
+        sport=re.compile('\r\n                            \r\n                            (.*?)\r\n').findall(link)
+        title=re.compile('<span class="tema_live tit_event"><strong>(.*?)</strong>').findall(link)
+        title2=[(a+' '+b) for a,b in zip(sport,title)]
+       
 
-        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch200%2F_definst_%2Fch200_300.stream%2Fplaylist.m3u8'
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        addLink('YTN', link, 'resolveAndPlayVideo', '')
+        match3=list(zip(live, title2, url))
 
-        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch201%2F_definst_%2Fch201_300.stream%2Fplaylist.m3u8'
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        addLink('JTBC', link, 'resolveAndPlayVideo', '')
-
-        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad10%2Fad10_300.stream%2Fplaylist.m3u8'
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        addLink('SBS Sports', link, 'resolveAndPlayVideo', '')
-##        
-##        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad12%2Fad12_300.stream%2Fplaylist.m3u8'
-##        req = urllib2.Request(url)
-##        req.add_header('User-Agent', _header)
-##        req.add_header('Accept-Langauge', 'ko')
-##        req.add_header('Cookie', 'language=kr')
-##        response = urllib2.urlopen(req)
-##        link=response.read()
-##        response.close()
-##        addLink('SBS', link, 'resolveAndPlayVideo', '')
-        
+        for i in range(len(match3)):
+            if match3[i][0]=='STARTEDY':
+                addLink(match3[i][1], match3[i][2], 'resolveAndPlayVideo_low', '')
+            else:
+                continue
+            
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
 
 
-def High_Live_List(url):
-    try:
-        f=range(1,15)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-            ch='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_2000.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(ch)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            name='채널 '+str(i)
-            if match == 'on':
-                addLink(name, link, 'resolveAndPlayVideo', '')
-                
-        f=range(100,102)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-            ch='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_2000.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(ch)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            name='채널 '+str(i)
-            if match == 'on':
-                addLink(name, link, 'resolveAndPlayVideo', '')
-
-        f=range(200,212)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-            ch='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_2000.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(ch)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            name='채널 '+str(i)
-            if match == 'on':
-                addLink(name, link, 'resolveAndPlayVideo', '')
-                
-        f=range(1,15)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highad'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-            ch='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad'+str(i)+'%2F_definst_%2Fad'+str(i)+'_2000.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(ch)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            name='ad채널 '+str(i)
-            if match == 'on':
-                addLink(name, link, 'resolveAndPlayVideo', '')
-      
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-
-def Med_Live_List(url):
-    try:
-        f=range(1,15)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-            ch='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_800.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(ch)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            name='채널 '+str(i)
-            if match == 'on':
-                addLink(name, link, 'resolveAndPlayVideo', '')
-                
-        f=range(100,102)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-            ch='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_800.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(ch)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            name='채널 '+str(i)
-            if match == 'on':
-                addLink(name, link, 'resolveAndPlayVideo', '')
-
-        f=range(200,212)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-            ch='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_800.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(ch)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            name='채널 '+str(i)
-            if match == 'on':
-                addLink(name, link, 'resolveAndPlayVideo', '')
-                
-        f=range(1,15)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highad'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-            ch='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad'+str(i)+'%2F_definst_%2Fad'+str(i)+'_800.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(ch)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            name='ad채널 '+str(i)
-            if match == 'on':
-                addLink(name, link, 'resolveAndPlayVideo', '')
-      
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-
-def Low_Live_List(url):
-    try:
-        f=range(1,15)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-            ch='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_300.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(ch)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            name='채널 '+str(i)
-            if match == 'on':
-                addLink(name, link, 'resolveAndPlayVideo', '')
-                
-        f=range(100,102)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-            ch='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_300.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(ch)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            name='채널 '+str(i)
-            if match == 'on':
-                addLink(name, link, 'resolveAndPlayVideo', '')
-
-        f=range(200,212)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-            ch='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_300.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(ch)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            name='채널 '+str(i)
-            if match == 'on':
-                addLink(name, link, 'resolveAndPlayVideo', '')
-                
-        f=range(1,15)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highad'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-            ch='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad'+str(i)+'%2F_definst_%2Fad'+str(i)+'_300.stream%2Fplaylist.m3u8'
-            req = urllib2.Request(ch)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            name='ad채널 '+str(i)
-            if match == 'on':
-                addLink(name, link, 'resolveAndPlayVideo', '')
-      
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-        
 def resolveAndPlayVideo(url):
+    try:
+        url2='http://sports.news.naver.com/tv/index.nhn?gameId=' + url
+        req = urllib2.Request(url2)
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
+        
+        ch=re.compile('"channelID":"high(.*?)"').search(link).group(1)
+
+        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2F'+ch+'%2F_definst_%2F'+ch+'_2000.stream%2Fplaylist.m3u8'
+            
+        req = urllib2.Request(url)
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
+
+        listItem = xbmcgui.ListItem(path=str(link))
+        listItem.setProperty('IsPlayable', 'true')
+        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+        
+    except urllib2.URLError:
+        addLink("성용이를 불러주세용.", '', '', '')
+
+def resolveAndPlayVideo_med(url):
+    try:
+        url2='http://sports.news.naver.com/tv/index.nhn?gameId=' + url
+        req = urllib2.Request(url2)
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
+        
+        ch=re.compile('"channelID":"high(.*?)"').search(link).group(1)
+
+        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2F'+ch+'%2F_definst_%2F'+ch+'_800.stream%2Fplaylist.m3u8'
+            
+        req = urllib2.Request(url)
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
+
+        listItem = xbmcgui.ListItem(path=str(link))
+        listItem.setProperty('IsPlayable', 'true')
+        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+        
+    except urllib2.URLError:
+        addLink("성용이를 불러주세용.", '', '', '')
+
+
+def resolveAndPlayVideo_low(url):
+    try:
+        url2='http://sports.news.naver.com/tv/index.nhn?gameId=' + url
+        req = urllib2.Request(url2)
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
+        
+        ch=re.compile('"channelID":"high(.*?)"').search(link).group(1)
+
+        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2F'+ch+'%2F_definst_%2F'+ch+'_300.stream%2Fplaylist.m3u8'
+            
+        req = urllib2.Request(url)
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
+
+        listItem = xbmcgui.ListItem(path=str(link))
+        listItem.setProperty('IsPlayable', 'true')
+        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+        
+    except urllib2.URLError:
+        addLink("성용이를 불러주세용.", '', '', '')
+
+def livetv(url):
     try:
         listItem = xbmcgui.ListItem(path=str(url))
         listItem.setProperty('IsPlayable', 'true')
@@ -552,7 +263,10 @@ else:
         
     elif params["mode"] == 'resolveAndPlayVideo':
         resolveAndPlayVideo(urlUnquoted)
-
-
-        
+    elif params["mode"] == 'resolveAndPlayVideo_med':
+        resolveAndPlayVideo_med(urlUnquoted)
+    elif params["mode"] == 'resolveAndPlayVideo_low':
+        resolveAndPlayVideo_low(urlUnquoted)
+    elif params["mode"] == 'livetv':
+        livetv(urlUnquoted)        
 xbmcplugin.endOfDirectory(_thisPlugin)        

@@ -117,7 +117,8 @@ def listVideosInCategory(url):
                 date,title = re.compile('^(\d*)\s*(.*)').search(title).group(1,2)
                 if date:
                     title = date + " " + title
-                url = item.p.a['href']        
+                url2 = item.p.a['href']
+                url = 'http://baykoreans.net' + url2
                 items.append({'title':title.decode('utf-8'), 'url':url, 'thumbnail':thumb})
 
 
@@ -164,11 +165,14 @@ def listvideourl(url):
         link=response.read()
         response.close()
 
+        hdmotion=re.compile('<a href="http://baykoreans.com/dmotion/\?xink=(.+?)" class="button red xLarge" target=".*?"><span>(.+?) \|').findall(link)
+        for url, title, in hdmotion:
+            addLink(title, url, 'playVideo', "")
+            
         dmotion=re.compile('<a href="http://baykoreans.com/dmotion/\?xink=(.+?)" class=".*?" target=".*?"><span>(.+?) \|').findall(link) 
         for url, title, in dmotion:
             addLink(title, url, 'playVideo', "")
 
-        hdmotion=re.compile('<a href="http://baykoreans.com/dmotion/\?xink=(.+?)" class="button red xLarge" target=".*?">').findall(link)
 
 ##        link1=getStreamUrl(hdmotion[0])
 ##        link2=getStreamUrl(hdmotion[1])
@@ -289,41 +293,41 @@ def getUrl2(url):
 ##    except urllib2.URLError:
 ##        addLink("성용이를 불러주세용.", '', '', '')
 
-def listRecentCategories(url):
-    try:
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', _header)
-        req.add_header('Accept-Langauge', 'ko')
-        req.add_header('Cookie', 'language=kr')
-        response = urllib2.urlopen(req, timeout = _connectionTimeout)
-        link=response.read()
-        response.close()
-        match=re.compile('<img src="(.*?)" alt="" />\n.*?</div>\n.*?</a>\n.*?</div>\n\t\t\t\t\t\t.*?\n.*?\n.*?\n.*?\n.*?<p class="title">\n.*?<a href="/(.*?)/(.*?)" class="title" >(.*?)</a>').findall(link)
-        
-        for i in range(len(match)):
-            playVideoUrl = 'http://baykoreans.net/' + match[i][1] + '/' + match[i][2]
-            match[i] = (playVideoUrl, unicode(match[i][3], 'utf-8'), match[i][0])
-    
-        for url, title, thumbnail, in match:
-            addDir(title, url, 'listvideourl2', thumbnail)
-        
-#        match2=re.compile('page=(.+?)">.+?</a> <a href').findall(link)
-#        match3=re.compile('<div class="pagination"> <a href=".+?category=(.+?)"').findall(link)
-#        baseurl = 'http://drama.baykoreans.net/' + match[1][1]
-#        
-#        if match2:
-#            for i in range(len(match2)):
-#                Pgurl = baseurl + '&page=' + match2[i][0]
-#                Pgname = match2[i][0] + ' 페이지'
-#                match2[i] = (Pgurl, Pgname)
-#            print url
-#
-#            addDir("1 페이지", baseurl, 'videoCategoryContent', "")
-#            for url, name in match2:
-#                addDir(name, url, 'videoCategoryContent', "")
-
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')        
+##def listRecentCategories(url):
+##    try:
+##        req = urllib2.Request(url)
+##        req.add_header('User-Agent', _header)
+##        req.add_header('Accept-Langauge', 'ko')
+##        req.add_header('Cookie', 'language=kr')
+##        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+##        link=response.read()
+##        response.close()
+##        match=re.compile('<img src="(.*?)" alt="" />\n.*?</div>\n.*?</a>\n.*?</div>\n\t\t\t\t\t\t.*?\n.*?\n.*?\n.*?\n.*?<p class="title">\n.*?<a href="/(.*?)/(.*?)" class="title" >(.*?)</a>').findall(link)
+##        
+##        for i in range(len(match)):
+##            playVideoUrl = 'http://baykoreans.net/' + match[i][1] + '/' + match[i][2]
+##            match[i] = (playVideoUrl, unicode(match[i][3], 'utf-8'), match[i][0])
+##        
+##        for url, title, thumbnail, in match:
+##            addDir(title, url, 'listvideourl2', thumbnail)
+##        
+###        match2=re.compile('page=(.+?)">.+?</a> <a href').findall(link)
+###        match3=re.compile('<div class="pagination"> <a href=".+?category=(.+?)"').findall(link)
+###        baseurl = 'http://drama.baykoreans.net/' + match[1][1]
+###        
+###        if match2:
+###            for i in range(len(match2)):
+###                Pgurl = baseurl + '&page=' + match2[i][0]
+###                Pgname = match2[i][0] + ' 페이지'
+###                match2[i] = (Pgurl, Pgname)
+###            print url
+###
+###            addDir("1 페이지", baseurl, 'videoCategoryContent', "")
+###            for url, name in match2:
+###                addDir(name, url, 'videoCategoryContent', "")
+##
+##    except urllib2.URLError:
+##        addLink("성용이를 불러주세용.", '', '', '')        
 
 def listEntInCategory(url):
     try:
@@ -349,7 +353,8 @@ def listEntInCategory(url):
                 date,title = re.compile('^(\d*)\s*(.*)').search(title).group(1,2)
                 if date:
                     title = date + " " + title
-                url = item.p.a['href']        
+                url2 = item.p.a['href']
+                url = 'http://baykoreans.net/' + url2
                 items.append({'title':title.decode('utf-8'), 'url':url, 'thumbnail':thumb})
 
 

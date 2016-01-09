@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-
+	<setting id="quality" type="enum" label="30010" values="360p|480p|720p" default="720p" />
+	<setting id="m3u8" type="bool" label="30014" default="true" />
+	<setting id="Mm3u8" type="bool" label="30015" default="true" />
 </settings>

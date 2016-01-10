@@ -20,7 +20,7 @@ root_url = "http://www.ondemandkorea.com"
 
 def listMainCategories():
     addDir("최근 방영", "http://www.ondemandkorea.com/", "RecentCategories", '')  
-    addDir("드라마", "http://www.ondemandkorea.com/drama", "dramaCategories", '')
+    addDir("드라마", "http://www.ondemandkorea.com/drama", "videoCategories", '')
     addDir("예능/오락", "http://www.ondemandkorea.com/variety", "videoCategories", '')
     addDir("시사/다큐", "http://www.ondemandkorea.com/documentary", "videoCategories", '')
     addDir("음식/요리", "http://www.ondemandkorea.com/food", "videoCategories", '')
@@ -75,10 +75,13 @@ def listRecentCategories(url):
             if not node.b:
                 continue
             title = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
-            thumb = node.find('img', {'src':re.compile(r'(jpe?g)|(png32)$')})
+            #thumb = node.find('img', {'src':re.compile(r'(jpe?g)|(png32)$')})
+            thumb2 = re.compile('img src=".*?src=(.*?)jpg').findall(str(node))
+            thumb1 = 'http://max.ondemandkorea.com'+thumb2[0]+'jpg'
+            thumb = thumb1.replace(' ','%20')
             dt = node.b.findNextSibling(text=True)
             bdate = dt.string.split(':',1)[1].strip() if dt else ''
-            items.append({'title':title, 'broad_date':bdate, 'url':root_url+node.a['href'], 'thumbnail':node.img['src']})
+            items.append({'title':title, 'broad_date':bdate, 'url':root_url+node.a['href'], 'thumbnail':thumb})
        
         for i in range(len(items)):
             items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
@@ -93,10 +96,12 @@ def listRecentCategories(url):
             if not node.b:
                 continue
             title = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
-            thumb = node.find('img')['src']
+            thumb2 = re.compile('img src=".*?src=(.*?).jpg').findall(str(node))
+            thumb1 = 'http://max.ondemandkorea.com'+thumb2[0]+'.jpg'
+            thumb = thumb1.replace(' ','%20')
             dt = node.b.findNextSibling(text=True)
             bdate = dt.string.split(':',1)[1].strip() if dt else ''
-            items2.append({'title':title, 'broad_date':bdate, 'url':root_url+node.a['href'], 'thumbnail':node.img['src']})
+            items2.append({'title':title, 'broad_date':bdate, 'url':root_url+node.a['href'], 'thumbnail':thumb})
        
         for i in range(len(items2)):
             items2[i] = (items2[i]['title'], items2[i]['url'], items2[i]['thumbnail'])
@@ -127,7 +132,8 @@ def listVideoCategories(url):
         match3=[(x+y) for x,y in zip(match,match1)] #combine match and match2!
 
         for i in range(len(match3)):
-            thumb = "http://max.ondemandkorea.com" + match3[i][0]
+            thumb1 = "http://max.ondemandkorea.com" + match3[i][0]
+            thumb = thumb1.replace(' ','%20')
 	    dramaurl = 'http://www.ondemandkorea.com/' + match3[i][2]
             match3[i] = (unicode(match3[i][3], 'utf-8'), dramaurl, thumb)
 
@@ -138,7 +144,10 @@ def listVideoCategories(url):
             soup=BeautifulSoup(link)
             items = []
             for node in soup.findAll('div', {'class':'ep_box'}):
-                items.append({'title':node.b.string, 'url':root_url+'/'+node.a['href'], 'thumbnail':node.img['src']})
+                thumb2 = re.compile('img src=".*?/wp-content(.*?).jpg').findall(str(node))
+                thumb1 = 'http://max.ondemandkorea.com/wp-content/'+thumb2[0]+'.jpg'
+                thumb = thumb1.replace(' ','%20')
+                items.append({'title':node.b.string, 'url':root_url+'/'+node.a['href'], 'thumbnail':thumb})
 
             for i in range(len(items)):
                 items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
@@ -176,8 +185,14 @@ def listVideoCategories(url):
 ##   
 def resolveAndPlayVideo(url):
     try:
-        tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
-
+        quality = plugin.get_setting("quality", str)
+   
+        if quality =='2':
+            quality = '720p'
+        elif quality =='1':
+            quality = '480p'
+        else:
+            quality = '360p'
         
         m3u8 = plugin.get_setting('m3u8', bool)
         if plugin.get_setting("m3u8") == 'true':
@@ -188,18 +203,11 @@ def resolveAndPlayVideo(url):
             link=response.read()
             response.close()
             
-            Thumblink=re.compile('thumbnail/(.+?)_([0-9][0-9][0-9][0-9][0-9][0-9]).*?.jpg"').search(link)
+            Thumblink=re.compile('thumbnail/(.+?)_([0-9]+).*?.jpg"').search(link)
             episode=Thumblink.group(1)
             date=Thumblink.group(2)
             sr= re.compile('srcurl: "(.*?)",').findall(link)
-            quality = plugin.get_setting("quality", str)
-   
-            if quality =='2':
-                quality = '720p'
-            elif quality =='1':
-                quality = '480p'
-            else:
-                quality = '360p'
+            
                 
             url1='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/variety/'+ episode + '/' + episode + '_' + date + '-smil'+quality+'.smil/playlist.m3u8'
             url2='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/variety2/'+ episode + '/' + episode + '_' + date + '-smil'+quality+'.smil/playlist.m3u8'
@@ -217,22 +225,21 @@ def resolveAndPlayVideo(url):
                 deadLinkFound3 = False
             except:
                 deadLinkFound3 = True
-
             try:
                 f = urllib2.urlopen(urllib2.Request(url3))
-                deadLinkFound2 = False
+                deadLinkFound4 = False
             except:
-                deadLinkFound2 = True
+                deadLinkFound4 = True
             try:
                 f = urllib2.urlopen(urllib2.Request(url4))
-                deadLinkFound3 = False
+                deadLinkFound5 = False
             except:
-                deadLinkFound3 = True
+                deadLinkFound5 = True
             try:
                 f = urllib2.urlopen(urllib2.Request(url5))
-                deadLinkFound3 = False
+                deadLinkFound6 = False
             except:
-                deadLinkFound3 = True
+                deadLinkFound6 = True
             
             if deadLinkFound2==False:
                 listItem = xbmcgui.ListItem(path=str(url1))
@@ -262,6 +269,7 @@ def resolveAndPlayVideo(url):
                 listItem.setProperty('IsPlayable', 'true')
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
         else:
+            tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
             req = urllib2.Request(url)
             req.add_header('User-Agent', tablet_UA)
             req.add_header('Accept-Langauge', 'ko')
@@ -271,6 +279,7 @@ def resolveAndPlayVideo(url):
             response.close()
             match=re.compile('\"http://(.*?).mp4\"').search(link)
             print match
+            
             if match:
                 match2=match.group(1)
                 urllow='http://' + match2 + '.mp4'
@@ -279,23 +288,38 @@ def resolveAndPlayVideo(url):
                 url1=url0.replace('360p','720p')
                 url2=url1.replace('1296k','2296k')
                 url= 'http://' + url2 + '.mp4'
-                try:
-                    f = urllib2.urlopen(urllib2.Request(url))
-                    deadLinkFound2 = False
-                except:
-                    deadLinkFound2 = True
 
-                if deadLinkFound2==False:
-                    listItem = xbmcgui.ListItem(path=str(url))
-                    listItem.setProperty('IsPlayable', 'true')
-                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                url1=url0.replace('360p','480p')
+                url2=url1.replace('1296k','1596k')
+                url2= 'http://' + url2 + '.mp4'
+                
+                if quality =='720p':
+                    try:
+                        listItem = xbmcgui.ListItem(path=str(url))
+                        listItem.setProperty('IsPlayable', 'true')
+                        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                    except:
+                        listItem = xbmcgui.ListItem(path=str(url2))
+                        listItem.setProperty('IsPlayable', 'true')
+                        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                elif quality =='480p':
+                    try:
+                        listItem = xbmcgui.ListItem(path=str(url2))
+                        listItem.setProperty('IsPlayable', 'true')
+                        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                
+                    except:
+                        listItem = xbmcgui.ListItem(path=str(urllow))
+                        listItem.setProperty('IsPlayable', 'true')
+                        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+
                 else:
                     listItem = xbmcgui.ListItem(path=str(urllow))
                     listItem.setProperty('IsPlayable', 'true')
                     xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-                   
+                    
             else:
-                Thumblink=re.compile('thumbnail/(.+?)_([0-9][0-9][0-9][0-9][0-9][0-9]).*?.jpg"').search(link)
+                Thumblink=re.compile('thumbnail/(.+?)_([0-9]+).*?.jpg"').search(link)
                 episode=Thumblink.group(1)
                 date=Thumblink.group(2)
                 
@@ -503,39 +527,40 @@ def resolveAndPlayVideo(url):
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
 
-def listdramaCategories(url):
-    try:
-        print "requesting url " + url
-        url2=url
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', tablet_UA)
-        req.add_header('Accept-Langauge', 'ko')
-        req.add_header('Cookie', 'language=kr')
-        response = urllib2.urlopen(req, timeout = _connectionTimeout)
-        link=response.read()
-        response.close()
-        
-        
-##        match2=[]
-##        for i in match1:
-##            if i not in match2:
-##                match2.append(i)
-        match=re.compile('\n\t\t\t\t\t\t\t<img src=".*?src=(.+?)" style="(.*?)"').findall(link)
-        match1=re.compile('<div class="ep_box">\n\t\t\t<a href="(.*?)" title="(.*?)">').findall(link)
-        match3=[(x+y) for x,y in zip(match,match1)] #combine match and match2!
-
-        for i in range(len(match3)):
-            thumb = "http://max.ondemandkorea.com" + match3[i][0]
-	    dramaurl = 'http://www.ondemandkorea.com/' + match3[i][2]
-            match3[i] = (unicode(match3[i][3], 'utf-8'), dramaurl, thumb)
-
-        for name, url, thumbnail in match3:
-            addDir(name, url, 'dramaCategoryContent', thumbnail)
-
-        addDir('아무것도 없으면 여길 누르세요', url2, 'listVideoCategoriesSoup', '')
-        
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
+##def listdramaCategories(url):
+##    try:
+##        print "requesting url " + url
+##        url2=url
+##        req = urllib2.Request(url)
+##        req.add_header('User-Agent', tablet_UA)
+##        req.add_header('Accept-Langauge', 'ko')
+##        req.add_header('Cookie', 'language=kr')
+##        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+##        link=response.read()
+##        response.close()
+##        
+##        
+####        match2=[]
+####        for i in match1:
+####            if i not in match2:
+####                match2.append(i)
+##        match=re.compile('\n\t\t\t\t\t\t\t<img src=".*?src=(.+?)" style="(.*?)"').findall(link)
+##        match1=re.compile('<div class="ep_box">\n\t\t\t<a href="(.*?)" title="(.*?)">').findall(link)
+##        match3=[(x+y) for x,y in zip(match,match1)] #combine match and match2!
+##
+##        for i in range(len(match3)):
+##            thumb1 = "http://max.ondemandkorea.com" + match3[i][0]
+##            thumb = thumb1.replace(' ','%20')
+##	    dramaurl = 'http://www.ondemandkorea.com/' + match3[i][2]
+##            match3[i] = (unicode(match3[i][3], 'utf-8'), dramaurl, thumb)
+##
+##        for name, url, thumbnail in match3:
+##            addDir(name, url, 'dramaCategoryContent', thumbnail)
+##
+##        addDir('아무것도 없으면 여길 누르세요', url2, 'listVideoCategoriesSoup', '')
+##        
+##    except urllib2.URLError:
+##        addLink("성용이를 불러주세용.", '', '', '')
         
 def listdramaInCategory(url):
     try:
@@ -558,7 +583,8 @@ def listdramaInCategory(url):
         
         for i in range(len(match)):
 	    playVideoUrl = 'http://www.ondemandkorea.com/' + match[i][0]
-	    poster = 'http://max.ondemandkorea.com/' + match[i][2] + '_'+ match[i][3] +'_' + match[i][4]
+	    poster1 = 'http://max.ondemandkorea.com/' + match[i][2] + '_'+ match[i][3] +'_' + match[i][4]
+	    poster = poster1.replace(' ','%20')
 	    title = unicode(match[i][1], 'utf-8')  + " - " + match[i][3]
 	    title = title.replace('.480p.1596k','').replace('amp;','').replace('&#039;','\'').replace('&lt;','<').replace('&gt;','>')
 	    match[i] = (title, playVideoUrl, poster)
@@ -574,10 +600,12 @@ def listdramaInCategory(url):
                 if not node.b:
                     continue
                 title = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
-                thumb = node.find('img', {'title':True})['src']
+                humb2 = re.compile('img src=".*?/wp-content(.*?).jpg').findall(str(node))
+                thumb1 = 'http://max.ondemandkorea.com/wp-content/'+thumb2[0]+'.jpg'
+                thumb = thumb1.replace(' ','%20')
                 dt = node.b.findNextSibling(text=True)
                 bdate = dt.string.split(':',1)[1].strip() if dt else ''
-                items.append({'title':title, 'broad_date':bdate, 'url':root_url+node.a['href'], 'thumbnail':node.img['src']})
+                items.append({'title':title, 'broad_date':bdate, 'url':root_url+node.a['href'], 'thumbnail':thumb})
            
             for i in range(len(items)):
                 items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])

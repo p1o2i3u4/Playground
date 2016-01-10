@@ -194,7 +194,6 @@ def resolveAndPlayVideo(url):
         else:
             quality = '360p'
         
-        m3u8 = plugin.get_setting('m3u8', bool)
         if plugin.get_setting("m3u8") == 'true':
             req = urllib2.Request(url)
             req.add_header('Accept-Langauge', 'ko')
@@ -243,30 +242,24 @@ def resolveAndPlayVideo(url):
             
             if deadLinkFound2==False:
                 listItem = xbmcgui.ListItem(path=str(url1))
-                listItem.setProperty('IsPlayable', 'true')
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                 
             elif deadLinkFound3==False:
                 listItem = xbmcgui.ListItem(path=str(url2))
-                listItem.setProperty('IsPlayable', 'true')
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
             
             elif deadLinkFound4==False:
                 listItem = xbmcgui.ListItem(path=str(url3))
-                listItem.setProperty('IsPlayable', 'true')
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                 
             elif deadLinkFound5==False:
                 listItem = xbmcgui.ListItem(path=str(url4))
-                listItem.setProperty('IsPlayable', 'true')
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
             elif deadLinkFound5==False:
                 listItem = xbmcgui.ListItem(path=str(url5))
-                listItem.setProperty('IsPlayable', 'true')
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)  
             else:
                 listItem = xbmcgui.ListItem(path=str(url6))
-                listItem.setProperty('IsPlayable', 'true')
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
         else:
             tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
@@ -296,26 +289,21 @@ def resolveAndPlayVideo(url):
                 if quality =='720p':
                     try:
                         listItem = xbmcgui.ListItem(path=str(url))
-                        listItem.setProperty('IsPlayable', 'true')
                         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                     except:
                         listItem = xbmcgui.ListItem(path=str(url2))
-                        listItem.setProperty('IsPlayable', 'true')
                         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                 elif quality =='480p':
                     try:
                         listItem = xbmcgui.ListItem(path=str(url2))
-                        listItem.setProperty('IsPlayable', 'true')
                         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                 
                     except:
                         listItem = xbmcgui.ListItem(path=str(urllow))
-                        listItem.setProperty('IsPlayable', 'true')
                         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
 
                 else:
                     listItem = xbmcgui.ListItem(path=str(urllow))
-                    listItem.setProperty('IsPlayable', 'true')
                     xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                     
             else:
@@ -414,62 +402,52 @@ def resolveAndPlayVideo(url):
 
     ##            if deadLinkFound1==False:
     ##                listItem = xbmcgui.ListItem(path=str(url1))
-    ##                listItem.setProperty('IsPlayable', 'true')
     ##                     
     ##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
     ##
     ##
     ##            elif deadLinkFound2==False:
     ##                listItem = xbmcgui.ListItem(path=str(url2))
-    ##                listItem.setProperty('IsPlayable', 'true')
     ##                     
     ##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
     ##                
     ##            elif deadLinkFound3==False:
     ##                listItem = xbmcgui.ListItem(path=str(url3))
-    ##                listItem.setProperty('IsPlayable', 'true')
     ##                     
     ##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
     ##
     ##            elif deadLinkFound4==False:
     ##                listItem = xbmcgui.ListItem(path=str(url4))
-    ##                listItem.setProperty('IsPlayable', 'true')
     ##                     
     ##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
     ##
     ##            elif deadLinkFound5==False:
     ##                listItem = xbmcgui.ListItem(path=str(url5))
-    ##                listItem.setProperty('IsPlayable', 'true')
     ##                     
     ##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
     ##                
     ##            elif deadLinkFound6==False:
     ##                listItem = xbmcgui.ListItem(path=str(url6))
-    ##                listItem.setProperty('IsPlayable', 'true')
     ##                     
     ##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
 
                 if deadLinkFound7==False:
                     listItem = xbmcgui.ListItem(path=str(url7))
-                    listItem.setProperty('IsPlayable', 'true')
                          
                     xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                     
                 elif deadLinkFound8==False:
                     listItem = xbmcgui.ListItem(path=str(url8))
-                    listItem.setProperty('IsPlayable', 'true')
                          
                     xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
 
                 elif deadLinkFound9==False:
                     listItem = xbmcgui.ListItem(path=str(url9))
-                    listItem.setProperty('IsPlayable', 'true')
                          
                     xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
 
                 elif deadLinkFound10==False:
                     listItem = xbmcgui.ListItem(path=str(url10))
-                    listItem.setProperty('IsPlayable', 'true')
                          
                     xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                     
@@ -520,7 +498,6 @@ def resolveAndPlayVideo(url):
 
                     if dead2==False:
                         listItem = xbmcgui.ListItem(path=str(url5))
-                        listItem.setProperty('IsPlayable', 'true')
                     
                         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
 
@@ -586,7 +563,7 @@ def listdramaInCategory(url):
 	    poster1 = 'http://max.ondemandkorea.com/' + match[i][2] + '_'+ match[i][3] +'_' + match[i][4]
 	    poster = poster1.replace(' ','%20')
 	    title = unicode(match[i][1], 'utf-8')  + " - " + match[i][3]
-	    title = title.replace('.480p.1596k','').replace('amp;','').replace('&#039;','\'').replace('&lt;','<').replace('&gt;','>')
+	    title = title.replace('.480p.1596k','').replace('amp;','').replace('&#039;','\'').replace('&lt;','<').replace('&gt;','>').replace('360p.1296k','')
 	    match[i] = (title, playVideoUrl, poster)
 
         for title, url, thumbnail, in match:
@@ -682,9 +659,9 @@ def resolveAndPlayMovie(url):
             response.close()
 
             title=re.compile('content="http://www.ondemandkorea.com/(.*?).html"').findall(link)
-            print title
+            
             episode=re.compile('thumbnail/(.*?).[0-9]+p').findall(link)
-            print episode
+            
             
             sr= re.compile('srcurl: "(.*?)",').findall(link)
             url1='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/movies/'+ title[0] + '/' + episode[0] + '-smil1080p.smil/playlist.m3u8'
@@ -699,37 +676,34 @@ def resolveAndPlayMovie(url):
                 deadLinkFound2 = True
             try:
                 f = urllib2.urlopen(urllib2.Request(url2))
-                deadLinkFound2 = False
-            except:
-                deadLinkFound2 = True
-            try:
-                f = urllib2.urlopen(urllib2.Request(url3))
                 deadLinkFound3 = False
             except:
                 deadLinkFound3 = True
+            try:
+                f = urllib2.urlopen(urllib2.Request(url3))
+                deadLinkFound4 = False
+            except:
+                deadLinkFound4 = True
 
                 
             if deadLinkFound2==False:
                 listItem = xbmcgui.ListItem(path=str(url1))
-                listItem.setProperty('IsPlayable', 'true')
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                 
             elif deadLinkFound3==False:
                 listItem = xbmcgui.ListItem(path=str(url2))
-                listItem.setProperty('IsPlayable', 'true')
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                 
             elif deadLinkFound4==False:
                 listItem = xbmcgui.ListItem(path=str(url3))
-                listItem.setProperty('IsPlayable', 'true')
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                 
             else:
                 listItem = xbmcgui.ListItem(path=str(url4))
-                listItem.setProperty('IsPlayable', 'true')
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
 
         else:
+            print 'test'
             req = urllib2.Request(url)
             req.add_header('User-Agent', tablet_UA)
             req.add_header('Accept-Langauge', 'ko')
@@ -766,36 +740,31 @@ def resolveAndPlayMovie(url):
     ##          deadLinkFound2 = True
 
             if deadLinkFound1==False:
-                listItem = xbmcgui.ListItem(path=str(url1))
-                listItem.setProperty('IsPlayable', 'true')
-                     
+                listItem = xbmcgui.ListItem(path=str(url1))   
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                 
             else:
                 listItem = xbmcgui.ListItem(path=str(url2))
-                listItem.setProperty('IsPlayable', 'true')
                      
-                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)   
+                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)  
 
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
     
 def addLink(name,url,mode,iconimage):
     u=_pluginName+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)
-    ok=True
     liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-    liz.setInfo( type="Video", infoLabels={ "Title": name } )
-    liz.setProperty("IsPlayable","true");
-    ok=xbmcplugin.addDirectoryItem(handle=_thisPlugin,url=u,listitem=liz,isFolder=False)
-    return ok
+    
+    liz.setProperty("IsPlayable","true")
+    xbmcplugin.addDirectoryItem(handle=_thisPlugin,url=u,listitem=liz,isFolder=False)
+    
 
 def addDir(name,url,mode,iconimage):
     u=_pluginName+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)#+"&name="+urllib.quote_plus(name)
-    ok=True
     liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
     liz.setInfo( type="Video", infoLabels={ "Title": name } )
-    ok=xbmcplugin.addDirectoryItem(handle=_thisPlugin,url=u,listitem=liz,isFolder=True)
-    return ok
+    xbmcplugin.addDirectoryItem(handle=_thisPlugin,url=u,listitem=liz,isFolder=True)
+    
 
 def getparams():
     """

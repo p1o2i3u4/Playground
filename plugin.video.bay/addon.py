@@ -227,7 +227,46 @@ def playVideo2(url):
 def CreateList(vidlink):
         listitem = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
         xbmc.PlayList(1).add(url=vidlink, listitem=listitem)
-        
+
+##def getStreamUrl(url):
+##    content = getUrl2('http://www.dailymotion.com/embed/video/'+url)
+##    if content.find('"statusCode":410') > 0 or content.find('"statusCode":403') > 0:
+##        xbmc.executebuiltin('XBMC.Notification(Info:,'+translation(30022)+' (DailyMotion)!,5000)')
+##        return ""
+##    
+##    else:
+##        get_json_code = re.compile(r'dmp\.create\(document\.getElementById\(\'player\'\),\s*(\{.*?)"\}\]\}.*\}\);').findall(content)[0]
+##        get_json_code += '"}]}}}'
+##        #print get_json_code
+##        cc= json.loads(get_json_code)['metadata']['qualities']  #['380'][0]['url']
+##        print cc
+##        m_url = ''
+##        other_playable_url = []
+##        for source,auto in cc.items():
+##            print source 
+##            for m3u8 in auto:
+##                m_url = m3u8.get('url',None)
+##                if m_url:
+##                
+##                    if  source == '1080':
+##                        return m_url        
+##            
+##                    elif source == '720': #720 found no more iteration need
+##                        return m_url
+##                    elif source == '480': #send cookie for mp4
+##                        return m_url
+####                    elif source == '380': #720 found no more iteration need
+####                        return m_url
+####                    elif source == '240': #720 found no more iteration need
+####                        return m_url
+##                     
+##                    elif '.mnft' in m_url:
+##                        continue
+##                         
+##                    other_playable_url.append(m_url)
+                    
+
+                    
 def getStreamUrl(url):
     content = getUrl2('http://www.dailymotion.com/embed/video/'+url)
     if content.find('"statusCode":410') > 0 or content.find('"statusCode":403') > 0:
@@ -259,7 +298,7 @@ def getStreamUrl(url):
 def getUrl2(url):
 
     req = urllib2.Request(url)
-    req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:22.0) Gecko/20100101 Firefox/22.0')
+    req.add_header('User-Agent', tablet_UA)
     req.add_header('Cookie', 'language=kr') 
     response = urllib2.urlopen(req)
     link = response.read()
@@ -346,14 +385,14 @@ def listEntInCategory(url):
             thumb = ""
             if item.div:
                 thumb = item.div.img['src']
-            if item.p.a:
-                if not item.p.a.string:
+            if item.a:
+                if not item.a.string:
                     continue
-                title = item.p.a.string.replace('&amp;','&').encode('utf-8')
+                title = item.a.string.replace('&amp;','&').encode('utf-8')
                 date,title = re.compile('^(\d*)\s*(.*)').search(title).group(1,2)
                 if date:
                     title = date + " " + title
-                url2 = item.p.a['href']
+                url2 = item.a['href']
                 url = 'http://baykoreans.net/' + url2
                 items.append({'title':title.decode('utf-8'), 'url':url, 'thumbnail':thumb})
 

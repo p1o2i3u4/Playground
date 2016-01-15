@@ -110,14 +110,14 @@ def listVideosInCategory(url):
             thumb = ""
             if item.div:
                 thumb = item.div.img['src']
-            if item.p.a:
-                if not item.p.a.string:
+            if item.a:
+                if not item.a.string:
                     continue
-                title = item.p.a.string.replace('&amp;','&').encode('utf-8')
+                title = item.a.string.replace('&amp;','&').encode('utf-8')
                 date,title = re.compile('^(\d*)\s*(.*)').search(title).group(1,2)
                 if date:
                     title = date + " " + title
-                url2 = item.p.a['href']
+                url2 = item.a['href']
                 url = 'http://baykoreans.net' + url2
                 items.append({'title':title.decode('utf-8'), 'url':url, 'thumbnail':thumb})
 

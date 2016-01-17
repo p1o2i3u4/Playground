@@ -19,25 +19,117 @@ tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) Apple
 ad=['','','KBS N Sorts','SBS Sports','MBC Sports+','','','','','','','','','','','','','','','','']
 
 def listMainCategories():
-    addDir("초고화질", " ", "High", '')  
-    addDir("고화질", " ", "Med", '')
+    addDir("하이라이트", " ", "vod", '')
+    addDir("생방송", " ", "live", '')
+
+def vod():
+    url='http://sports.media.daum.net/rf/534b6e671652d99818d84ad0.json?callback=LegoLeagueInfoCallback'
+    req = urllib2.Request(url)
+    response = urllib2.urlopen(req)
+    link=response.read()
+    response.close()
+
+    league=re.compile('"userId" : "(.*?)" , "userName" : "(.*?)"').findall(link)
+
+    for i in range(len(league)):
+        url='http://sports.media.daum.net/ronaldo/gallery/list.json?callback=VideoCallback&category-code='+league[i][0]
+        league[i] = (league[i][1], url)
+        
+    for name, url in league:
+        addDir(name, url, 'league', '')
+
+def live():
+    addDir("고화질", " ", "High", '')  
+    addDir("중화질", " ", "Med", '')
     addDir("저화질", " ", "Low", '')
-    addDir("티비", " ", "tv", '')
+    addDir("티비", " ", "livetv", '')
+    
+def livetv():
+    addLink('SBS', 'rtmp://rtmpplay3.idol001.com/live/korea_sbs', 'livetvplay', '')
+    addLink('MBC', 'rtmp://rtmpplay2.idol001.com/live/korea_mbc', 'livetvplay', '')
+    addLink('KBS1', 'rtmp://rtmpplay3.idol001.com/live/korea_kbs1', 'livetvplay', '')
+    addLink('KBS2', 'rtmp://rtmpplay3.idol001.com/live/korea_kbs2', 'livetvplay', '')
+    addLink('JTBC', 'rtmp://rtmpplay3.idol001.com/live/korea_jtbc', 'livetvplay', '')
+    addLink('ONSTYLE', 'rtmp://rtmpplay3.idol001.com/live/korea_onstyle', 'livetvplay', '')
+    addLink('MBC MUSIC', 'rtmp://rtmpplay3.idol001.com/live/korea_mbcmusic', 'livetvplay', '')
+    addLink('Mnet', 'rtmp://rtmpplay3.idol001.com/live/korea_mnet', 'livetvplay', '')
+    addLink('TVN', 'rtmp://rtmpplay3.idol001.com/live/korea_tvn', 'livetvplay', '')
+    addLink('arirang', 'rtmp://rtmpplay3.idol001.com/live/korea_arirang', 'livetvplay', '')
+    addLink('SBS MTV', 'rtmp://rtmpplay3.idol001.com/live/korea_sbsmtv', 'livetvplay', '')
+    addLink('MBC everyone', 'rtmp://rtmpplay3.idol001.com/live/korea_mbcevery1', 'livetvplay', '')
+
+def league(url):
+    req = urllib2.Request(url)
+    response = urllib2.urlopen(req)
+    link=response.read()
+    response.close()
+
+    match=re.compile('"home_team_name":"(.*?)","away_team_name":"(.*?)".*?"game_time":"([0-9]+)".*?"game_id":"(.*?)"').findall(link)
+
+    for i in range(len(match)):
+        l = str(match[i][2])
+        date=l[:4]+'/'+ l[4:6]+'/'+l[6:8]
+        title=match[i][0]+' vs. '+match[i][1] + ' - ' +date
+        url='http://sports.media.daum.net/proxy/ronaldo/gallery/view.json?game-id='+match[i][3]
+        match[i] = (unicode(title, 'utf-8'), url)
 
 
-def tv():
-    addLink('SBS', 'rtmp://rtmpplay3.idol001.com/live/korea_sbs', 'livetv', '')
-    addLink('MBC', 'rtmp://rtmpplay2.idol001.com/live/korea_mbc', 'livetv', '')
-    addLink('KBS1', 'rtmp://rtmpplay3.idol001.com/live/korea_kbs1', 'livetv', '')
-    addLink('KBS2', 'rtmp://rtmpplay3.idol001.com/live/korea_kbs2', 'livetv', '')
-    addLink('JTBC', 'rtmp://rtmpplay3.idol001.com/live/korea_jtbc', 'livetv', '')
-    addLink('ONSTYLE', 'rtmp://rtmpplay3.idol001.com/live/korea_onstyle', 'livetv', '')
-    addLink('MBC MUSIC', 'rtmp://rtmpplay3.idol001.com/live/korea_mbcmusic', 'livetv', '')
-    addLink('Mnet', 'rtmp://rtmpplay3.idol001.com/live/korea_mnet', 'livetv', '')
-    addLink('TVN', 'rtmp://rtmpplay3.idol001.com/live/korea_tvn', 'livetv', '')
-    addLink('arirang', 'rtmp://rtmpplay3.idol001.com/live/korea_arirang', 'livetv', '')
-    addLink('SBS MTV', 'rtmp://rtmpplay3.idol001.com/live/korea_sbsmtv', 'livetv', '')
-    addLink('MBC everyone', 'rtmp://rtmpplay3.idol001.com/live/korea_mbcevery1', 'livetv', '')
+    for name, url in match:
+        addDir(name, url, 'vodlist', '')
+
+    if len(match)<1:
+        match=re.compile('galleryList":\[{"id":"(.*?)"').search(link).group(1)
+        match2=re.compile('game_id":"1"}},{"id":"(.*?)"').findall(link)
+
+        a=list(match2)
+        a.insert(0,match)
+
+        b=re.compile('"game_name":"(.*?)"').findall(link)
+        d=re.compile('game_start_time":"([0-9]+)"').findall(link)
+
+        c=zip(b, a, d)
+
+        for i in range(len(c)):
+            l= str(c[i][2])[:4]+'/'+ str(c[i][2])[4:6]+'/'+str(c[i][2])[6:8]
+            title=c[i][0]+' - '+l
+            url='http://sports.media.daum.net/ronaldo/gallery/view.json?callback=videoGalleryCallback&id='+c[i][1]
+            c[i] = (unicode(title, 'utf-8'), url)
+
+        for name, url in c:
+            addDir(name, url, 'vodlist', '')
+ 
+def vodlist(url):
+    req = urllib2.Request(url)
+    response = urllib2.urlopen(req)
+    link=response.read()
+    response.close()
+
+    match=re.compile('"vid":"(.*?)","title":"(.*?)","thumbnailUrl":"(.*?)"').findall(link)
+
+    for i in range(len(match)):
+        url='http://videofarm.daum.net/controller/api/open/v1_5/MovieLocation.apixml?vid='+match[i][0]+'&profile=HIGH'
+        match[i] = (unicode(match[i][1], 'utf-8'), url, match[i][2])
+        
+    match.sort()
+    
+    for name, url,thumbnail in match:
+        addLink(name, url, 'resolveAndPlayVod', thumbnail)
+
+
+def resolveAndPlayVod(url):
+    try:
+        req = urllib2.Request(url)
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
+
+        match=re.compile('<url><\!\[CDATA\[(.*?)\]\]></url>').search(link).group(1)
+    
+        listItem = xbmcgui.ListItem(path=str(match))
+        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+            
+    except urllib2.URLError:
+        addLink("성용이를 불러주세용.", '', '', '')
     
 def High_list(url):
     try:
@@ -220,7 +312,6 @@ def resolveAndPlayVideoDaum(url):
         #match=re.compile('"rtsp":"(.*?)"').search(link).group(1)
         match=re.compile('"rtmp":"(.*?)"').search(link).group(1)
         listItem = xbmcgui.ListItem(path=str(match))
-        listItem.setProperty('IsPlayable', 'true')
         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
         
     except urllib2.URLError:
@@ -244,7 +335,6 @@ def resolveAndPlayVideo(url):
         response.close()
 
         listItem = xbmcgui.ListItem(path=str(link))
-        listItem.setProperty('IsPlayable', 'true')
         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
         
     except urllib2.URLError:
@@ -268,7 +358,6 @@ def resolveAndPlayVideo_med(url):
         response.close()
 
         listItem = xbmcgui.ListItem(path=str(link))
-        listItem.setProperty('IsPlayable', 'true')
         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
         
     except urllib2.URLError:
@@ -293,7 +382,6 @@ def resolveAndPlayVideo_low(url):
         response.close()
 
         listItem = xbmcgui.ListItem(path=str(link))
-        listItem.setProperty('IsPlayable', 'true')
         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
         
     except urllib2.URLError:
@@ -307,17 +395,15 @@ def resolveAndPlayVideoLive(url):
         response.close()
         
         listItem = xbmcgui.ListItem(path=str(link))
-        listItem.setProperty('IsPlayable', 'true')
         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
         
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
     
 
-def livetv(url):
+def livetvplay(url):
     try:
         listItem = xbmcgui.ListItem(path=str(url))
-        listItem.setProperty('IsPlayable', 'true')
         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
         
     except urllib2.URLError:
@@ -560,14 +646,31 @@ if url == None:
     #do listing
     listMainCategories()
 else:
-    if params["mode"] == 'High':
+    if params["mode"] == 'vod':
+        vod()
+    elif params["mode"] == 'live':
+        live()
+    elif params["mode"] == 'livetv':
+        livetv()        
+    elif params["mode"] == 'High':
         High_list(urlUnquoted)
     elif params["mode"] == 'Med':
         Med_list(urlUnquoted)
     elif params["mode"] == 'Low':
         Low_list(urlUnquoted)
-    elif params["mode"] == 'tv':
-        tv(urlUnquoted)
+    elif params["mode"] == 'livetv':
+        livetv()
+
+
+
+    elif params["mode"] == 'league':
+        league(urlUnquoted)
+    elif params["mode"] == 'vodlist':
+        vodlist(urlUnquoted)
+    elif params["mode"] == 'resolveAndPlayVod':
+        resolveAndPlayVod(urlUnquoted)
+
+        
 
     elif params["mode"] == 'High_Live':
         High_Live_List(urlUnquoted)
@@ -586,6 +689,7 @@ else:
         resolveAndPlayVideoDaum(urlUnquoted)
     elif params["mode"] == 'resolveAndPlayVideoLive':
         resolveAndPlayVideoLive(urlUnquoted)
-    elif params["mode"] == 'livetv':
-        livetv(urlUnquoted)        
+    elif params["mode"] == 'livetvplay':
+        livetvplay(urlUnquoted)
+
 xbmcplugin.endOfDirectory(_thisPlugin)        

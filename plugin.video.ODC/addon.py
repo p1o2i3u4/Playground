@@ -623,7 +623,10 @@ def listdramaInCategory(url):
                 thumb2 = re.compile('img src=".*?/wp-content(.*?)"').findall(str(node))
                 thumb1 = 'http://max.ondemandkorea.com/wp-content'+thumb2[0]
                 thumb = thumb1.replace(' ','%20')   
-                dt = node.find("div", {"class":"ep_date"}).find(text=True)
+                try:
+                    dt = node.find("div", {"class":"ep_date"}).find(text=True)
+                except:
+                    dt = ""
                 title = title2 + ' - '+dt
                 items.append({'title':title, 'broad_date':dt, 'url':root_url+node.a['href'], 'thumbnail':thumb})
            

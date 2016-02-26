@@ -740,10 +740,11 @@ def resolveAndPlayMovie(url):
         
         
         sr= re.compile('srcurl: "(.*?)",').findall(link)
-        url1='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/movies/'+ title[0] + '/' + episode[0] + '-smil1080p.smil/playlist.m3u8'
-        url2='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/movies/'+ title[0] + '/' + episode[0] + '-smil720p.smil/playlist.m3u8'
-        url3='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/movies/'+ title[0] + '/' + episode[0] + '-smil480p.smil/playlist.m3u8'
-        url4='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/movies/'+ title[0] + '/' + episode[0] + '-smil360p.smil/playlist.m3u8'
+        #url1='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/movies/'+ title[0] + '/' + episode[0] + '-smil1080p.smil/playlist.m3u8'
+        url1='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/movies/'+ title[0] + '/' + episode[0] + '-smil1080p.smil/playlist.m3u8'
+        url2='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/movies/'+ title[0] + '/' + episode[0] + '-smil720p.smil/playlist.m3u8'
+        url3='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/movies/'+ title[0] + '/' + episode[0] + '-smil480p.smil/playlist.m3u8'
+        url4='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/movies/'+ title[0] + '/' + episode[0] + '-smil360p.smil/playlist.m3u8'
 
         try:
             f = urllib2.urlopen(urllib2.Request(url1))

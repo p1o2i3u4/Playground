@@ -79,8 +79,9 @@ def listRecentCategories(url):
             thumb2 = re.compile('img src=".*?/wp-content(.*?)"').findall(str(node))
             thumb1 = 'http://max.ondemandkorea.com/wp-content'+thumb2[0]
             thumb = thumb1.replace(' ','%20')   
-            dt = node.find("div", {"class":"ep_date"}).find(text=True)
-            title = title2 + ' - '+dt
+            #dt = node.find("div", {"class":"ep_date"}).find(text=True)
+            dt = re.compile('([0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9])').findall(str(node))
+            title = title2 + ' - '+dt[0]
             items.append({'title':title, 'broad_date':dt, 'url':root_url+node.a['href'], 'thumbnail':thumb})
        
         for i in range(len(items)):
@@ -624,10 +625,12 @@ def listdramaInCategory(url):
                 thumb1 = 'http://max.ondemandkorea.com/wp-content'+thumb2[0]
                 thumb = thumb1.replace(' ','%20')   
                 try:
-                    dt = node.find("div", {"class":"ep_date"}).find(text=True)
+                    #dt = node.find("div", {"class":"ep_date"}).find(text=True)
+                    dt = re.compile('([0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9])').findall(str(node))
+                    print node
                 except:
                     dt = ""
-                title = title2 + ' - '+dt
+                title = title2 + ' - '+dt[0]
                 items.append({'title':title, 'broad_date':dt, 'url':root_url+node.a['href'], 'thumbnail':thumb})
            
             for i in range(len(items)):

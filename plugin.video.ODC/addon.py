@@ -680,7 +680,7 @@ def listMovieCategories(url):
         response = urllib2.urlopen(req, timeout = _connectionTimeout)
         link=response.read()
         response.close()
-        match=re.compile('<dl>\n\t\t\t\t\t\t<dt><a href="(.+?)">(.+?)</a></dt>\n\t\t\t\t\t\t<dd class="thumb"><a href=".+?"><img src="(.+?)" alt=".+?">').findall(link)
+        match=re.compile('<dl>\n\t\t\t\t\t\t<dt><a href="(.+?)".*?>(.+?)</a></dt>\n\t\t\t\t\t\t<dd class="thumb"><a href=".+?"><img src="(.+?)" alt=".+?">').findall(link)
         
         for i in range(len(match)):
             playVideoUrl = 'http://www.ondemandkorea.com/' + match[i][0]

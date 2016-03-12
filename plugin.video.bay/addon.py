@@ -30,7 +30,7 @@ def listMainCategories():
     addDir("예능/오락", "http://baykoreans.net/entertain", "EntCategoryContent", '')
     #addDir("시사/다큐", " ", "docuDate", '')
     addDir("시사/다큐", "http://baykoreans.net/current", "EntCategoryContent", '') 
-    addDir("기분 좋은 날", "http://baykoreans.net/index.php?mid=current&search_target=title&search_keyword=%EA%B8%B0%EB%B6%84%EC%A2%8B%EC%9D%80%EB%82%A0", 'videoCategoryContent', "")
+    addDir("기분 좋은 날", "http://www.torrentbon.com/bbs/board.php?bo_table=view_d&sca=&sfl=wr_subject&stx=%EA%B8%B0%EB%B6%84&sop=and&x=35&y=13", 'listhappycategories', "")
     #addDir("스포츠", "http://baykoreans.net/sports", "EntCategoryContent", '')
 
 #    addDir("영화", "http://drama.baykoreans.net/movie", "EntCategoryContent", '')
@@ -438,7 +438,7 @@ def listEntInCategory(url):
         addLink("성용이를 불러주세용.", '', '', '')
 ###########################
 
-def listdramaCategories(url):
+def listhappycategories(url):
     try:
         req = urllib2.Request(url)
         req.add_header('User-Agent', tablet_UA)
@@ -449,24 +449,26 @@ def listdramaCategories(url):
         link=response.read()
         response.close()
         soup=BeautifulSoup(link)
+        items = []
+        for item in soup.findAll("td", {"class":"mw_basic_list_subject"}):
+          
+            title= item.a.span.text.encode('utf-8')
+            url = item.a['href'].replace('../','http://www.torrentbon.com/')
+            items.append({'title':title.decode('utf-8'), 'url':url})
+
+
+        for i in range(len(items)):
+            items[i] = (items[i]['title'], items[i]['url'],"")
+
         
-        table = soup.findAll('table')
-        video = table[0]
-        match=re.compile('<a href="./(.*?)"> (.*?)</a>(.*?)<span>(.*?)</span>').findall(str(video))
-             
-        for i in range(len(match)):
-	    videourl = 'http://baykoreans.net/index.php?vid=category&mid=drama&search_target=title&search_keyword=' + match[i][1]
-	    title = unicode(match[i][1], 'utf-8') + unicode(match[i][2], 'utf-8') + unicode(match[i][3], 'utf-8')
-            match[i] = (title, videourl)
-        
-        for name, url in match:
-            addDir(name, url, 'videoCategoryContent', '')
+        for title, url, thumbnail in items:
+            addDir(title, url, 'listhappyvideos', thumbnail)
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
         
 
    
-def listvarietyCategories(url):
+def listhappyvideos(url):
     try:
         req = urllib2.Request(url)
         req.add_header('User-Agent', tablet_UA)
@@ -476,19 +478,22 @@ def listvarietyCategories(url):
         response = urllib2.urlopen(req, timeout = _connectionTimeout)
         link=response.read()
         response.close()
-        soup=BeautifulSoup(link)
-        
-        table = soup.findAll('table')
-        video = table[1]
-        match=re.compile('<a href="./(.*?)"> (.*?)</a>(.*?)<span>(.*?)</span>').findall(str(video))
-             
+        items=[]
+        match=re.compile('href="http://www.dailymotion.com/embed/video/(.*?)"').findall(link)
         for i in range(len(match)):
-	    videourl = 'http://baykoreans.net/?act=&vid=&mid=entertain&category=&search_target=title&search_keyword=' + match[i][1]
-	    title = unicode(match[i][1], 'utf-8') + unicode(match[i][2], 'utf-8') + unicode(match[i][3], 'utf-8')
-            match[i] = (title, videourl)
+            title=str(i+1) +" 부"
+            items.append({'title':title.decode('utf-8'), 'url':match[i]})
+                    
+        for i in range(len(items)):
+            items[i] = (items[i]['title'], items[i]['url'],"")
+        print items
         
-        for name, url in match:
-            addDir(name, url, 'videoCategoryContent', '')
+        for title, url, thumb in items:
+            addLink(title, url, 'playVideo', "")
+
+
+
+            
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
         
@@ -624,10 +629,10 @@ else:
         listvarietyDate()
     elif params["mode"] == 'docuDate':
         listdocuDate()
-    elif params["mode"] == 'dramaCategories':
-        listdramaCategories(urlUnquoted)   
-    elif params["mode"] == 'varietyCategories':
-        listvarietyCategories(urlUnquoted)
+    elif params["mode"] == 'listhappycategories':
+        listhappycategories(urlUnquoted)   
+    elif params["mode"] == 'listhappyvideos':
+        listhappyvideos(urlUnquoted)
     elif params["mode"] == 'docuCategories':
         listdocuCategories(urlUnquoted)
 xbmcplugin.endOfDirectory(_thisPlugin)        

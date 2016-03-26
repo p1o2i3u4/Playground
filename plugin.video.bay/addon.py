@@ -31,7 +31,7 @@ def listMainCategories():
     #addDir("시사/다큐", " ", "docuDate", '')
     addDir("시사/다큐", "http://baykoreans.net/current", "EntCategoryContent", '') 
     addDir("기분 좋은 날", "http://www.torrentbon.com/bbs/board.php?bo_table=view_d&sca=&sfl=wr_subject&stx=%EA%B8%B0%EB%B6%84&sop=and&x=35&y=13", 'listhappycategories', "")
-    #addDir("스포츠", "http://baykoreans.net/sports", "EntCategoryContent", '')
+    addDir("스포츠", "http://baykoreans.net/sports", "EntCategoryContent", '')
 
 #    addDir("영화", "http://drama.baykoreans.net/movie", "EntCategoryContent", '')
 #    addDir("세바퀴", "http://drama.baykoreans.net/?act=&vid=&mid=entertain&category=19114892319082&search_target=title&search_keyword=세바퀴", "EntCategoryContent", '')

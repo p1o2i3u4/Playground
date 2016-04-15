@@ -14,7 +14,7 @@ plugin = Plugin()
 _pluginName = (sys.argv[0])
 _thisPlugin = int(sys.argv[1])
 _connectionTimeout = 20
-_header = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
+_header = "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)"
 tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
 root_url = "http://www.ondemandkorea.com"
 
@@ -189,6 +189,7 @@ def resolveAndPlayVideo(url):
     try:
         quality = plugin.get_setting("quality", str)
         req = urllib2.Request(url)
+        req.add_header('User-Agent', _header)
         req.add_header('Accept-Langauge', 'ko')
         req.add_header('Cookie', 'language=kr')
         response = urllib2.urlopen(req, timeout = _connectionTimeout)
@@ -199,6 +200,7 @@ def resolveAndPlayVideo(url):
         token=re.compile('cat: \'.*?\',id: (.*?),').findall(link)
         tokenurl='http://www.ondemandkorea.com/includes/playlist.php?token=' + token[0]
         req2 = urllib2.Request(tokenurl)
+        req2.add_header('User-Agent', _header)
         response2 = urllib2.urlopen(req2, timeout = _connectionTimeout)
         link2=response2.read()
         response2.close()
@@ -680,12 +682,12 @@ def listMovieCategories(url):
         response = urllib2.urlopen(req, timeout = _connectionTimeout)
         link=response.read()
         response.close()
-        match=re.compile('<dl>\n\t\t\t\t\t\t<dt><a href="(.+?)".*?>(.+?)</a></dt>\n\t\t\t\t\t\t<dd class="thumb"><a href=".+?"><img src="(.+?)" alt=".+?">').findall(link)
+        match=re.compile('<dd class="thumb"><a href="(.*?)".*?><img src="(.+?)" alt="(.*?)">').findall(link)
         
         for i in range(len(match)):
             playVideoUrl = 'http://www.ondemandkorea.com/' + match[i][0]
-	    title = unicode(match[i][1], 'utf-8')
-            match[i] = (playVideoUrl, title, match[i][2])
+	    title = unicode(match[i][2], 'utf-8')
+            match[i] = (playVideoUrl, title, match[i][1])
             
 
         for url, name, thumbnail in match:
@@ -728,6 +730,7 @@ def resolveAndPlayMovie(url):
         #if plugin.get_setting("Mm3u8") == 'true':
         
         req = urllib2.Request(url)
+        req.add_header('User-Agent', _header)
         req.add_header('Accept-Langauge', 'ko')
         req.add_header('Cookie', 'language=kr')
         response = urllib2.urlopen(req, timeout = _connectionTimeout)

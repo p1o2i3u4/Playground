@@ -16,7 +16,7 @@ _thisPlugin = int(sys.argv[1])
 _connectionTimeout = 20
 _header = "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)"
 tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
-root_url = "http://www.ondemandkorea.com"
+root_url = "http://www.ondemandkorea.com/"
 
 def listMainCategories():
     addDir("최근 방영", "http://www.ondemandkorea.com/", "RecentCategories", '')  
@@ -699,7 +699,7 @@ def listMovieCategories(url):
             items = []
             for node in soup.findAll('dl'):
                 title2 = node.a.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
-                thumb2 = re.compile('img src=".*?/wp-content(.*?)"').findall(str(node))
+                thumb2 = re.compile('src=/wp-content(.*?)"').findall(str(node))
                 thumb1 = 'http://max.ondemandkorea.com/wp-content'+thumb2[0]
                 thumb = thumb1.replace(' ','%20')
                 dt = node.find("span", {"class":"thumb-date"}).find(text=True)
@@ -713,18 +713,20 @@ def listMovieCategories(url):
             for i in range(len(items)):
                 items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
                   
-
+            print items
+            
             for name, url, thumbnail in items:
                 addLink(name, url, 'resolveAndPlayVideo', thumbnail)
                 
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
 
+##playVideo 로 통일 
 def resolveAndPlayMovie(url):
     try:
         tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
 
-
+        
         #m3u8 = plugin.get_setting('m3u8', bool)
 
         #if plugin.get_setting("Mm3u8") == 'true':

@@ -208,16 +208,16 @@ def resolveAndPlayVideo(url):
         match=re.compile('src="(.*?).[0-9]*p.[0-9]*k.mp4"').findall(link2)
         #list replace
         match = [w.replace('mp4:', '').replace('http2/', '').replace('http/','') for w in match]
-   
-        if quality =='2':
-            quality = '720p'
-            qurl=match[0]
-        elif quality =='1':
-            quality = '480p'
-            qurl=match[1]
-        else:
-            quality = '360p'
-            qurl=match[2]
+        qurl=match[0]
+##        if quality =='2':
+##            quality = '1080p'
+##            qurl=match[0]
+##        elif quality =='1':
+##            quality = '1080p'
+##            qurl=match[1]
+##        else:
+##            quality = '1080p'
+##            qurl=match[2]
         
         #if plugin.get_setting("m3u8") == 'true':
 
@@ -234,8 +234,8 @@ def resolveAndPlayVideo(url):
 ##            url5='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/variety2/'+ episode + '/' + episode + '_' + date + '-smil'+quality+'.smil/playlist.m3u8'
 ##            url6='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/drama/'+ episode + '/' + episode + '_' + date + '-smil'+quality+'.smil/playlist.m3u8'
 
-        url1='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+qurl+'-smil'+quality+'.smil/playlist.m3u8'
-        url2='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+qurl+'-smil'+quality+'.smil/playlist.m3u8'
+        url1='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+qurl+'-smil1080p.smil/playlist.m3u8'
+        url2='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+qurl+'-smil720p.smil/playlist.m3u8'
         
         try:
             f = urllib2.urlopen(urllib2.Request(url1))
@@ -295,7 +295,7 @@ def resolveAndPlayVideo(url):
             response = urllib2.urlopen(req, timeout = _connectionTimeout)
             link=response.read()
             response.close()
-            match1=re.compile('"http://(.*?).com/.*?.mp4"').search(link).group(1)
+            match1=re.compile('"server" : "(.*?)",').search(link).group(1)
             print match1
             
             match=re.compile('src="(.*?)"').findall(link2)

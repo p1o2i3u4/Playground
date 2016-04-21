@@ -45,18 +45,18 @@ def live():
     addDir("티비", " ", "livetv", '')
     
 def livetv():
-    addLink('SBS', 'rtmp://rtmpplay3.idol001.com/live/korea_sbs', 'livetvplay', '')
-    addLink('MBC', 'rtmp://rtmpplay2.idol001.com/live/korea_mbc', 'livetvplay', '')
-    addLink('KBS1', 'rtmp://rtmpplay3.idol001.com/live/korea_kbs1', 'livetvplay', '')
-    addLink('KBS2', 'rtmp://rtmpplay3.idol001.com/live/korea_kbs2', 'livetvplay', '')
-    addLink('JTBC', 'rtmp://rtmpplay3.idol001.com/live/korea_jtbc', 'livetvplay', '')
-    addLink('ONSTYLE', 'rtmp://rtmpplay3.idol001.com/live/korea_onstyle', 'livetvplay', '')
-    addLink('MBC MUSIC', 'rtmp://rtmpplay3.idol001.com/live/korea_mbcmusic', 'livetvplay', '')
-    addLink('Mnet', 'rtmp://rtmpplay3.idol001.com/live/korea_mnet', 'livetvplay', '')
-    addLink('TVN', 'rtmp://rtmpplay3.idol001.com/live/korea_tvn', 'livetvplay', '')
-    addLink('arirang', 'rtmp://rtmpplay3.idol001.com/live/korea_arirang', 'livetvplay', '')
-    addLink('SBS MTV', 'rtmp://rtmpplay3.idol001.com/live/korea_sbsmtv', 'livetvplay', '')
-    addLink('MBC everyone', 'rtmp://rtmpplay3.idol001.com/live/korea_mbcevery1', 'livetvplay', '')
+    addLink('SBS', 'http://t.tv.idol001.com/tvlist/idoltv1.json', 'livetvplay', '')
+    addLink('MBC', 'http://t.tv.idol001.com/tvlist/idoltv2.json', 'livetvplay', '')
+    addLink('KBS1', 'http://t.tv.idol001.com/tvlist/idoltv3.json', 'livetvplay', '')
+    addLink('KBS2', 'http://t.tv.idol001.com/tvlist/idoltv4.json', 'livetvplay', '')
+    addLink('JTBC', 'http://t.tv.idol001.com/tvlist/idoltv7.json', 'livetvplay', '')
+    addLink('ONSTYLE', 'http://t.tv.idol001.com/tvlist/idoltv6.json', 'livetvplay', '')
+    addLink('MBC MUSIC', 'http://t.tv.idol001.com/tvlist/idoltv12.json', 'livetvplay', '')
+    addLink('Mnet', 'http://t.tv.idol001.com/tvlist/idoltv5.json', 'livetvplay', '')
+    addLink('TVN', 'http://t.tv.idol001.com/tvlist/idoltv11.json', 'livetvplay', '')
+    addLink('arirang', 'http://t.tv.idol001.com/tvlist/idoltv8.json', 'livetvplay', '')
+    addLink('SBS MTV', 'http://t.tv.idol001.com/tvlist/idoltv9.json', 'livetvplay', '')
+    addLink('MBC everyone', 'http://t.tv.idol001.com/tvlist/idoltv10.json', 'livetvplay', '')
 
 def league(url):
     req = urllib2.Request(url)
@@ -137,23 +137,43 @@ def High_list(url):
         req = urllib2.Request(url)
         response = urllib2.urlopen(req)
         link=response.read()
-        response.close()
-    
-        live=re.compile('<span class="blind" id=".*?">(.*?)</span>').findall(link)
-        url=re.compile('params2="(.*?)"').findall(link)
-        sport=re.compile('\r\n                            \r\n                            (.*?)\r\n').findall(link)
-        title=re.compile('<span class="tema_live tit_event"><strong>(.*?)</strong>').findall(link)
-        title2=[(a+' '+b) for a,b in zip(sport,title)]
-       
+        soup=BeautifulSoup(link)
 
-        match3=list(zip(live, title2, url))
 
-        for i in range(len(match3)):
-            if match3[i][0]=='STARTEDY':
-                addLink(match3[i][1], match3[i][2], 'resolveAndPlayVideo', '')
-            else:
-                continue
+        items = []
+
+        try:
+            for node in soup.findAll('li', {'class':'ing'}):
+                cat = re.compile('params1="(.*?)"').findall(str(node))
+                cat = [element.upper() for element in cat]
+                gid = re.compile('params2="(.*?)"').findall(str(node))
+                s1 = node.find("span", {"class":"score_num"}).find(text=True)
+                t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
+                s2 = node.find("span", {"class":"score_num b_num"}).find(text=True)
+                info = node.find("span", {"class":"score_info"}).find(text=True)
+                
+                title = cat[0]+ ': ' + unicode(t1[0],'utf-8') + ' ' +s1+ ' vs. ' + unicode(t1[1],'utf-8') + ' ' +s2+ ' ' +info
+                items.append({'title':title, 'url':gid[0]})
+        except:
+            print "No sport streams"
             
+        for node in soup.findAll('li', {'class':'normal_e'}):
+            cat = re.compile('params1="(.*?)"').findall(str(node))
+            cat = [element.upper() for element in cat]
+            gid = re.compile('params2="(.*?)"').findall(str(node))
+            t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
+            
+            title = cat[0]+ ': ' + unicode(t1[0],'utf-8')
+
+            items.append({'title':title, 'url':gid[0], 'thumbnail':''})
+
+        for i in range(len(items)):
+            items[i] = (items[i]['title'], items[i]['url'])
+         
+        for name, url in items:
+            addLink(name, url, 'resolveAndPlayVideo', '')
+
+        
         addDir('네이버 생방송 목록',' ','High_Live', '')
         addLink('##이하 다음 생중계##',' ','', '')
         
@@ -194,21 +214,41 @@ def Med_list(url):
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
-    
-        live=re.compile('<span class="blind" id=".*?">(.*?)</span>').findall(link)
-        url=re.compile('params2="(.*?)"').findall(link)
-        sport=re.compile('\r\n                            \r\n                            (.*?)\r\n').findall(link)
-        title=re.compile('<span class="tema_live tit_event"><strong>(.*?)</strong>').findall(link)
-        title2=[(a+' '+b) for a,b in zip(sport,title)]
-       
+        soup=BeautifulSoup(link)
 
-        match3=list(zip(live, title2, url))
 
-        for i in range(len(match3)):
-            if match3[i][0]=='STARTEDY':
-                addLink(match3[i][1], match3[i][2], 'resolveAndPlayVideo_med', '')
-            else:
-                continue
+        items = []
+
+        try:
+            for node in soup.findAll('li', {'class':'ing'}):
+                cat = re.compile('params1="(.*?)"').findall(str(node))
+                cat = [element.upper() for element in cat]
+                gid = re.compile('params2="(.*?)"').findall(str(node))
+                s1 = node.find("span", {"class":"score_num"}).find(text=True)
+                t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
+                s2 = node.find("span", {"class":"score_num b_num"}).find(text=True)
+                info = node.find("span", {"class":"score_info"}).find(text=True)
+                
+                title = cat[0]+ ': ' + unicode(t1[0],'utf-8') + ' ' +s1+ ' vs. ' + unicode(t1[1],'utf-8') + ' ' +s2+ ' ' +info
+                items.append({'title':title, 'url':gid[0]})
+        except:
+            print "No sport streams"
+            
+        for node in soup.findAll('li', {'class':'normal_e'}):
+            cat = re.compile('params1="(.*?)"').findall(str(node))
+            cat = [element.upper() for element in cat]
+            gid = re.compile('params2="(.*?)"').findall(str(node))
+            t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
+            
+            title = cat[0]+ ': ' + unicode(t1[0],'utf-8')
+
+            items.append({'title':title, 'url':gid[0], 'thumbnail':''})
+
+        for i in range(len(items)):
+            items[i] = (items[i]['title'], items[i]['url'])
+         
+        for name, url in items:
+            addLink(name, url, 'resolveAndPlayVideo_med', '')
             
         addDir('네이버 생방송 목록',' ','Med_Live', '')
         addLink('##이하 다음 생중계##',' ','', '')
@@ -252,21 +292,41 @@ def Low_list(url):
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
-    
-        live=re.compile('<span class="blind" id=".*?">(.*?)</span>').findall(link)
-        url=re.compile('params2="(.*?)"').findall(link)
-        sport=re.compile('\r\n                            \r\n                            (.*?)\r\n').findall(link)
-        title=re.compile('<span class="tema_live tit_event"><strong>(.*?)</strong>').findall(link)
-        title2=[(a+' '+b) for a,b in zip(sport,title)]
-       
+        soup=BeautifulSoup(link)
 
-        match3=list(zip(live, title2, url))
 
-        for i in range(len(match3)):
-            if match3[i][0]=='STARTEDY':
-                addLink(match3[i][1], match3[i][2], 'resolveAndPlayVideo_low', '')
-            else:
-                continue
+        items = []
+
+        try:
+            for node in soup.findAll('li', {'class':'ing'}):
+                cat = re.compile('params1="(.*?)"').findall(str(node))
+                cat = [element.upper() for element in cat]
+                gid = re.compile('params2="(.*?)"').findall(str(node))
+                s1 = node.find("span", {"class":"score_num"}).find(text=True)
+                t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
+                s2 = node.find("span", {"class":"score_num b_num"}).find(text=True)
+                info = node.find("span", {"class":"score_info"}).find(text=True)
+                
+                title = cat[0]+ ': ' + unicode(t1[0],'utf-8') + ' ' +s1+ ' vs. ' + unicode(t1[1],'utf-8') + ' ' +s2+ ' ' +info
+                items.append({'title':title, 'url':gid[0]})
+        except:
+            print "No sport streams"
+            
+        for node in soup.findAll('li', {'class':'normal_e'}):
+            cat = re.compile('params1="(.*?)"').findall(str(node))
+            cat = [element.upper() for element in cat]
+            gid = re.compile('params2="(.*?)"').findall(str(node))
+            t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
+            
+            title = cat[0]+ ': ' + unicode(t1[0],'utf-8')
+
+            items.append({'title':title, 'url':gid[0], 'thumbnail':''})
+
+        for i in range(len(items)):
+            items[i] = (items[i]['title'], items[i]['url'])
+         
+        for name, url in items:
+            addLink(name, url, 'resolveAndPlayVideo_low', '')
 
         addDir('네이버 생방송 목록',' ','Low_Live', '')
         addLink('##이하 다음 생중계##',' ','', '')
@@ -403,7 +463,13 @@ def resolveAndPlayVideoLive(url):
 
 def livetvplay(url):
     try:
-        listItem = xbmcgui.ListItem(path=str(url))
+        req = urllib2.Request(url)
+        link = urllib2.urlopen(req).read()
+        response = url
+        url=re.compile('/rt(.*?).com.*?/korea(.*?)","').findall(link)
+        url2='rtmp://rt'+url[0][0]+'.com/live/korea'+url[0][1]
+
+        listItem = xbmcgui.ListItem(path=str(url2))
         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
         
     except urllib2.URLError:

@@ -19,16 +19,29 @@ _thisPlugin = int(sys.argv[1])
 _connectionTimeout = 20
 UserAgent = "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)"
 tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
-root_url = "http://www.ondemandkorea.com/"
 
+
+cj = cookielib.CookieJar()
+opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+opener.addheaders = [('User-agent',
+    ('Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)'))
+]
+login_data = urllib.urlencode({'pg_mode' : 'login_proc', 'userid' : username, 'userpw' : password})
+opener.open('https://www.tbogo.com/member/', login_data)
+        
 def listMainCategories():
     #addDir("최근 방영", "http://www.ondemandkorea.com/", "RecentCategories", '')  
-    addDir("드라마", "B01", "dramaCategories", '')
-    addDir("예능/오락", "B02", "videoCategories", '')
-    addDir("시사/다큐", "B03", "videoCategories", '')
-    #addDir("유아", "B05", "videoCategories", '')
+    addDir("드라마", "B01,onair", "dramaCategories", '')
+    addDir("예능/오락", "B02,onair", "videoCategories", '')
+    addDir("시사/다큐", "B03,onair", "videoCategories", '')
+    #addDir("유아", "B05,onair", "videoCategories", '')
     addDir("영화", "M", "MovieCategories", '')
-    #addDir("케이블", "B04", "videoCategories", '')
+    #addDir("케이블", "B04,onair", "videoCategories", '')
+    addDir("기분 좋은 날", "238", "dramaCategoryContent", '')
+    addLink("##이후 종영 방송##", "", "", '')
+    addDir("종영 드라마", "B01,offair", "dramaCategories", '')
+    addDir("종영 예능/오락", "B02,offair", "videoCategories", '')
+    addDir("종영 시사/다큐", "B03,offair", "videoCategories", '')
 
 def listMovieCategories(url):
     #try:
@@ -87,8 +100,10 @@ def listVideoCategories(url):
     try:
         day2=[]
         g=[]
+        url=url.split(',')
+        
         for n in range(0,220,15):
-            url2='https://www.tbogo.com/media/?&pg_mode=xml&start='+str(n)+'&code='+url+'&type=onair'
+            url2='https://www.tbogo.com/media/?&pg_mode=xml&start='+str(n)+'&code='+url[0]+'&type='+url[1]
             req = urllib2.Request(url2)
             req.add_header('User-Agent', UserAgent)
             req.add_header('Accept-Langauge', 'ko')
@@ -140,8 +155,9 @@ def listdramaCategories(url):
     try:
         day2=[]
         g=[]
+        url=url.split(',')
         for n in range(0,220,15):
-            url2='https://www.tbogo.com/media/?&pg_mode=xml&start='+str(n)+'&code='+url+'&type=onair'
+            url2='https://www.tbogo.com/media/?&pg_mode=xml&start='+str(n)+'&code='+url[0]+'&type='+url[1]
             req = urllib2.Request(url2)
             req.add_header('User-Agent', UserAgent)
             req.add_header('Accept-Langauge', 'ko')
@@ -256,13 +272,7 @@ def listdramaCategories(url):
 def listdramaInCategory(url):
     try:
         
-        cj = cookielib.CookieJar()
-        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-        opener.addheaders = [('User-agent',
-            ('Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)'))
-        ]
-        login_data = urllib.urlencode({'pg_mode' : 'login_proc', 'userid' : username, 'userpw' : password})
-        opener.open('https://www.tbogo.com/member/', login_data)
+
         resp = opener.open('https://www.tbogo.com/media/?&pg_mode=xml_blist&idx='+url+'&start=0')
         link=resp.read()
 
@@ -281,12 +291,62 @@ def listdramaInCategory(url):
             
         l5=[(a,b,c) for a,b,c in zip(l,l2,l4)]
         
-        for title, url, thumbnail, in l5:
-            addLink(title, url, 'resolveAndPlayVideo', thumbnail)
-           
+        for title, url2, thumbnail, in l5:
+            addLink(title, url2, 'resolveAndPlayVideo', thumbnail)
+
+        
+        page='https://www.tbogo.com/media/?&pg_mode=xml_blist&idx='+url+'&start=15'
+        resp = opener.open(page)
+        link=resp.read()
+
+        l=re.compile('stream\(\'(.*?) &lt;').findall(link)
+
+        if l:
+            addDir('다음 페이지', url+',0', 'NextPage', '')
+
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
 
+def NextPage(url):
+    try:
+        url=url.split(',')
+        p=int(url[1])+15
+        
+        resp = opener.open('https://www.tbogo.com/media/?&pg_mode=xml_blist&idx='+url[0]+'&start='+str(p))
+        link=resp.read()
+
+        l=re.compile('stream\(\'(.*?) &lt;').findall(link)
+        l2=re.compile('stream\(\'.*?,([0-9]+)').findall(link)
+        l4=re.compile('img src="https://image.tbogo.com/(.*?)"').findall(link)
+        date=re.compile('<span class="postDate">(.*?)</span>').findall(link)
+
+        l3=re.compile('stream\(\'.*?E([0-9]+)').findall(link)
+        l= [(a+' : '+b+'회'+' - '+c) for a,b,c in zip(l,l3,date)]
+
+        for i in range(len(l4)):
+            l4[i] = 'https://image.tbogo.com/'+l4[i]
+            l2[i] = url[0]+','+l2[i]
+            
+            
+        l5=[(a,b,c) for a,b,c in zip(l,l2,l4)]
+        
+        for title, url2, thumbnail, in l5:
+            addLink(title, url2, 'resolveAndPlayVideo', thumbnail)
+
+        p=p+15
+        page='https://www.tbogo.com/media/?&pg_mode=xml_blist&idx='+url[0]+'&start='+str(p)
+        resp = opener.open(page)
+        link=resp.read()
+
+        l=re.compile('stream\(\'(.*?) &lt;').findall(link)
+
+        if l:
+            addDir('다음 페이지', url[0]+','+str(p), 'NextPage', '')
+
+                
+    except urllib2.URLError:
+        addLink("성용이를 불러주세용.", '', '', '')
+        
 def resolveAndPlayVideo(url):
     quality = plugin.get_setting("quality", str)
     if quality =='2':
@@ -362,13 +422,7 @@ def resolveAndPlayMovie(url):
         quality = 'MP4'
         
     
-    cj = cookielib.CookieJar()
-    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-    opener.addheaders = [('User-agent',
-        ('Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)'))
-    ]
-    login_data = urllib.urlencode({'pg_mode' : 'login_proc', 'userid' : username, 'userpw' : password})
-    opener.open('https://www.tbogo.com/member/', login_data)
+
     resp = opener.open('https://www.tbogo.com/media/?&pg_mode=xml_blist&idx='+url+'&start=0')
     link=resp.read()
 
@@ -477,9 +531,6 @@ if url == None:
 else:
     if params["mode"] == 'videoCategories':
         listVideoCategories(urlUnquoted)
-    elif params["mode"] == 'videoCategoryContent':
-        listVideosInCategory(urlUnquoted)
-        
     elif params["mode"] == 'resolveAndPlayVideo':
         resolveAndPlayVideo(urlUnquoted)
 
@@ -501,8 +552,8 @@ else:
 ##    elif params["mode"] == 'resolveAndPlayVideoLow':
 ##        resolveAndPlayVideoLow(urlUnquoted)
         
-    elif params["mode"] == 'RecentCategories':
-        listRecentCategories(urlUnquoted)
+    elif params["mode"] == 'NextPage':
+        NextPage(urlUnquoted)
     elif params["mode"] == 'MovieCategories':
         listMovieCategories(urlUnquoted)
     elif params["mode"] == 'resolveAndPlayMovie':

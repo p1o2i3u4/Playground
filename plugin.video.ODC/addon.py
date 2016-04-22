@@ -14,7 +14,7 @@ plugin = Plugin()
 _pluginName = (sys.argv[0])
 _thisPlugin = int(sys.argv[1])
 _connectionTimeout = 20
-_header = "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)"
+UserAgent = "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)"
 tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
 root_url = "http://www.ondemandkorea.com/"
 
@@ -42,7 +42,7 @@ def listMainCategories():
 def listRecentCategories(url):
     try:
         req = urllib2.Request(url)
-        req.add_header('User-Agent', _header)
+        req.add_header('User-Agent', UserAgent)
         req.add_header('Accept-Langauge', 'ko')
         req.add_header('Cookie', 'language=kr')
         response = urllib2.urlopen(req, timeout = _connectionTimeout)
@@ -165,7 +165,7 @@ def listVideoCategories(url):
 ##def listVideosInCategory(url):
 ##    try:
 ##        req = urllib2.Request(url)
-##        req.add_header('User-Agent', _header)
+##        req.add_header('User-Agent', UserAgent)
 ##        req.add_header('Accept-Langauge', 'ko')
 ##        req.add_header('Cookie', 'language=kr')
 ##        response = urllib2.urlopen(req, timeout = _connectionTimeout)
@@ -189,7 +189,7 @@ def resolveAndPlayVideo(url):
     try:
         quality = plugin.get_setting("quality", str)
         req = urllib2.Request(url)
-        req.add_header('User-Agent', _header)
+        req.add_header('User-Agent', UserAgent)
         req.add_header('Accept-Langauge', 'ko')
         req.add_header('Cookie', 'language=kr')
         response = urllib2.urlopen(req, timeout = _connectionTimeout)
@@ -200,390 +200,91 @@ def resolveAndPlayVideo(url):
         token=re.compile('cat: \'.*?\',id: (.*?),').findall(link)
         tokenurl='http://www.ondemandkorea.com/includes/playlist.php?token=' + token[0]
         req2 = urllib2.Request(tokenurl)
-        req2.add_header('User-Agent', _header)
+        req2.add_header('User-Agent', UserAgent)
         response2 = urllib2.urlopen(req2, timeout = _connectionTimeout)
         link2=response2.read()
         response2.close()
         
         match=re.compile('src="(.*?).[0-9]*p.[0-9]*k.mp4"').findall(link2)
+        match2=re.compile('src="(.*?)"').findall(link2)
         #list replace
         match = [w.replace('mp4:', '').replace('http2/', '').replace('http/','') for w in match]
+        match2 = [w.replace('mp4:', '').replace('http2/', '').replace('http/','') for w in match2]
         qurl=match[0]
-##        if quality =='2':
-##            quality = '1080p'
-##            qurl=match[0]
-##        elif quality =='1':
-##            quality = '1080p'
-##            qurl=match[1]
-##        else:
-##            quality = '1080p'
-##            qurl=match[2]
-        
-        #if plugin.get_setting("m3u8") == 'true':
-
-        
-##            Thumblink=re.compile('thumbnail/(.+?)_([0-9]+).*?.jpg"').search(link)
-##            episode=Thumblink.group(1)
-##            date=Thumblink.group(2)
+        qurl2=match2[0]
         sr= re.compile('srcurl: "(.*?)",').findall(link)
         
-            
-##            url1='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/variety/'+ episode + '/' + episode + '_' + date + '-smil'+quality+'.smil/playlist.m3u8'
-##            url2='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/variety2/'+ episode + '/' + episode + '_' + date + '-smil'+quality+'.smil/playlist.m3u8'
-##            
-##            url5='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/variety2/'+ episode + '/' + episode + '_' + date + '-smil'+quality+'.smil/playlist.m3u8'
-##            url6='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/drama/'+ episode + '/' + episode + '_' + date + '-smil'+quality+'.smil/playlist.m3u8'
 
-        url1='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+qurl+'-smil1080p.smil/playlist.m3u8'
-        url2='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+qurl+'-smil720p.smil/playlist.m3u8'
-        
-        try:
-            f = urllib2.urlopen(urllib2.Request(url1))
-            deadLinkFound2 = False
-        except:
-            deadLinkFound2 = True
-        try:
-            f = urllib2.urlopen(urllib2.Request(url2))
-            deadLinkFound3 = False
-        except:
-            deadLinkFound3 = True
-
-##            try:
-##                f = urllib2.urlopen(urllib2.Request(url3))
-##                deadLinkFound4 = False
-##            except:
-##                deadLinkFound4 = True
-##            try:
-##                f = urllib2.urlopen(urllib2.Request(url4))
-##                deadLinkFound5 = False
-##            except:
-##                deadLinkFound5 = True
-##            try:
-##                f = urllib2.urlopen(urllib2.Request(url5))
-##                deadLinkFound6 = False
-##            except:
-##                deadLinkFound6 = True
-        
-        if deadLinkFound2==False:
-            listItem = xbmcgui.ListItem(path=str(url1))
-            xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-            
-##            elif deadLinkFound3==False:
-##                listItem = xbmcgui.ListItem(path=str(url2))
-##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-##            
-##            elif deadLinkFound4==False:
-##                listItem = xbmcgui.ListItem(path=str(url3))
-##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-##                
-##            elif deadLinkFound5==False:
-##                listItem = xbmcgui.ListItem(path=str(url4))
-##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-##            elif deadLinkFound5==False:
-##                listItem = xbmcgui.ListItem(path=str(url5))
-##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)  
-        elif deadLinkFound3==False:
-            listItem = xbmcgui.ListItem(path=str(url2))
-            xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-            
-        else:
-##            tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
-##            req = urllib2.Request(url)
-##            req.add_header('User-Agent', _header)
-##            req.add_header('Accept-Langauge', 'ko')
-##            req.add_header('Cookie', 'language=kr')
-##            response = urllib2.urlopen(req, timeout = _connectionTimeout)
-##            link=response.read()
-##            response.close()
-##            match1=re.compile('server" : "(.*?)"').search(link).group(1)
-##            
-##            
-##            match=re.compile('src="(.*?)"').findall(link2)
-##             #list replace
-##            match = [w.replace('mp4:', '').replace('http2/', '').replace('http/','') for w in match]
-##            
-            quality = plugin.get_setting("quality", str)
-            if quality =='2':
-                quality = '720p'
-                qurl=match[0]
-            elif quality =='1':
-                quality = '480p'
-                qurl=match[1]
-            else:
-                quality = '360p'
-                qurl=match[2]
-                
-            if qurl:
-                qurl2='http://'+sr[0]+'.ondemandkorea.com/'+qurl
-                listItem = xbmcgui.ListItem(path=str(qurl2))
+        url=[
+        'http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+qurl+'-smil1080p.smil/playlist.m3u8',
+        'http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+qurl+'-smil1080p.smil/playlist.m3u8',
+        'http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+qurl+'-smil720p.smil/playlist.m3u8',
+        'http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+qurl+'-smil720p.smil/playlist.m3u8'
+        ]
+      
+        for i in range(len(url)):
+            try:
+                f = urllib2.Request(url[i])
+                f.add_header('User-Agent', UserAgent)
+                f=urllib2.urlopen(f)    
+                dead = False
+                print "Correct url found = "+str(url[i])
+                listItem = xbmcgui.ListItem(path=str(url[i]))
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-##                match2=match.group(1)
-##                urllow='http://' + match2 + '.mp4'
-##                match3=match2.replace('480p','720p')
-##                url0=match3.replace('1596k','2296k')
-##                url1=url0.replace('360p','720p')
-##                url2=url1.replace('1296k','2296k')
-##                url= 'http://' + url2 + '.mp4'
-##
-##                url1=url0.replace('360p','480p')
-##                url2=url1.replace('1296k','1596k')
-##                url2= 'http://' + url2 + '.mp4'
-##                
-##                if quality =='720p':
-##                    try:
-##                        listItem = xbmcgui.ListItem(path=str(qurl))
-##                        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-##                    except:
-##                        listItem = xbmcgui.ListItem(path=str(url2))
-##                        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-##                elif quality =='480p':
-##                    try:
-##                        listItem = xbmcgui.ListItem(path=str(url2))
-##                        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-##                
-##                    except:
-##                        listItem = xbmcgui.ListItem(path=str(urllow))
-##                        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-##
-##                else:
-##                    listItem = xbmcgui.ListItem(path=str(urllow))
-##                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                break
+               
+            except:
+                dead = True        
+
+        if dead==True:
+            try: 
+                req = urllib2.Request(url)
+                req.add_header('User-Agent', UserAgent)
+                req.add_header('Accept-Langauge', 'ko')
+                req.add_header('Cookie', 'language=kr')
+                response = urllib2.urlopen(req, timeout = _connectionTimeout)
+                link=response.read()
+                response.close()
+
+                match=re.compile('file: "(.*?)"').findall(link)
+                print match
+                listItem = xbmcgui.ListItem(path=str(match[0]))
+                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+
                     
-            else:
+            except:
                 Thumblink=re.compile('thumbnail/(.+?)_([0-9]+).*?.jpg"').search(link)
                 episode=Thumblink.group(1)
                 date=Thumblink.group(2)
                 
-                #url = 'http://sjcssd2.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-    ##            postid=re.compile('.*?post_id=([0-9]*)\&').search(link).group(1)
-    ##            
-    ##            url='http://www.ondemandkorea.com/includes/playlist.php?token=' + postid
-    ##            req = urllib2.Request(url)
-    ##            response = urllib2.urlopen(req, timeout = _connectionTimeout)
-    ##            link=response.read()
-    ##            response.close()
-    ##            
-    ##            match=re.compile('src="(.*?)"').search(link).group(1)
-    ##            match0=match.replace('mp4:','')
-    ##            match1=match0.replace('http2/','')
-    ##            match2=match1.replace('http/','')
-    ##            match3=match2.replace('480p','720p')
-    ##            url0=match3.replace('1596k','2296k')
-    ##            url1= 'http://sjcssd2.ondemandkorea.com/variety/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-    ##            url2= 'http://sjcssd2.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-    ##            url3= 'http://sjcs1.ondemandkorea.com/variety/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-    ##            url4= 'http://sjcs1.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-    ##            url5= 'http://sjcglu1.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-    ##            url6= 'http://sjcglu1.ondemandkorea.com/variety/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-                url7= 'http://sjcdisp06.ondemandkorea.com/'+qurl
-                url8= 'http://sjcdisp06.ondemandkorea.com/'+qurl
-                #url9= 'http://sjcdisp01.ondemandkorea.com/'
-                #url10= 'http://sjcdisp01.ondemandkorea.com/variety/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-    ##            url11= 'http://sjcstor05.ondemandkorea.com/variety/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-    ##            url12= 'http://sjcstor06.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-    ##            url13= 'http://sjcstor07.ondemandkorea.com/variety/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-    ##            url14= 'http://sjcstor08.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-    ##            url15= 'http://sjcstor09.ondemandkorea.com/variety/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-    ##            url16= 'http://sjcstor10.ondemandkorea.com/variety2/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'    
-
+                url=[
+                'http://sjcdisp06.ondemandkorea.com/'+qurl2,
+                'http://sjcstor04.ondemandkorea.com/'+qurl2,
+                'http://sjcstor09.ondemandkorea.com/'+qurl2,
+                'http://sjcstor14.ondemandkorea.com/'+qurl2,
+                'http://sjcstor01.ondemandkorea.com/'+qurl2,
+                'http://sjcstor11.ondemandkorea.com/'+qurl2,
+                ]
                 
-                #url5= 'http://sjcs3.ondemandkorea.com/' + url0
-                #sjcglu4
-    ##            try:
-    ##              f = urllib2.urlopen(urllib2.Request(url1))
-    ##              deadLinkFound1 = False
-    ##            except:
-    ##              deadLinkFound1 = True
-    ##            try:
-    ##              f = urllib2.urlopen(urllib2.Request(url2))
-    ##              deadLinkFound2 = False
-    ##            except:
-    ##              deadLinkFound2 = True
-    ##            try:
-    ##              f = urllib2.urlopen(urllib2.Request(url3))
-    ##              deadLinkFound3 = False
-    ##            except:
-    ##              deadLinkFound3 = True
-    ##            try:
-    ##              f = urllib2.urlopen(urllib2.Request(url4))
-    ##              deadLinkFound4 = False
-    ##            except:
-    ##              deadLinkFound4 = True
-    ##            try:
-    ##              f = urllib2.urlopen(urllib2.Request(url5))
-    ##              deadLinkFound5 = False
-    ##            except:
-    ##              deadLinkFound5 = True
-    ##            try:
-    ##              f = urllib2.urlopen(urllib2.Request(url6))
-    ##              deadLinkFound6 = False
-    ##            except:
-    ##              deadLinkFound6 = True
+                for i in range(len(url)):
+                    try:
+                        f = urllib2.Request(url[i])
+                        f.add_header('User-Agent', UserAgent)
+                        f=urllib2.urlopen(f)    
+                        dead = False
+                        print "Correct url found = "+str(url[i])
+                        listItem = xbmcgui.ListItem(path=str(url[i]))
+                        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                        break
+                       
+                    except:
+                        dead = True        
 
-                try:
-                  f = urllib2.urlopen(urllib2.Request(url7))
-                  deadLinkFound7 = False
-                except:
-                  deadLinkFound7 = True
-                try:
-                  f = urllib2.urlopen(urllib2.Request(url8))
-                  deadLinkFound8 = False
-                except:
-                  deadLinkFound8 = True
-##                try:
-##                  f = urllib2.urlopen(urllib2.Request(url9))
-##                  deadLinkFound9 = False
-##                except:
-##                  deadLinkFound9 = True
-##
-##                try:
-##                  f = urllib2.urlopen(urllib2.Request(url10))
-##                  deadLinkFound10 = False
-##                except:
-##                  deadLinkFound10 = True
-
-
-    ##            if deadLinkFound1==False:
-    ##                listItem = xbmcgui.ListItem(path=str(url1))
-    ##                     
-    ##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-    ##
-    ##
-    ##            elif deadLinkFound2==False:
-    ##                listItem = xbmcgui.ListItem(path=str(url2))
-    ##                     
-    ##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-    ##                
-    ##            elif deadLinkFound3==False:
-    ##                listItem = xbmcgui.ListItem(path=str(url3))
-    ##                     
-    ##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-    ##
-    ##            elif deadLinkFound4==False:
-    ##                listItem = xbmcgui.ListItem(path=str(url4))
-    ##                     
-    ##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-    ##
-    ##            elif deadLinkFound5==False:
-    ##                listItem = xbmcgui.ListItem(path=str(url5))
-    ##                     
-    ##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-    ##                
-    ##            elif deadLinkFound6==False:
-    ##                listItem = xbmcgui.ListItem(path=str(url6))
-    ##                     
-    ##                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-
-                if deadLinkFound7==False:
-                    listItem = xbmcgui.ListItem(path=str(url7))
-                         
-                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-                    
-##                elif deadLinkFound8==False:
-##                    listItem = xbmcgui.ListItem(path=str(url8))
-##                         
-##                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-##
-##                elif deadLinkFound9==False:
-##                    listItem = xbmcgui.ListItem(path=str(url9))
-##                         
-##                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-##
-##                elif deadLinkFound10==False:
-##                    listItem = xbmcgui.ListItem(path=str(url10))
-##                         
-##                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-##                    
-            
-                else:
-                    listItem = xbmcgui.ListItem(path=str(url8))
-                         
-                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-    ##		url1= 'http://sjcssd2.ondemandkorea.com/drama/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-    ##		url3= 'http://sjcs1.ondemandkorea.com/drama/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-    ##		url4= 'http://sjcglu1.ondemandkorea.com/drama/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-##                    url5= 'http://sjcstor07.ondemandkorea.com/drama/' + episode + '/' + episode + '_' + date +'.720p.2296k.mp4'
-                    
-    ##                try:
-    ##                  f = urllib2.urlopen(urllib2.Request(url1))
-    ##                  dead = False
-    ##                except:
-    ##                  dead = True
-    ##                try:
-    ##                  f = urllib2.urlopen(urllib2.Request(url3))
-    ##                  dead1 = False
-    ##                except:
-    ##                  dead1 = True
-    ##                try:
-    ##                  f = urllib2.urlopen(urllib2.Request(url4))
-    ##                  dead2 = False
-    ##                except:
-    ##                  dead2 = True
-##
-##                    try:
-##                      f = urllib2.urlopen(urllib2.Request(url5))
-##                      dead2 = False
-##                    except:
-##                      dead2 = True
-                                      
-    ##                if dead==False:
-    ##                    listItem = xbmcgui.ListItem(path=str(url1))
-    ##                    listItem.setProperty('IsPlayable', 'true')
-    ##                
-    ##                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-    ##                if dead1==False:
-    ##                    listItem = xbmcgui.ListItem(path=str(url3))
-    ##                    listItem.setProperty('IsPlayable', 'true')
-    ##                
-    ##                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-    ##                if dead2==False:
-    ##                    listItem = xbmcgui.ListItem(path=str(url4))
-    ##                    listItem.setProperty('IsPlayable', 'true')
-    ##                
-    ##                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-
-##                    if dead2==False:
-##                        listItem = xbmcgui.ListItem(path=str(url5))
-##                    
-##                        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
 
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
 
-##def listdramaCategories(url):
-##    try:
-##        print "requesting url " + url
-##        url2=url
-##        req = urllib2.Request(url)
-##        req.add_header('User-Agent', tablet_UA)
-##        req.add_header('Accept-Langauge', 'ko')
-##        req.add_header('Cookie', 'language=kr')
-##        response = urllib2.urlopen(req, timeout = _connectionTimeout)
-##        link=response.read()
-##        response.close()
-##        
-##        
-####        match2=[]
-####        for i in match1:
-####            if i not in match2:
-####                match2.append(i)
-##        match=re.compile('\n\t\t\t\t\t\t\t<img src=".*?src=(.+?)" style="(.*?)"').findall(link)
-##        match1=re.compile('<div class="ep_box">\n\t\t\t<a href="(.*?)" title="(.*?)">').findall(link)
-##        match3=[(x+y) for x,y in zip(match,match1)] #combine match and match2!
-##
-##        for i in range(len(match3)):
-##            thumb1 = "http://max.ondemandkorea.com" + match3[i][0]
-##            thumb = thumb1.replace(' ','%20')
-##	    dramaurl = 'http://www.ondemandkorea.com/' + match3[i][2]
-##            match3[i] = (unicode(match3[i][3], 'utf-8'), dramaurl, thumb)
-##
-##        for name, url, thumbnail in match3:
-##            addDir(name, url, 'dramaCategoryContent', thumbnail)
-##
-##        addDir('아무것도 없으면 여길 누르세요', url2, 'listVideoCategoriesSoup', '')
-##        
-##    except urllib2.URLError:
-##        addLink("성용이를 불러주세용.", '', '', '')
+
         
 def listdramaInCategory(url):
     try:
@@ -676,7 +377,7 @@ def listMovieCategories(url):
     try:
         print "requesting url " + url
         req = urllib2.Request(url)
-        req.add_header('User-Agent', _header)
+        req.add_header('User-Agent', UserAgent)
         req.add_header('Accept-Langauge', 'ko')
         req.add_header('Cookie', 'language=kr')  
         response = urllib2.urlopen(req, timeout = _connectionTimeout)
@@ -715,124 +416,12 @@ def listMovieCategories(url):
                   
             
             for name, url, thumbnail in items:
-                addLink(name, url, 'resolveAndPlayMovie', thumbnail)
+                addLink(name, url, 'resolveAndPlayVideo', thumbnail)
                 
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
 
-def resolveAndPlayMovie(url):
-    try:
-        tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
 
-        
-        #m3u8 = plugin.get_setting('m3u8', bool)
-
-        #if plugin.get_setting("Mm3u8") == 'true':
-        
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', _header)
-        req.add_header('Accept-Langauge', 'ko')
-        req.add_header('Cookie', 'language=kr')
-        response = urllib2.urlopen(req, timeout = _connectionTimeout)
-        link=response.read()
-        response.close()
-
-        title=re.compile('content="http://www.ondemandkorea.com/(.*?).html"').findall(link)
-        
-        episode=re.compile('thumbnail/(.*?).[0-9]+p').findall(link)
-        
-        
-        sr= re.compile('srcurl: "(.*?)",').findall(link)
-        url1='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/movies/'+ title[0] + '/' + episode[0] + '-smil1080p.smil/playlist.m3u8'
-        url2='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/movies/'+ title[0] + '/' + episode[0] + '-smil1080p.smil/playlist.m3u8'
-        #url3='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/movies/'+ title[0] + '/' + episode[0] + '-smil720p.smil/playlist.m3u8'
-        #url4='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/movies/'+ title[0] + '/' + episode[0] + '-smil480p.smil/playlist.m3u8'
-        #url5='http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/movies/'+ title[0] + '/' + episode[0] + '-smil360p.smil/playlist.m3u8'
-
-        try:
-            f = urllib2.urlopen(urllib2.Request(url1))
-            deadLinkFound2 = False
-        except:
-            deadLinkFound2 = True
-        try:
-            f = urllib2.urlopen(urllib2.Request(url2))
-            deadLinkFound3 = False
-        except:
-            deadLinkFound3 = True
-##        try:
-##            f = urllib2.urlopen(urllib2.Request(url3))
-##            deadLinkFound4 = False
-##        except:
-##            deadLinkFound4 = True
-##        try:
-##            f = urllib2.urlopen(urllib2.Request(url4))
-##            deadLinkFound5 = False
-##        except:
-##            deadLinkFound5 = True
-            
-        if deadLinkFound2==False:
-            listItem = xbmcgui.ListItem(path=str(url1))
-            xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-            
-        elif deadLinkFound3==False:
-            listItem = xbmcgui.ListItem(path=str(url2))
-            xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-            
-##        elif deadLinkFound4==False:
-##            listItem = xbmcgui.ListItem(path=str(url3))
-##            xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-##             
-##        elif deadLinkFound5==False:
-##            listItem = xbmcgui.ListItem(path=str(url4))
-##            xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-        else:
-        
-            req = urllib2.Request(url)
-            req.add_header('User-Agent', tablet_UA)
-            req.add_header('Accept-Langauge', 'ko')
-            req.add_header('Cookie', 'language=kr')
-                
-            response = urllib2.urlopen(req, timeout = _connectionTimeout)
-            link=response.read()
-            response.close()
-            match=re.compile('cat: \'.*?\',id: (.*?),').findall(link)
-            url='http://www.ondemandkorea.com/includes/playlist.php?token=' + match[0]
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req, timeout = _connectionTimeout)
-            link=response.read()
-            response.close()
-            
-            match=re.compile('src="(.*?)"').findall(link)
-            match0=match[0].replace('mp4:','')
-            match1=match0.replace('http2/','')
-            url0=match1.replace('http/','')
-
-            url1= 'http://sjcstor05.ondemandkorea.com/' + url0
-            url2= 'http://sjcdisp04.ondemandkorea.com/' + url0
-            
-            try:
-              f = urllib2.urlopen(urllib2.Request(url1))
-              deadLinkFound1 = False
-            except:
-              deadLinkFound1 = True
-    ##
-    ##        try:
-    ##          f = urllib2.urlopen(urllib2.Request(url2))
-    ##          deadLinkFound2 = False
-    ##        except:
-    ##          deadLinkFound2 = True
-
-            if deadLinkFound1==False:
-                listItem = xbmcgui.ListItem(path=str(url1))   
-                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-                
-            else:
-                listItem = xbmcgui.ListItem(path=str(url2))
-                     
-                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)  
-
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
     
 def addLink(name,url,mode,iconimage):
     u=_pluginName+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)

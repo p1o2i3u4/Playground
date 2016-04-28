@@ -213,7 +213,10 @@ def resolveAndPlayVideo(url):
         qurl=match[0]
         qurl2=match2[0]
         sr= re.compile('srcurl: "(.*?)",').findall(link)
-        
+
+        if len(sr)==0:
+            sr=['sjc313']
+
 
         url=[
         'http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+qurl+'-smil1080p.smil/playlist.m3u8',
@@ -221,65 +224,71 @@ def resolveAndPlayVideo(url):
         'http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+qurl+'-smil720p.smil/playlist.m3u8',
         'http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+qurl+'-smil720p.smil/playlist.m3u8'
         ]
-      
+
         for i in range(len(url)):
             try:
                 f = urllib2.Request(url[i])
                 f.add_header('User-Agent', UserAgent)
                 f=urllib2.urlopen(f)    
                 dead = False
-                print "Correct url found = "+str(url[i])
+                print i
+            except:
+                dead = True
+           
+            if dead==False:
+                print "Correct m3u8 found = "+str(url[i])
                 listItem = xbmcgui.ListItem(path=str(url[i]))
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                 break
-               
-            except:
-                dead = True        
+            elif i ==len(url)-1:
+                print "No m3u8 found."
+                try: 
+                    req = urllib2.Request(url)
+                    req.add_header('User-Agent', UserAgent)
+                    req.add_header('Accept-Langauge', 'ko')
+                    req.add_header('Cookie', 'language=kr')
+                    response = urllib2.urlopen(req, timeout = _connectionTimeout)
+                    link=response.read()
+                    response.close()
 
-        if dead==True:
-            try: 
-                req = urllib2.Request(url)
-                req.add_header('User-Agent', UserAgent)
-                req.add_header('Accept-Langauge', 'ko')
-                req.add_header('Cookie', 'language=kr')
-                response = urllib2.urlopen(req, timeout = _connectionTimeout)
-                link=response.read()
-                response.close()
+                    match=re.compile('file: "(.*?)"').findall(link)
+                    print match
+                    listItem = xbmcgui.ListItem(path=str(match[0]))
+                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
 
-                match=re.compile('file: "(.*?)"').findall(link)
-                print match
-                listItem = xbmcgui.ListItem(path=str(match[0]))
-                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-
+                        
+                except:
+                    Thumblink=re.compile('thumbnail/(.+?)_([0-9]+).*?.jpg"').search(link)
+                    episode=Thumblink.group(1)
+                    date=Thumblink.group(2)
                     
-            except:
-                Thumblink=re.compile('thumbnail/(.+?)_([0-9]+).*?.jpg"').search(link)
-                episode=Thumblink.group(1)
-                date=Thumblink.group(2)
-                
-                url=[
-                'http://sjcdisp06.ondemandkorea.com/'+qurl2,
-                'http://sjcstor04.ondemandkorea.com/'+qurl2,
-                'http://sjcstor09.ondemandkorea.com/'+qurl2,
-                'http://sjcstor14.ondemandkorea.com/'+qurl2,
-                'http://sjcstor01.ondemandkorea.com/'+qurl2,
-                'http://sjcstor11.ondemandkorea.com/'+qurl2,
-                ]
-                
-                for i in range(len(url)):
-                    try:
-                        f = urllib2.Request(url[i])
-                        f.add_header('User-Agent', UserAgent)
-                        f=urllib2.urlopen(f)    
-                        dead = False
-                        print "Correct url found = "+str(url[i])
-                        listItem = xbmcgui.ListItem(path=str(url[i]))
-                        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-                        break
+                    url=[
+                    'http://sjcdisp06.ondemandkorea.com/'+qurl2,
+                    'http://sjcstor04.ondemandkorea.com/'+qurl2,
+                    'http://sjcstor09.ondemandkorea.com/'+qurl2,
+                    'http://sjcstor14.ondemandkorea.com/'+qurl2,
+                    'http://sjcstor01.ondemandkorea.com/'+qurl2,
+                    'http://sjcstor11.ondemandkorea.com/'+qurl2,
+                    ]
+                    
+                    for i in range(len(url)):
+                        try:
+                            f = urllib2.Request(url[i])
+                            f.add_header('User-Agent', UserAgent)
+                            f=urllib2.urlopen(f)    
+                            dead = False
+                            print i
+                        except:
+                            dead = True
                        
-                    except:
-                        dead = True        
-
+                        if dead==False:
+                            print "Correct MP4 found = "+str(url[i])
+                            listItem = xbmcgui.ListItem(path=str(url[i]))
+                            xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                            break
+                        elif i ==len(url)-1:
+                            print "No MP4 found."
+                            
 
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')

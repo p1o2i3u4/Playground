@@ -377,34 +377,25 @@ def resolveAndPlayVideo(url):
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                 break
             elif n==191:
-                break
-            else:
-                continue
-            break
+                
+                print "No 720P Found, Looking for 450P"
+                for n in range(181,192):
+                    url1='http://s'+str(n)+'.tbogo.com/play_link/'+url[0]+'_'+url[1]+'_450P.mp4'
 
-    except:
-        print "450P"
-    try:
-        print "No 720P Found, Looking for 450P"
-        for n in range(181,192):
-            url1='http://s'+str(n)+'.tbogo.com/play_link/'+url[0]+'_'+url[1]+'_450P.mp4'
+                    try:
+                      f = urllib2.Request(url1)
+                      f.add_header('User-Agent', UserAgent)
+                      f2= urllib2.urlopen(f)
+                      deadLinkFound = False
+                    except:
+                      deadLinkFound = True
 
-            try:
-              f = urllib2.Request(url1)
-              f.add_header('User-Agent', UserAgent)
-              f2= urllib2.urlopen(f)
-              deadLinkFound = False
-            except:
-              deadLinkFound = True
-
-            if deadLinkFound==False:
-                print 'Correct url found = '+url1                
-                listItem = xbmcgui.ListItem(path=str(url1))
-                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-                break
-            else:
-                continue
-            break
+                    if deadLinkFound==False:
+                        print 'Correct url found = '+url1                
+                        listItem = xbmcgui.ListItem(path=str(url1))
+                        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                        break
+   
 
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
@@ -447,34 +438,26 @@ def resolveAndPlayMovie(url):
                 xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                 break
             elif n==191:
-                break
-            else:
-                continue
-            break
+              
 
-    except:
-        print "450P"
-    try:
-        print "No 720P Found, Looking for 450P"
-        for n in range(181,192):
-            url1='http://s'+str(n)+'.tbogo.com/play_link/'+str(url[0])+'_'+str(l2[0])+'_450P.mp4'
+                print "No 720P Found, Looking for 450P"
+                for n in range(181,192):
+                    url1='http://s'+str(n)+'.tbogo.com/play_link/'+str(url[0])+'_'+str(l2[0])+'_450P.mp4'
 
-            try:
-              f = urllib2.Request(url1)
-              f.add_header('User-Agent', UserAgent)
-              f2= urllib2.urlopen(f)
-              deadLinkFound = False
-            except:
-              deadLinkFound = True
+                    try:
+                      f = urllib2.Request(url1)
+                      f.add_header('User-Agent', UserAgent)
+                      f2= urllib2.urlopen(f)
+                      deadLinkFound = False
+                    except:
+                      deadLinkFound = True
 
-            if deadLinkFound==False:
-                print 'Correct url found = '+url1                
-                listItem = xbmcgui.ListItem(path=str(url1))
-                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-                break
-            else:
-                continue
-            break
+                    if deadLinkFound==False:
+                        print 'Correct url found = '+url1                
+                        listItem = xbmcgui.ListItem(path=str(url1))
+                        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                        break
+
 
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')

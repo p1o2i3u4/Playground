@@ -215,7 +215,7 @@ def resolveAndPlayVideo(url):
         sr= re.compile('srcurl: "(.*?)",').findall(link)
 
         if len(sr)==0:
-            sr=['sjc313']
+            sr=['sjc31']
 
 
         url=[

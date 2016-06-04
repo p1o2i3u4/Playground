@@ -195,105 +195,341 @@ def resolveAndPlayVideo(url):
         response = urllib2.urlopen(req, timeout = _connectionTimeout)
         link=response.read()
         response.close()
+        soup=BeautifulSoup(link)
         
-        ## playlist.php 를 통해 정확한 파일명을 불러오기
-        token=re.compile('cat: \'.*?\',id: (.*?),').findall(link)
-        tokenurl='http://www.ondemandkorea.com/includes/playlist.php?token=' + token[0]
-        req2 = urllib2.Request(tokenurl)
-        req2.add_header('User-Agent', UserAgent)
-        response2 = urllib2.urlopen(req2, timeout = _connectionTimeout)
-        link2=response2.read()
-        response2.close()
-        
-        match=re.compile('src="(.*?).[0-9]*p.[0-9]*k.mp4"').findall(link2)
-        match2=re.compile('src="(.*?)"').findall(link2)
-        #list replace
-        match = [w.replace('mp4:', '').replace('http2/', '').replace('http/','') for w in match]
-        match2 = [w.replace('mp4:', '').replace('http2/', '').replace('http/','') for w in match2]
-        qurl=match[0]
-        qurl2=match2[0]
-        sr= re.compile('srcurl: "(.*?)",').findall(link)
+        try:
+            f=re.compile('file: "(.*?)"').findall(link)
+            print 'Found original m3u8 ' + f[0]
+            listItem = xbmcgui.ListItem(path=str(f[0]))
+            xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+            
+        except:
+            title1=re.compile('<meta property="og:url" content="http://www.ondemandkorea.com/(.*?)-e').findall(link)
+            title=re.compile('/uploads/thumbnail/(.*?)_([0-9]*)_').findall(link)
+            if len(title[0][1])==6:
+                date='20'+title[0][1]
+            else:
+                date=title[0][1]
+                
 
-        if len(sr)==0:
-            sr=['sjc31']
+            ##Finding category
+            cat=soup.find('td',{'class':'v-bar  active'}).a['href']
+            if cat=='http://www.ondemandkorea.com/drama':
+                cat='drama'
+                m=[
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8'
+                ]
+            else:
+                cat='variety'
+                m=[
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
+                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8'
+                ]
 
 
-        url=[
-        'http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+qurl+'-smil1080p.smil/playlist.m3u8',
-        'http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+qurl+'-smil1080p.smil/playlist.m3u8',
-        'http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+qurl+'-smil720p.smil/playlist.m3u8',
-        'http://'+sr[0]+'.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+qurl+'-smil720p.smil/playlist.m3u8'
-        ]
-
-        for i in range(len(url)):
-            try:
-                f = urllib2.Request(url[i])
-                f.add_header('User-Agent', UserAgent)
-                f=urllib2.urlopen(f)    
-                dead = False
-                print i
-            except:
-                dead = True
-           
-            if dead==False:
-                print "Correct m3u8 found = "+str(url[i])
-                listItem = xbmcgui.ListItem(path=str(url[i]))
-                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-                break
-            elif i ==len(url)-1:
-                print "No m3u8 found."
-                try: 
-                    req = urllib2.Request(url)
-                    req.add_header('User-Agent', UserAgent)
-                    req.add_header('Accept-Langauge', 'ko')
-                    req.add_header('Cookie', 'language=kr')
-                    response = urllib2.urlopen(req, timeout = _connectionTimeout)
-                    link=response.read()
-                    response.close()
-
-                    match=re.compile('file: "(.*?)"').findall(link)
-                    print match
-                    listItem = xbmcgui.ListItem(path=str(match[0]))
-                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-
+                for i in range(len(m)):
+                    try:
+                        f = urllib2.Request(m[i])
+                        f.add_header('User-Agent', UserAgent)
+                        f=urllib2.urlopen(f)    
+                        dead = False
                         
-                except:
-                    Thumblink=re.compile('thumbnail/(.+?)_([0-9]+).*?.jpg"').search(link)
-                    episode=Thumblink.group(1)
-                    date=Thumblink.group(2)
+                    except:
+                        dead = True
+                   
+                    if dead==False:
+                        print "Correct m3u8 found = "+str(m[i])
+                        listItem = xbmcgui.ListItem(path=str(m[i]))
+                        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                        break
                     
-                    url=[
-                    'http://sjcdisp06.ondemandkorea.com/'+qurl2,
-                    'http://sjcstor04.ondemandkorea.com/'+qurl2,
-                    'http://sjcstor09.ondemandkorea.com/'+qurl2,
-                    'http://sjcstor14.ondemandkorea.com/'+qurl2,
-                    'http://sjcstor01.ondemandkorea.com/'+qurl2,
-                    'http://sjcstor11.ondemandkorea.com/'+qurl2,
-                    ]
-                    
-                    for i in range(len(url)):
-                        try:
-                            f = urllib2.Request(url[i])
-                            f.add_header('User-Agent', UserAgent)
-                            f=urllib2.urlopen(f)    
-                            dead = False
-                            print i
-                        except:
-                            dead = True
-                       
-                        if dead==False:
-                            print "Correct MP4 found = "+str(url[i])
-                            listItem = xbmcgui.ListItem(path=str(url[i]))
+                    elif i ==len(m)-1:
+                        print "No m3u8 found."
+                        try: 
+                            req = urllib2.Request(url)
+                            req.add_header('User-Agent', tablet_UA)
+                            req.add_header('Accept-Langauge', 'ko')
+                            req.add_header('Cookie', 'language=kr')
+                            response = urllib2.urlopen(req, timeout = _connectionTimeout)
+                            link=response.read()
+                            response.close()
+                            soup=BeautifulSoup(link)
+                            
+                            match=re.compile('video.src = "(.*?)"').search(link).group(0).replace('360p.1296k','720p.2296k').replace('.480p.1596k','720p.2296k')
+                            
+                            print match
+                            listItem = xbmcgui.ListItem(path=str(match[0]))
                             xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                             break
-                        elif i ==len(url)-1:
-                            print "No MP4 found."
-                            
+
+                                
+                        except:
+                ##            Thumblink=re.compile('thumbnail/(.+?)_([0-9]+).*?.jpg"').search(link)
+                ##            episode=Thumblink.group(1)
+                ##            date=Thumblink.group(2)
+                ##            
+                            url=[
+
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
+                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4'
+                            ]
+                            for i in range(len(url)):
+                                try:
+                                    f = urllib2.Request(url[i])
+                                    f.add_header('User-Agent', UserAgent)
+                                    f=urllib2.urlopen(f)    
+                                    dead = False
+                                    print i
+                                except:
+                                    dead = True
+                               
+                                if dead==False:
+                                    print "Correct MP4 found = "+str(url[i])
+                                    listItem = xbmcgui.ListItem(path=str(url[i]))
+                                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                                    break
+                                elif i ==len(url)-1:
+                                    print "No MP4 found."
+                                
 
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
 
 
+def resolveAndPlayMovie(url):
+    try:
+        quality = plugin.get_setting("quality", str)
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', UserAgent)
+        req.add_header('Accept-Langauge', 'ko')
+        req.add_header('Cookie', 'language=kr')
+        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+        link=response.read()
+        response.close()
+        soup=BeautifulSoup(link)
+                
+        try:
+            f=re.compile('file: "(.*?)"').findall(link)
+            print 'Found original link ' + f[0]
+            listItem = xbmcgui.ListItem(path=str(f[0]))
+            xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+            
+        except:
+            title1=re.compile('<meta property="og:url" content="http://www.ondemandkorea.com/(.*?).html').findall(link)
+            title=re.compile('/uploads/thumbnail/(.*?).[0-9]*p').findall(link)
+
+            
+            m=[
+            'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/movies/'+title1[0]+'/'+title[0]+'-smil1080p.smil/playlist.m3u8',
+            'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/movies/'+title1[0]+'/'+title[0]+'-smil1080p.smil/playlist.m3u8',
+            'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/movies/'+title1[0]+'/'+title[0]+'-smil720p.smil/playlist.m3u8',
+            'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/movies/'+title1[0]+'/'+title[0]+'-smil720p.smil/playlist.m3u8',
+            'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/movies/'+title1[0]+'/'+title[0]+'-smil1080p.smil/playlist.m3u8',
+            'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/movies/'+title1[0]+'/'+title[0]+'-smil1080p.smil/playlist.m3u8',
+            'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/movies/'+title1[0]+'/'+title[0]+'-smil720p.smil/playlist.m3u8',
+            'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/movies/'+title1[0]+'/'+title[0]+'-smil720p.smil/playlist.m3u8',
+            'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/movies/'+title1[0]+'/'+title[0]+'-smil1080p.smil/playlist.m3u8',
+            'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/movies/'+title1[0]+'/'+title[0]+'-smil480p.smil/playlist.m3u8',
+            'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/movies/'+title1[0]+'/'+title[0]+'-smil480p.smil/playlist.m3u8',
+            'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/movies/'+title1[0]+'/'+title[0]+'-smil360p.smil/playlist.m3u8',
+            'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/movies/'+title1[0]+'/'+title[0]+'-smil360p.smil/playlist.m3u8',
+
+            ]
+       
+
+            for i in range(len(m)):
+                try:
+                    f = urllib2.Request(m[i])
+                    f.add_header('User-Agent', UserAgent)
+                    f=urllib2.urlopen(f)    
+                    dead = False
+                    
+                except:
+                    dead = True
+               
+                if dead==False:
+                    print "Correct m3u8 found = "+str(m[i])
+                    listItem = xbmcgui.ListItem(path=str(m[i]))
+                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                    break
+                
+                elif i ==len(m)-1:
+                    print "No m3u8 found."
+                    try: 
+                        req = urllib2.Request(url)
+                        req.add_header('User-Agent', tablet_UA)
+                        req.add_header('Accept-Langauge', 'ko')
+                        req.add_header('Cookie', 'language=kr')
+                        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+                        link=response.read()
+                        response.close()
+                        soup=BeautifulSoup(link)
+                        
+                        match=re.compile('video.src = "(.*?)"').search(link).group(0).replace('360p.1296k','720p.2296k').replace('.480p.1596k','720p.2296k')
+                        
+                        print match
+                        listItem = xbmcgui.ListItem(path=str(match[0]))
+                        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                        break
+
+                            
+                    except:
+            ##            Thumblink=re.compile('thumbnail/(.+?)_([0-9]+).*?.jpg"').search(link)
+            ##            episode=Thumblink.group(1)
+            ##            date=Thumblink.group(2)
+            ##            
+                        url=[
+                        'http://sjcstor04.ondemandkorea.com/movies/'+title1[0]+'/'+title[0]+'.1080p.4896k.mp4',
+                        'http://sjcdisp06.ondemandkorea.com/movies/'+title1[0]+'/'+title[0]+'.1080p.4896k.mp4',
+                        'http://sjcstor04.ondemandkorea.com/movies/'+title1[0]+'/'+title[0]+'.720p.2296k.mp4',
+                        'http://sjcdisp06.ondemandkorea.com/movies/'+title1[0]+'/'+title[0]+'.720p.2296k.mp4',
+                        'http://sjcstor04.ondemandkorea.com/movies/'+title1[0]+'/'+title[0]+'.720p.1596k.mp4',
+                        'http://sjcdisp06.ondemandkorea.com/movies/'+title1[0]+'/'+title[0]+'.720p.1596k.mp4',
+                        'http://sjcstor04.ondemandkorea.com/movies/'+title1[0]+'/'+title[0]+'.480p.1596k.mp4',
+                        'http://sjcdisp06.ondemandkorea.com/movies/'+title1[0]+'/'+title[0]+'.480p.1596k.mp4',
+                        'http://sjcstor04.ondemandkorea.com/movies/'+title1[0]+'/'+title[0]+'.480p.2296k.mp4',
+                        'http://sjcdisp06.ondemandkorea.com/movies/'+title1[0]+'/'+title[0]+'.480p.2296k.mp4',
+
+                        ]
+                        
+                        for i in range(len(url)):
+                            try:
+                                f = urllib2.Request(url[i])
+                                f.add_header('User-Agent', UserAgent)
+                                f=urllib2.urlopen(f)    
+                                dead = False
+                                print i
+                            except:
+                                dead = True
+                           
+                            if dead==False:
+                                print "Correct MP4 found = "+str(url[i])
+                                listItem = xbmcgui.ListItem(path=str(url[i]))
+                                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                                break
+                            elif i ==len(url)-1:
+                                print "No MP4 found."
+
+
+                                
+
+    except urllib2.URLError:
+        addLink("성용이를 불러주세용.", '', '', '')
         
 def listdramaInCategory(url):
     try:
@@ -425,7 +661,7 @@ def listMovieCategories(url):
                   
             
             for name, url, thumbnail in items:
-                addLink(name, url, 'resolveAndPlayVideo', thumbnail)
+                addLink(name, url, 'resolveAndPlayMovie', thumbnail)
                 
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
@@ -489,6 +725,8 @@ else:
         
     elif params["mode"] == 'resolveAndPlayVideo':
         resolveAndPlayVideo(urlUnquoted)
+    elif params["mode"] == 'resolveAndPlayMovie':
+        resolveAndPlayMovie(urlUnquoted)
 ##
 ##    elif params["mode"] == 'dramafever':
 ##        listdramafever(urlUnquoted)

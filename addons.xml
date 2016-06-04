@@ -88,7 +88,7 @@
 	</extension>
 </addon>
 
-<addon id="plugin.video.TBO" name="TBO" version="0.0.5" provider-name="Kevin Shin">
+<addon id="plugin.video.tbo" name="TBO" version="0.0.5" provider-name="Kevin Shin">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
 	<import addon="script.module.beautifulsoup" version="3.2.1"/>

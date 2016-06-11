@@ -16,28 +16,28 @@ _thisPlugin = int(sys.argv[1])
 _connectionTimeout = 20
 UserAgent = "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)"
 tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
-root_url = "http://www.ondemandkorea.com/"
+root_url = "http://max.ondemandkorea.com/"
 
 def listMainCategories():
-    addDir("최근 방영", "http://www.ondemandkorea.com/", "RecentCategories", '')  
-    addDir("드라마", "http://www.ondemandkorea.com/drama", "videoCategories", '')
-    addDir("예능/오락", "http://www.ondemandkorea.com/variety", "videoCategories", '')
-    addDir("시사/다큐", "http://www.ondemandkorea.com/documentary", "videoCategories", '')
-    addDir("음식/요리", "http://www.ondemandkorea.com/food", "videoCategories", '')
-    addDir("뷰티/패션", "http://www.ondemandkorea.com/beauty", "videoCategories", '')
-    #addDir("여성", "http://www.ondemandkorea.com/women", "videoCategories", '')
-    addDir("건강", "http://www.ondemandkorea.com/health", "videoCategories", '')
+    addDir("최근 방영", "http://max.ondemandkorea.com/", "RecentCategories", '')  
+    addDir("드라마", "http://max.ondemandkorea.com/drama", "videoCategories", '')
+    addDir("예능/오락", "http://max.ondemandkorea.com/variety", "videoCategories", '')
+    addDir("시사/다큐", "http://max.ondemandkorea.com/documentary", "videoCategories", '')
+    addDir("음식/요리", "http://max.ondemandkorea.com/food", "videoCategories", '')
+    addDir("뷰티/패션", "http://max.ondemandkorea.com/beauty", "videoCategories", '')
+    #addDir("여성", "http://max.ondemandkorea.com/women", "videoCategories", '')
+    addDir("건강", "http://max.ondemandkorea.com/health", "videoCategories", '')
 
         
-    #addDir("스포츠", "http://www.ondemandkorea.com/sports", "videoCategories", '')    
-    #addDir("경제", "http://www.ondemandkorea.com/economy", "videoCategories", '')    
-    #addDir("종교", "http://www.ondemandkorea.com/religion", "videoCategories", '')    
-    #addDir("음악", "http://www.ondemandkorea.com/kmuze", "videoCategories", '')
-    #addDir("게임", "http://www.ondemandkorea.com/games", "videoCategories", '')
-    addDir("한국 영화", "http://www.ondemandkorea.com/movie", "MovieCategories", '')
-    #addDir("드라마 (저화질)", "http://www.ondemandkorea.com/drama", "videoCategoriesLow", '')
-    #addDir("예능/오락 (저화질)", "http://www.ondemandkorea.com/variety", "videoCategoriesLow", '')
-    #addDir("시사/다큐 (저화질)", "http://www.ondemandkorea.com/documentary", "videoCategoriesLow", '')
+    #addDir("스포츠", "http://max.ondemandkorea.com/sports", "videoCategories", '')    
+    #addDir("경제", "http://max.ondemandkorea.com/economy", "videoCategories", '')    
+    #addDir("종교", "http://max.ondemandkorea.com/religion", "videoCategories", '')    
+    #addDir("음악", "http://max.ondemandkorea.com/kmuze", "videoCategories", '')
+    #addDir("게임", "http://max.ondemandkorea.com/games", "videoCategories", '')
+    addDir("한국 영화", "http://max.ondemandkorea.com/movie", "MovieCategories", '')
+    #addDir("드라마 (저화질)", "http://max.ondemandkorea.com/drama", "videoCategoriesLow", '')
+    #addDir("예능/오락 (저화질)", "http://max.ondemandkorea.com/variety", "videoCategoriesLow", '')
+    #addDir("시사/다큐 (저화질)", "http://max.ondemandkorea.com/documentary", "videoCategoriesLow", '')
                 
 def listRecentCategories(url):
     try:
@@ -135,7 +135,7 @@ def listVideoCategories(url):
         for i in range(len(match3)):
             thumb1 = "http://max.ondemandkorea.com" + match3[i][0]
             thumb = thumb1.replace(' ','%20')
-	    dramaurl = 'http://www.ondemandkorea.com/' + match3[i][2]
+	    dramaurl = 'http://max.ondemandkorea.com/' + match3[i][2]
             match3[i] = (unicode(match3[i][3], 'utf-8'), dramaurl, thumb)
 
         for name, url, thumbnail in match3:
@@ -204,7 +204,7 @@ def resolveAndPlayVideo(url):
             xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
             
         except:
-            title1=re.compile('<meta property="og:url" content="http://www.ondemandkorea.com/(.*?)-e').findall(link)
+            title1=re.compile('<meta property="og:url" content="http://maxcdn-origin.ondemandkorea.com/(.*?)-e').findall(link)
             title=re.compile('/uploads/thumbnail/(.*?)_([0-9]*)_').findall(link)
             if len(title[0][1])==6:
                 date='20'+title[0][1]
@@ -214,7 +214,7 @@ def resolveAndPlayVideo(url):
 
             ##Finding category
             cat=soup.find('td',{'class':'v-bar  active'}).a['href']
-            if cat=='http://www.ondemandkorea.com/drama':
+            if cat=='http://max.ondemandkorea.com/drama':
                 cat='drama'
                 m=[
                 'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
@@ -551,7 +551,7 @@ def listdramaInCategory(url):
         match=re.compile('<div class="ep.*?">\n\t\t\t\t<a href="(.*?)" title="(.*?)">\n\t\t\t\t\t\n\t\t\t\t\t<img src=".*?src=(.*?)_(.*?)_(.*?)"').findall(link)
         
         for i in range(len(match)):
-	    playVideoUrl = 'http://www.ondemandkorea.com/' + match[i][0]
+	    playVideoUrl = 'http://max.ondemandkorea.com/' + match[i][0]
 	    poster1 = 'http://max.ondemandkorea.com/' + match[i][2] + '_'+ match[i][3] +'_' + match[i][4]
 	    poster = poster1.replace(' ','%20')
 	    title = unicode(match[i][1], 'utf-8')  + " - " + match[i][3]
@@ -590,7 +590,7 @@ def listdramaInCategory(url):
         
         #페이지 추가
         match1=re.compile('cat: \'(.*?)\',id: (.*?),').findall(link)
-        page='http://www.ondemandkorea.com/includes/episode_page.php?cat='+match1[0][0]+'&id=' +match1[0][1]+'&page=99'
+        page='http://max.ondemandkorea.com/includes/episode_page.php?cat='+match1[0][0]+'&id=' +match1[0][1]+'&page=99'
 
         #페이지 수 확인
         req = urllib2.Request(page)
@@ -603,12 +603,12 @@ def listdramaInCategory(url):
                 pg=int(match2[0])+1
                 for i in range(1,pg): 
                     if i<5: #너무 오래 걸려서 4페이지까지 제한... 
-                        Pgurl = 'http://www.ondemandkorea.com/includes/episode_page.php?cat='+match1[0][0]+'&id=' +match1[0][1]+'&page='+str(i)
+                        Pgurl = 'http://max.ondemandkorea.com/includes/episode_page.php?cat='+match1[0][0]+'&id=' +match1[0][1]+'&page='+str(i)
                         req = urllib2.Request(Pgurl)
                         response = urllib2.urlopen(req)
                         link=response.read()
                         match=re.compile('"url":"(.*?)"').search(link).group(1)
-                        Pgurl='http://www.ondemandkorea.com/'+match
+                        Pgurl='http://max.ondemandkorea.com/'+match
                         name=str(i) +' 페이지'
                         addDir(name, Pgurl, 'dramaCategoryContent', "")
       
@@ -631,7 +631,7 @@ def listMovieCategories(url):
         match=re.compile('<dd class="thumb"><a href="(.*?)".*?><img src="(.+?)" alt="(.*?)">').findall(link)
         
         for i in range(len(match)):
-            playVideoUrl = 'http://www.ondemandkorea.com/' + match[i][0]
+            playVideoUrl = 'http://max.ondemandkorea.com/' + match[i][0]
 	    title = unicode(match[i][2], 'utf-8')
             match[i] = (playVideoUrl, title, match[i][1])
             

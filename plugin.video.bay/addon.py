@@ -164,14 +164,21 @@ def listvideourl(url):
         response = urllib2.urlopen(req, timeout = _connectionTimeout)
         link=response.read()
         response.close()
+        
+        hdmotion2=re.compile('<a href="//www.(.+?)" class="button red xLarge" target=".*?"><span>(.+?)</').findall(link)
+        for url, title, in hdmotion2:
+            url2='http://'+url
+            addLink(title, url2, 'playVideo', "")
 
-        hdmotion=re.compile('<a href="http://baykoreans.com/dmotion/\?xink=(.+?)" class="button red xLarge" target=".*?"><span>(.+?) \|').findall(link)
-        for url, title, in hdmotion:
-            addLink(title, url, 'playVideo', "")
-            
-        dmotion=re.compile('<a href="http://baykoreans.com/dmotion/\?xink=(.+?)" class=".*?" target=".*?"><span>(.+?) \|').findall(link) 
-        for url, title, in dmotion:
-            addLink(title, url, 'playVideo', "")
+        print hdmotion2
+##            
+##        hdmotion=re.compile('<a href="http://baykoreans.com/dmotion/\?xink=(.+?)" class="button red xLarge" target=".*?"><span>(.+?) \|').findall(link)
+##        for url, title, in hdmotion:
+##            addLink(title, url, 'playVideo', "")
+##            
+##        dmotion=re.compile('<a href="http://baykoreans.com/dmotion/\?xink=(.+?)" class=".*?" target=".*?"><span>(.+?) \|').findall(link) 
+##        for url, title, in dmotion:
+##            addLink(title, url, 'playVideo', "")
 
 
 ##        link1=getStreamUrl(hdmotion[0])
@@ -268,7 +275,8 @@ def CreateList(vidlink):
 
                     
 def getStreamUrl(url):
-    content = getUrl2('http://www.dailymotion.com/embed/video/'+url)
+    #content = getUrl2('http://www.dailymotion.com/embed/video/'+url)
+    content = getUrl2(url)
     if content.find('"statusCode":410') > 0 or content.find('"statusCode":403') > 0:
         xbmc.executebuiltin('XBMC.Notification(Info:,'+translation(30022)+' (DailyMotion)!,5000)')
         return ""

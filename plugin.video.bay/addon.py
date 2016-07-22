@@ -165,12 +165,26 @@ def listvideourl(url):
         link=response.read()
         response.close()
         
-        hdmotion2=re.compile('<a href="//www.(.+?)" class="button red xLarge" target=".*?"><span>(.+?)</').findall(link)
-        for url, title, in hdmotion2:
-            url2='http://'+url
-            addLink(title, url2, 'playVideo', "")
+        hdmotion2=re.compile('<a href="//www.dailymotion.com/(.*?)" class=".*?" target=".*?"><span>(.+?)</').findall(link)
+        for i in range(len(hdmotion2)):
+            url2='http://dailymotion.com/'+hdmotion2[i][0]
+            f = urllib2.Request(url2)
+            f.add_header('User-Agent', _header)
+            f2=urllib2.urlopen(f)
+            f3=f2.read()
+            f2.close()
+            rej=re.compile('This video has been (.*?) due to').findall(f3)
 
-        print hdmotion2
+            try:
+                
+                if rej[0] =='removed':
+                    print 'link deleted'
+   
+            except:
+                addLink(hdmotion2[i][1],url2,'playVideo',"")
+
+    
+ 
 ##            
 ##        hdmotion=re.compile('<a href="http://baykoreans.com/dmotion/\?xink=(.+?)" class="button red xLarge" target=".*?"><span>(.+?) \|').findall(link)
 ##        for url, title, in hdmotion:

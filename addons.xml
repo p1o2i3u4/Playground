@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.bay" name="Bay" version="0.1.6" provider-name="Kevin Shin">
+<addon id="plugin.video.bay" name="Bay" version="0.1.7" provider-name="Kevin Shin">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
 	<import addon="script.module.beautifulsoup" version="3.2.1"/>

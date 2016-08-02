@@ -10,6 +10,7 @@ import json
 from xbmcswift2 import Plugin
 #from YDStreamExtractor import getVideoInfo
 from BeautifulSoup import BeautifulSoup
+from jsunpack import unpack
 
 # magic; id of this plugin's instance - cast to integer
 plugin = Plugin()
@@ -17,10 +18,12 @@ _pluginName = (sys.argv[0])
 _thisPlugin = int(sys.argv[1])
 _connectionTimeout = 20
 _header = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
-_header = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
+USER_AGENT = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
-
+headers = {'User-Agent': USER_AGENT,
+           'Accept': '*/*',
+           'Connection': 'keep-alive'}
 def listMainCategories():
 #    addDir("사랑만 할래", "http://drama.baykoreans.net/index.php?mid=drama&search_target=title&search_keyword=사랑만 할래", "EntCategoryContent", '')
 #s    addDir("내일도 칸타빌레", "http://drama.baykoreans.net/index.php?mid=drama&search_target=title&search_keyword=칸타빌레", "EntCategoryContent", '')
@@ -165,6 +168,24 @@ def listvideourl(url):
         link=response.read()
         response.close()
         
+        try:
+            vmega=re.compile('http://videomega.tv/\?ref=(.*?)" class').findall(link)
+            vmega2='http://videomega.tv/view.php?ref='+vmega[0]
+            addLink('재생 - VMega',vmega2,'playvmega',"")
+        except:
+            print 'No vmega'
+            
+        try:
+            kvid=re.compile('<a href="http://k-vid.com/embed.php?(.*?)" class=".*?" target=".*?"><span>(.+?)</').findall(link)
+           
+            kvid2='http://k-vid.com/embed.php'+kvid[0][0]
+            
+            addLink('재생 - K-vid',kvid2,'playkvid',"")
+        except:
+            print 'No kvid'
+
+
+            
         hdmotion2=re.compile('<a href="//www.dailymotion.com/(.*?)" class=".*?" target=".*?"><span>(.+?)</').findall(link)
         for i in range(len(hdmotion2)):
             url2='http://dailymotion.com/'+hdmotion2[i][0]
@@ -213,6 +234,45 @@ def listvideourl(url):
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
 
+    
+def playvmega(url):
+    f = urllib2.Request(url)
+    f.add_header('User-Agent', headers)
+    f.add_header('Referer', 'http://videomega.tv/?ref=q5T5w0kGHzzHGk0w5T5q')
+    f2=urllib2.urlopen(f)
+    f3=f2.read()
+    f2.close()
+    vmpacked = re.compile(r"(eval\(.*\))\s+</", re.DOTALL | re.IGNORECASE).findall(f3)
+    vmunpacked = unpack(vmpacked[0])
+    videourl = re.compile('src",\s?"([^"]+)', re.DOTALL | re.IGNORECASE).findall(vmunpacked)
+    videourl = videourl[0]
+    videourl = videourl + '|Referer=' + url + '&User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25'
+    
+    item = xbmcgui.ListItem(path = videourl)
+    xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
+    return
+
+def playkvid(url):
+    f = urllib2.Request(url)
+    f.add_header('User-Agent', _header)
+    f2=urllib2.urlopen(f)
+    f3=f2.read()
+    f2.close()
+    hd=re.compile('source src=\'(.*?)\' type=\'video/mp4').findall(f3)
+    #hd=re.compile('<source src=\'(.*?)\' type=\'video/mp4\' label=\'720\'').findall(f3)
+    print hd
+    hd=hd[0]
+    f = urllib2.Request(hd)
+    f.add_header('User-Agent', _header)
+    f2=urllib2.urlopen(f)
+    f2.close()
+    furl=f2.geturl()
+    print furl
+##    listitem = xbmcgui.ListItem(path=str(hd))
+##    xbmcplugin.setResolvedUrl(_thisPlugin, True, listitem)
+    item = xbmcgui.ListItem('video', path = furl)
+    xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
+    
 def playVideo(url):
     listitem = xbmcgui.ListItem(path=getStreamUrl(url))
     xbmcplugin.setResolvedUrl(_thisPlugin, True, listitem)
@@ -640,6 +700,10 @@ else:
     elif params["mode"] == 'SearchedContent':
         listSearchedCategories(urlUnquoted)
 
+    elif params["mode"] == 'playvmega':
+        playvmega(urlUnquoted)   
+    elif params["mode"] == 'playkvid':
+        playkvid(urlUnquoted)
     elif params["mode"] == 'playVideo':
         playVideo(urlUnquoted)
     elif params["mode"] == 'playVideo2':

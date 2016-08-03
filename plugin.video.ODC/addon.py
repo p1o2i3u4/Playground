@@ -205,207 +205,372 @@ def resolveAndPlayVideo(url):
             
         except:
             title1=re.compile('<meta property="og:url" content="http://maxcdn-origin.ondemandkorea.com/(.*?)-e').findall(link)
-            title=re.compile('/uploads/thumbnail/(.*?)_([0-9]*)_').findall(link)
-            if len(title[0][1])==6:
-                date='20'+title[0][1]
+            if len(title1)<1:
+                title1=re.compile('<meta property="og:url" content="http://maxcdn-origin.ondemandkorea.com/(.*?)-[0-9][0-9][0-9][0-9][0-9][0-9]').findall(link)
+            #title=re.compile('/uploads/thumbnail/(.*?)_([0-9]*)_').findall(link)
+            title=re.compile(r'<link rel="image_src" href="http://(.*?)\.jpg').findall(link)
+            title=title[0].split('/')
+            title=title[len(title)-1:]
+            title=title[0].split('_')
+            title=title[0:2]
+            
+            title[1]=title[1].replace('480p','').replace('1596k','').replace('.','').replace('300p664k','')
+            
+            if len(title[1])==6:
+                date='20'+title[1]
             else:
-                date=title[0][1]
-                
+                date=title[1]
+
+            print title
+    
 
             ##Finding category
             cat=soup.find('td',{'class':'v-bar  active'}).a['href']
-            if cat=='http://max.ondemandkorea.com/drama':
+            if cat=='http://www.ondemandkorea.com/drama':
                 cat='drama'
+                print cat
                 m=[
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8'
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',             
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8', 
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p-'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p_'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p-'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p_'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil1720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil1720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil11080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil11080p.smil/manifest.m3u8'
                 ]
+                
+
+
+            elif cat=='http://www.ondemandkorea.com/documentary':
+                cat='variety'
+                print cat
+                m=[
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/documentary/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+                
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+                ]
+
             else:
                 cat='variety'
+                print cat
                 m=[
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil1080p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:gludisp/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8',
-                'http://sjc55.ondemandkorea.com:1935/cache/_definst_/smil:glucache/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-smil720p.smil/playlist.m3u8'
-                ]
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+                
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p_'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p-'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'_1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'_720p.smil/manifest.m3u8',
+                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+                ]                
+##                
+##                    
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080p/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080p/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080p/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080p/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080p/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/1080p/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0]+'_'+title[1]+'-1-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0]+'_'+title[1]+'-1-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0]+'_'+title[1]+'-smil1080p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8',
+##                'http://lime1.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0]+'_'+title[1]+'-smil720p.smil/manifest.m3u8'
+##                ]
 
-
-                for i in range(len(m)):
-                    try:
-                        f = urllib2.Request(m[i])
-                        f.add_header('User-Agent', UserAgent)
-                        f=urllib2.urlopen(f)    
-                        dead = False
+            
+            for i in range(len(m)):
+                try:
+                    f = urllib2.Request(m[i])
+                    f.add_header('User-Agent', UserAgent)
+                    f=urllib2.urlopen(f)    
+                    dead = False
+                    
+                except:
+                    dead = True
+               
+                if dead==False:
+                    print "Correct m3u8 found = "+str(m[i])
+                    listItem = xbmcgui.ListItem(path=str(m[i]))
+                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                    break
+                
+                elif i ==len(m)-1:
+                    print "No m3u8 found."
+                    try: 
+                        req = urllib2.Request(url)
+                        req.add_header('User-Agent', tablet_UA)
+                        req.add_header('Accept-Langauge', 'ko')
+                        req.add_header('Cookie', 'language=kr')
+                        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+                        link=response.read()
+                        response.close()
+                        soup=BeautifulSoup(link)
                         
-                    except:
-                        dead = True
-                   
-                    if dead==False:
-                        print "Correct m3u8 found = "+str(m[i])
-                        listItem = xbmcgui.ListItem(path=str(m[i]))
+                        match=re.compile('video.src = "(.*?)"').search(link).group(0).replace('360p.1296k','720p.2296k').replace('.480p.1596k','720p.2296k')
+                        
+                        print match
+                        listItem = xbmcgui.ListItem(path=str(match[0]))
                         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
                         break
-                    
-                    elif i ==len(m)-1:
-                        print "No m3u8 found."
-                        try: 
-                            req = urllib2.Request(url)
-                            req.add_header('User-Agent', tablet_UA)
-                            req.add_header('Accept-Langauge', 'ko')
-                            req.add_header('Cookie', 'language=kr')
-                            response = urllib2.urlopen(req, timeout = _connectionTimeout)
-                            link=response.read()
-                            response.close()
-                            soup=BeautifulSoup(link)
-                            
-                            match=re.compile('video.src = "(.*?)"').search(link).group(0).replace('360p.1296k','720p.2296k').replace('.480p.1596k','720p.2296k')
-                            
-                            print match
-                            listItem = xbmcgui.ListItem(path=str(match[0]))
-                            xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-                            break
 
-                                
-                        except:
-                ##            Thumblink=re.compile('thumbnail/(.+?)_([0-9]+).*?.jpg"').search(link)
-                ##            episode=Thumblink.group(1)
-                ##            date=Thumblink.group(2)
-                ##            
-                            url=[
+                            
+                    except:
+            ##            Thumblink=re.compile('thumbnail/(.+?)_([0-9]+).*?.jpg"').search(link)
+            ##            episode=Thumblink.group(1)
+            ##            date=Thumblink.group(2)
+            ##            
+                        url=[
+                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'_720p.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p_'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p_'+title1[0]+'/'+title[0]+'_'+title[1]+'.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p_'+title1[0]+'/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p-'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p-'+title1[0]+'/'+title[0]+'_'+title[1]+'.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p-'+title1[0]+'/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+title[0]+'_'+title[1]+'.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'_720p.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p_'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p_'+title1[0]+'/'+title[0]+'_'+title[1]+'.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p_'+title1[0]+'/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p-'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p-'+title1[0]+'/'+title[0]+'_'+title[1]+'.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/'+cat+'2/'+title1[0]+'/'+date[0:4]+'/1080p-'+title1[0]+'/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',                        
+                        'http://lime2.ondemandkorea.com/documentary/'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.mp4',
+                        'http://lime2.ondemandkorea.com/documentary/'+title1[0]+'/'+title[0]+'_'+title[1]+'.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/documentary/'+title1[0]+'/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'_720p.mp4',
+                        'http://lime2.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/1080p_'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.mp4',
+                        'http://lime2.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/1080p_'+title1[0]+'/'+title[0]+'_'+title[1]+'.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/1080p_'+title1[0]+'/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/1080p-'+title1[0]+'/'+title[0]+'_'+title[1]+'_720p.mp4',
+                        'http://lime2.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/1080p-'+title1[0]+'/'+title[0]+'_'+title[1]+'.720p.2296k.mp4',
+                        'http://lime2.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/1080p-'+title1[0]+'/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',                         
+##                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',
+##                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',
+##                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0]+'_'+title[1]+'.720p.2296k.mp4',
+##                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',
+##                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0]+'_'+title[1]+'.720p.2296k.mp4',
+##                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',
+##                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0]+'_'+title[1]+'.720p.2296k.mp4',
+##                        'http://lime2.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',
+                        ]
 
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/1080p/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'-1.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcstor04.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4',
-                            'http://sjcdisp06.ondemandkorea.com/'+cat+'/'+title1[0]+'/'+date[0:4]+'/'+date[4:6]+'/'+title[0][0]+'_'+title[0][1]+'.720p.2296k.mp4'
-                            ]
-                            for i in range(len(url)):
-                                try:
-                                    f = urllib2.Request(url[i])
-                                    f.add_header('User-Agent', UserAgent)
-                                    f=urllib2.urlopen(f)    
-                                    dead = False
-                                    print i
-                                except:
-                                    dead = True
-                               
-                                if dead==False:
-                                    print "Correct MP4 found = "+str(url[i])
-                                    listItem = xbmcgui.ListItem(path=str(url[i]))
-                                    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-                                    break
-                                elif i ==len(url)-1:
-                                    print "No MP4 found."
-                                
+                        print m
+                        for i in range(len(url)):
+                            try:
+                                f = urllib2.Request(url[i])
+                                f.add_header('User-Agent', UserAgent)
+                                f=urllib2.urlopen(f)    
+                                dead = False
+                                print i
+                            except:
+                                dead = True
+                           
+                            if dead==False:
+                                print "Correct MP4 found = "+str(url[i])
+                                listItem = xbmcgui.ListItem(path=str(url[i]))
+                                xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+                                break
+                            elif i ==len(url)-1:
+                                print "No MP4 found."
+                            
 
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')

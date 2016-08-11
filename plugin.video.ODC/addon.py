@@ -10,42 +10,50 @@ from BeautifulSoup import BeautifulSoup
 
 plugin = Plugin()
 
+# maxcdn-origin.ondemandkorea.com, max.ondemandkorea.com, max2.ondemandkorea.com
 # magic; id of this plugin's instance - cast to integer
 _pluginName = (sys.argv[0])
 _thisPlugin = int(sys.argv[1])
-_connectionTimeout = 20
-UserAgent = "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)"
+_connectionTimeout = 40
+#UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36"
 tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
-root_url = "http://max.ondemandkorea.com/"
+root_url = "http://www.ondemandkorea.com/"
+
+default_hdr = {
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+    'Accept-Encoding': 'none',
+    'Connection': 'keep-alive'}
 
 def listMainCategories():
-    addDir("최근 방영", "http://max.ondemandkorea.com/", "RecentCategories", '')  
-    addDir("드라마", "http://max.ondemandkorea.com/drama", "videoCategories", '')
-    addDir("예능/오락", "http://max.ondemandkorea.com/variety", "videoCategories", '')
-    addDir("시사/다큐", "http://max.ondemandkorea.com/documentary", "videoCategories", '')
-    addDir("음식/요리", "http://max.ondemandkorea.com/food", "videoCategories", '')
-    addDir("뷰티/패션", "http://max.ondemandkorea.com/beauty", "videoCategories", '')
-    #addDir("여성", "http://max.ondemandkorea.com/women", "videoCategories", '')
-    addDir("건강", "http://max.ondemandkorea.com/health", "videoCategories", '')
+    addDir("최근 방영", root_url, "RecentCategories", '')  
+    addDir("드라마", root_url+"drama", "videoCategories", '')
+    addDir("예능/오락", root_url+"variety", "videoCategories", '')
+    addDir("시사/다큐", root_url+"documentary", "videoCategories", '')
+    addDir("음식/요리", root_url+"food", "videoCategories", '')
+    addDir("뷰티/패션", root_url+"beauty", "videoCategories", '')
+    #addDir("여성", root_url+"women", "videoCategories", '')
+    addDir("건강", root_url+"health", "videoCategories", '')
 
         
-    #addDir("스포츠", "http://max.ondemandkorea.com/sports", "videoCategories", '')    
-    #addDir("경제", "http://max.ondemandkorea.com/economy", "videoCategories", '')    
-    #addDir("종교", "http://max.ondemandkorea.com/religion", "videoCategories", '')    
-    #addDir("음악", "http://max.ondemandkorea.com/kmuze", "videoCategories", '')
-    #addDir("게임", "http://max.ondemandkorea.com/games", "videoCategories", '')
-    addDir("한국 영화", "http://max.ondemandkorea.com/movie", "MovieCategories", '')
-    #addDir("드라마 (저화질)", "http://max.ondemandkorea.com/drama", "videoCategoriesLow", '')
-    #addDir("예능/오락 (저화질)", "http://max.ondemandkorea.com/variety", "videoCategoriesLow", '')
-    #addDir("시사/다큐 (저화질)", "http://max.ondemandkorea.com/documentary", "videoCategoriesLow", '')
+    #addDir("스포츠", root_url+"sports", "videoCategories", '')    
+    #addDir("경제", root_url+"economy", "videoCategories", '')    
+    #addDir("종교", root_url+"religion", "videoCategories", '')    
+    #addDir("음악", root_url+"kmuze", "videoCategories", '')
+    #addDir("게임", root_url+"games", "videoCategories", '')
+    addDir("한국 영화", root_url+"movie", "MovieCategories", '')
+    #addDir("드라마 (저화질)", root_url+"drama", "videoCategoriesLow", '')
+    #addDir("예능/오락 (저화질)", root_url+"variety", "videoCategoriesLow", '')
+    #addDir("시사/다큐 (저화질)", root_url+"documentary", "videoCategoriesLow", '')
                 
 def listRecentCategories(url):
     try:
         req = urllib2.Request(url)
-        req.add_header('User-Agent', UserAgent)
+        req.add_header('User-Agent', default_hdr)
         req.add_header('Accept-Langauge', 'ko')
         req.add_header('Cookie', 'language=kr')
-        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+        response = urllib2.urlopen(req)
         link=response.read()
         response.close()
 ##        match=re.compile('<div class="entry.*?">\n\t\t\t\t\t\t\t\t\t<a href="(.+?)" title="(.+?)">').findall(link)
@@ -68,7 +76,7 @@ def listRecentCategories(url):
      #soup를 통한 리스팅...
         #if len(match)<1:
         soup=BeautifulSoup(link)
-        
+    
         items = []
         drama=soup.find('div', {'class':re.compile('^(?:iosSlider contents drama)$')})
         for node in drama.findAll('div', {'class':re.compile('^(?:entry |entry last)$')}):
@@ -77,7 +85,7 @@ def listRecentCategories(url):
             title2 = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
             #thumb = node.find('img', {'src':re.compile(r'(jpe?g)|(png32)$')})
             thumb2 = re.compile('img src=".*?/wp-content(.*?)"').findall(str(node))
-            thumb1 = 'http://max.ondemandkorea.com/wp-content'+thumb2[0]
+            thumb1 = root_url+'wp-content'+thumb2[0]
             thumb = thumb1.replace(' ','%20')   
             #dt = node.find("div", {"class":"ep_date"}).find(text=True)
             dt = re.compile('([0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9])').findall(str(node))
@@ -98,7 +106,7 @@ def listRecentCategories(url):
                 continue
             title2 = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
             thumb2 = re.compile('img src=".*?/wp-content(.*?)"').findall(str(node))
-            thumb1 = 'http://max.ondemandkorea.com/wp-content'+thumb2[0]
+            thumb1 = root_url+'wp-content'+thumb2[0]
             thumb = thumb1.replace(' ','%20')   
             dt = node.find("div", {"class":"ep_date"}).find(text=True)
             title = title2 + ' - '+dt
@@ -120,33 +128,45 @@ def listVideoCategories(url):
         print "requesting url " + url
         url2=url
         req = urllib2.Request(url)
-        req.add_header('User-Agent', tablet_UA)
+        req.add_header('User-Agent', default_hdr)
         req.add_header('Accept-Langauge', 'ko')
         req.add_header('Cookie', 'language=kr')
-        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+        response = urllib2.urlopen(req)
         link=response.read()
         response.close()
-        
-        
-        match=re.compile('\n\t\t\t\t\t\t\t<img src=".*?src=(.+?)" style="(.*?)"').findall(link)
-        match1=re.compile('<div class="ep_box">\n\t\t\t<a href="(.*?)" title="(.*?)">').findall(link)
-        match3=[(x+y) for x,y in zip(match,match1)] #combine match and match2!
 
-        for i in range(len(match3)):
-            thumb1 = "http://max.ondemandkorea.com" + match3[i][0]
-            thumb = thumb1.replace(' ','%20')
-	    dramaurl = 'http://max.ondemandkorea.com/' + match3[i][2]
-            match3[i] = (unicode(match3[i][3], 'utf-8'), dramaurl, thumb)
-
-        for name, url, thumbnail in match3:
+        items = []
+        for part in link.split('<div class="ep_box"')[1:]:
+            match = re.compile('<a href="([^"]*)" title="([^"]*)">.*<img src="([^"]*timthumb[^"]*)"', re.S).search(part)
+            if match:
+                thumb=match.group(3).replace(' ','%20')
+                items.append({'title':match.group(2), 'url':root_url+"/"+match.group(1), 'thumbnail':thumb})
+                
+        for i in range(len(items)):
+            items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
+            
+        for name, url, thumbnail in items:
             addDir(name, url, 'dramaCategoryContent', thumbnail)
             
-        if len(match3)<1:
+##        match=re.compile('\n\t\t\t\t\t\t\t<img src=".*?src=(.+?)" style="(.*?)"').findall(link)
+##        match1=re.compile('<div class="ep_box">\n\t\t\t<a href="(.*?)" title="(.*?)">').findall(link)
+##        match3=[(x+y) for x,y in zip(match,match1)] #combine match and match2!
+##
+##        for i in range(len(match3)):
+##            thumb1 = root_url + match3[i][0]
+##            thumb = thumb1.replace(' ','%20')
+##	    dramaurl = root_url+match3[i][2]
+##            match3[i] = (unicode(match3[i][3], 'utf-8'), dramaurl, thumb)
+##
+##        for name, url, thumbnail in match3:
+##            addDir(name, url, 'dramaCategoryContent', thumbnail)
+##            
+        if len(items)<1:
             soup=BeautifulSoup(link)
             items = []
             for node in soup.findAll('div', {'class':'ep_box'}):
                 thumb2 = re.compile('img src=".*?/wp-content(.*?)"').findall(str(node))
-                thumb1 = 'http://max.ondemandkorea.com/wp-content'+thumb2[0]
+                thumb1 = root_url+'wp-content'+thumb2[0]
                 thumb = thumb1.replace(' ','%20')   
 
                 items.append({'title':node.b.string, 'url':root_url+'/'+node.a['href'], 'thumbnail':thumb})
@@ -168,7 +188,7 @@ def listVideoCategories(url):
 ##        req.add_header('User-Agent', UserAgent)
 ##        req.add_header('Accept-Langauge', 'ko')
 ##        req.add_header('Cookie', 'language=kr')
-##        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+##        response = urllib2.urlopen(req)
 ##        link=response.read()
 ##        response.close()
 ##        match=re.compile('<img src="(.+?)"[^>]*>\n\t\t\t\t</a>\n\t\t\t\t<a href="(.+?)"[^>]*>\n\t\t\t\t\t<b>(.+?)</b><br>.+? : (.+?)\t\t\t\t</a>').findall(link)
@@ -189,10 +209,10 @@ def resolveAndPlayVideo(url):
     try:
         quality = plugin.get_setting("quality", str)
         req = urllib2.Request(url)
-        req.add_header('User-Agent', UserAgent)
+        req.add_header('User-Agent', default_hdr)
         req.add_header('Accept-Langauge', 'ko')
         req.add_header('Cookie', 'language=kr')
-        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+        response = urllib2.urlopen(req)
         link=response.read()
         response.close()
         soup=BeautifulSoup(link)
@@ -200,13 +220,14 @@ def resolveAndPlayVideo(url):
         try:
             f=re.compile('file: "(.*?)"').findall(link)
             print 'Found original m3u8 ' + f[0]
-            listItem = xbmcgui.ListItem(path=str(f[0]))
+            f2=str(f[0])+'|Referer=' + url + '&User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'
+            listItem = xbmcgui.ListItem(path=f2)
             xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
             
         except:
-            title1=re.compile('<meta property="og:url" content="http://maxcdn-origin.ondemandkorea.com/(.*?)-e').findall(link)
+            title1=re.compile('<meta property="og:url" content="http://mondemandkorea.com/(.*?)-e').findall(link)
             if len(title1)<1:
-                title1=re.compile('<meta property="og:url" content="http://maxcdn-origin.ondemandkorea.com/(.*?)-[0-9][0-9][0-9][0-9][0-9][0-9]').findall(link)
+                title1=re.compile('<meta property="og:url" content="http://ondemandkorea.com/(.*?)-[0-9][0-9][0-9][0-9][0-9][0-9]').findall(link)
             #title=re.compile('/uploads/thumbnail/(.*?)_([0-9]*)_').findall(link)
             title=re.compile(r'<link rel="image_src" href="http://(.*?)\.jpg').findall(link)
             title=title[0].split('/')
@@ -467,7 +488,7 @@ def resolveAndPlayVideo(url):
             for i in range(len(m)):
                 try:
                     f = urllib2.Request(m[i])
-                    f.add_header('User-Agent', UserAgent)
+                    f.add_header('User-Agent', default_hdr)
                     f=urllib2.urlopen(f)    
                     dead = False
                     
@@ -487,7 +508,7 @@ def resolveAndPlayVideo(url):
                         req.add_header('User-Agent', tablet_UA)
                         req.add_header('Accept-Langauge', 'ko')
                         req.add_header('Cookie', 'language=kr')
-                        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+                        response = urllib2.urlopen(req)
                         link=response.read()
                         response.close()
                         soup=BeautifulSoup(link)
@@ -556,7 +577,7 @@ def resolveAndPlayVideo(url):
                         for i in range(len(url)):
                             try:
                                 f = urllib2.Request(url[i])
-                                f.add_header('User-Agent', UserAgent)
+                                f.add_header('User-Agent', default_hdr)
                                 f=urllib2.urlopen(f)    
                                 dead = False
                                 print i
@@ -580,10 +601,10 @@ def resolveAndPlayMovie(url):
     try:
         quality = plugin.get_setting("quality", str)
         req = urllib2.Request(url)
-        req.add_header('User-Agent', UserAgent)
+        req.add_header('User-Agent', default_hdr)
         req.add_header('Accept-Langauge', 'ko')
         req.add_header('Cookie', 'language=kr')
-        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+        response = urllib2.urlopen(req)
         link=response.read()
         response.close()
         soup=BeautifulSoup(link)
@@ -620,7 +641,7 @@ def resolveAndPlayMovie(url):
             for i in range(len(m)):
                 try:
                     f = urllib2.Request(m[i])
-                    f.add_header('User-Agent', UserAgent)
+                    f.add_header('User-Agent', default_hdr)
                     f=urllib2.urlopen(f)    
                     dead = False
                     
@@ -640,7 +661,7 @@ def resolveAndPlayMovie(url):
                         req.add_header('User-Agent', tablet_UA)
                         req.add_header('Accept-Langauge', 'ko')
                         req.add_header('Cookie', 'language=kr')
-                        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+                        response = urllib2.urlopen(req)
                         link=response.read()
                         response.close()
                         soup=BeautifulSoup(link)
@@ -675,7 +696,7 @@ def resolveAndPlayMovie(url):
                         for i in range(len(url)):
                             try:
                                 f = urllib2.Request(url[i])
-                                f.add_header('User-Agent', UserAgent)
+                                f.add_header('User-Agent', default_hdr)
                                 f=urllib2.urlopen(f)    
                                 dead = False
                                 print i
@@ -699,10 +720,10 @@ def resolveAndPlayMovie(url):
 def listdramaInCategory(url):
     try:
         req = urllib2.Request(url)
-        req.add_header('User-Agent', tablet_UA)
+        req.add_header('User-Agent', default_hdr)
         req.add_header('Accept-Langauge', 'ko')
         req.add_header('Cookie', 'language=kr')
-        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+        response = urllib2.urlopen(req)
         link=response.read()
         response.close()
 
@@ -716,8 +737,8 @@ def listdramaInCategory(url):
         match=re.compile('<div class="ep.*?">\n\t\t\t\t<a href="(.*?)" title="(.*?)">\n\t\t\t\t\t\n\t\t\t\t\t<img src=".*?src=(.*?)_(.*?)_(.*?)"').findall(link)
         
         for i in range(len(match)):
-	    playVideoUrl = 'http://max.ondemandkorea.com/' + match[i][0]
-	    poster1 = 'http://max.ondemandkorea.com/' + match[i][2] + '_'+ match[i][3] +'_' + match[i][4]
+	    playVideoUrl = root_url+'' + match[i][0]
+	    poster1 = root_url+'' + match[i][2] + '_'+ match[i][3] +'_' + match[i][4]
 	    poster = poster1.replace(' ','%20')
 	    title = unicode(match[i][1], 'utf-8')  + " - " + match[i][3]
 	    title = title.replace('.480p.1596k','').replace('amp;','').replace('&#039;','\'').replace('&lt;','<').replace('&gt;','>').replace('360p.1296k','')
@@ -735,7 +756,7 @@ def listdramaInCategory(url):
                     continue
                 title2 = node.b.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
                 thumb2 = re.compile('img src=".*?/wp-content(.*?)"').findall(str(node))
-                thumb1 = 'http://max.ondemandkorea.com/wp-content'+thumb2[0]
+                thumb1 = root_url+'wp-content'+thumb2[0]
                 thumb = thumb1.replace(' ','%20')   
                 try:
                     #dt = node.find("div", {"class":"ep_date"}).find(text=True)
@@ -755,7 +776,7 @@ def listdramaInCategory(url):
         
         #페이지 추가
         match1=re.compile('cat: \'(.*?)\',id: (.*?),').findall(link)
-        page='http://max.ondemandkorea.com/includes/episode_page.php?cat='+match1[0][0]+'&id=' +match1[0][1]+'&page=99'
+        page=root_url+'includes/episode_page.php?cat='+match1[0][0]+'&id=' +match1[0][1]+'&page=99'
 
         #페이지 수 확인
         req = urllib2.Request(page)
@@ -768,12 +789,12 @@ def listdramaInCategory(url):
                 pg=int(match2[0])+1
                 for i in range(1,pg): 
                     if i<5: #너무 오래 걸려서 4페이지까지 제한... 
-                        Pgurl = 'http://max.ondemandkorea.com/includes/episode_page.php?cat='+match1[0][0]+'&id=' +match1[0][1]+'&page='+str(i)
+                        Pgurl = root_url+'includes/episode_page.php?cat='+match1[0][0]+'&id=' +match1[0][1]+'&page='+str(i)
                         req = urllib2.Request(Pgurl)
                         response = urllib2.urlopen(req)
                         link=response.read()
                         match=re.compile('"url":"(.*?)"').search(link).group(1)
-                        Pgurl='http://max.ondemandkorea.com/'+match
+                        Pgurl=root_url+''+match
                         name=str(i) +' 페이지'
                         addDir(name, Pgurl, 'dramaCategoryContent', "")
       
@@ -787,16 +808,16 @@ def listMovieCategories(url):
     try:
         print "requesting url " + url
         req = urllib2.Request(url)
-        req.add_header('User-Agent', UserAgent)
+        req.add_header('User-Agent', default_hdr)
         req.add_header('Accept-Langauge', 'ko')
         req.add_header('Cookie', 'language=kr')  
-        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+        response = urllib2.urlopen(req)
         link=response.read()
         response.close()
         match=re.compile('<dd class="thumb"><a href="(.*?)".*?><img src="(.+?)" alt="(.*?)">').findall(link)
         
         for i in range(len(match)):
-            playVideoUrl = 'http://max.ondemandkorea.com/' + match[i][0]
+            playVideoUrl = root_url+'' + match[i][0]
 	    title = unicode(match[i][2], 'utf-8')
             match[i] = (playVideoUrl, title, match[i][1])
             
@@ -811,7 +832,7 @@ def listMovieCategories(url):
             for node in soup.findAll('dl'):
                 title2 = node.a.string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
                 thumb2 = re.compile('src=/wp-content(.*?)"').findall(str(node))
-                thumb1 = 'http://max.ondemandkorea.com/wp-content'+thumb2[0]
+                thumb1 = root_url+'wp-content'+thumb2[0]
                 thumb = thumb1.replace(' ','%20')
                 dt = node.find("span", {"class":"thumb-date"}).find(text=True)
                 title = title2 + ' - '+dt

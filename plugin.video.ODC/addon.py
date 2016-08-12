@@ -4,6 +4,7 @@
 """
 from xbmcswift2 import Plugin
 import os
+import json
 import xbmcplugin, xbmcgui, sys
 import urllib2, urllib, re
 from BeautifulSoup import BeautifulSoup
@@ -18,6 +19,9 @@ _connectionTimeout = 40
 #UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36"
 tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
 root_url = "http://www.ondemandkorea.com/"
+
+img_base = "http://max.ondemandkorea.com/includes/timthumb.php?w=175&h=100&src="
+eplist_url = "includes/episode_page.php?cat={program:s}&id={videoid:s}&page={page:d}"
 
 default_hdr = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
@@ -140,7 +144,7 @@ def listVideoCategories(url):
             match = re.compile('<a href="([^"]*)" title="([^"]*)">.*<img src="([^"]*timthumb[^"]*)"', re.S).search(part)
             if match:
                 thumb=match.group(3).replace(' ','%20')
-                items.append({'title':match.group(2), 'url':root_url+"/"+match.group(1), 'thumbnail':thumb})
+                items.append({'title':match.group(2), 'url':root_url+match.group(1), 'thumbnail':thumb})
                 
         for i in range(len(items)):
             items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
@@ -716,11 +720,62 @@ def resolveAndPlayMovie(url):
 
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
-        
+
 def listdramaInCategory(url):
+    print url
+    try:
+        url=url.split(';')
+        page=int(url[1])
+
+    except:
+        page=1
+    req  = urllib2.Request(url[0], headers=default_hdr)
+    req.add_header('Accept-Langauge', 'ko')
+    req.add_header('Cookie', 'language=kr')
+    html = urllib2.urlopen(req).read().decode('utf-8')
+
+    match = re.compile("getJSON\( *\"/[^\"]*\", *{ *cat: *'([^']*)', *id: *(\d+)"). search(html)
+    if match:
+        program, videoid = match.group(1,2)
+    else:
+        program = re.compile('"program" *: *"(.*?)"').search(html).group(1)
+        videoid = re.compile('"videoid" *: *(\d+)').search(html).group(1)
+        
+    list_url = root_url+eplist_url.format(program=program, videoid=videoid, page=page)
+    print list_url
+
+    req  = urllib2.Request(list_url, headers=default_hdr)
+    req.add_header('Accept-Langauge', 'ko')
+    req.add_header('Cookie', 'language=kr')
+    req.add_header('Referer', url)
+    jstr = urllib2.urlopen(req).read()
+    obj = json.loads(jstr)
+
+    result = []
+    for item in obj['list']:
+        result.append({'title':item['title'], 'broad_date':item['on_air_date'], 'url':root_url+"/"+item['url'], 'thumbnail':img_base+item["thumbnail"]})
+
+    for i in range(len(result)):
+        title=result[i]['title']+' - '+result[i]['broad_date']
+        result[i] = (title, result[i]['url'], result[i]['thumbnail'])
+
+    for name, url2, thumbnail in result:
+        addLink(name, url2, 'resolveAndPlayVideo', thumbnail)
+
+    if obj['cur_page'] > 1:
+        page=obj['cur_page']-1
+        url1=url[0]+';'+str(page)
+        addDir('이전 페이지', url1, 'dramaCategoryContent', "")
+
+    if obj['cur_page'] < obj['num_pages']:
+        page=obj['cur_page']+1
+        url1=url[0]+';'+str(page)
+        addDir('다음 페이지', url1, 'dramaCategoryContent', "")
+        
+def listdramaInCategory2(url):
     try:
         req = urllib2.Request(url)
-        req.add_header('User-Agent', default_hdr)
+        req.add_header('User-Agent', tablet_UA)
         req.add_header('Accept-Langauge', 'ko')
         req.add_header('Cookie', 'language=kr')
         response = urllib2.urlopen(req)
@@ -737,8 +792,8 @@ def listdramaInCategory(url):
         match=re.compile('<div class="ep.*?">\n\t\t\t\t<a href="(.*?)" title="(.*?)">\n\t\t\t\t\t\n\t\t\t\t\t<img src=".*?src=(.*?)_(.*?)_(.*?)"').findall(link)
         
         for i in range(len(match)):
-	    playVideoUrl = root_url+'' + match[i][0]
-	    poster1 = root_url+'' + match[i][2] + '_'+ match[i][3] +'_' + match[i][4]
+	    playVideoUrl = root_url + match[i][0]
+	    poster1 = root_url + match[i][2] + '_'+ match[i][3] +'_' + match[i][4]
 	    poster = poster1.replace(' ','%20')
 	    title = unicode(match[i][1], 'utf-8')  + " - " + match[i][3]
 	    title = title.replace('.480p.1596k','').replace('amp;','').replace('&#039;','\'').replace('&lt;','<').replace('&gt;','>').replace('360p.1296k','')
@@ -746,9 +801,11 @@ def listdramaInCategory(url):
 
         for title, url, thumbnail, in match:
             addLink(title, url, 'resolveAndPlayVideo', thumbnail)
+
         
      #soup를 통한 리스팅...
         if len(match)<1:
+            print 'failed to match. Using soup'
             soup=BeautifulSoup(link)
             items = []
             for node in soup.findAll('div', {'class':re.compile('^(?:ep|ep_last)$')}):
@@ -803,6 +860,7 @@ def listdramaInCategory(url):
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
 
+##
 
 def listMovieCategories(url):
     try:
@@ -867,7 +925,6 @@ def addDir(name,url,mode,iconimage):
     liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
     liz.setInfo( type="Video", infoLabels={ "Title": name } )
     xbmcplugin.addDirectoryItem(handle=_thisPlugin,url=u,listitem=liz,isFolder=True)
-    
 
 def getparams():
     """

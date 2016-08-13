@@ -45,6 +45,7 @@ def live():
     addDir("티비", " ", "livetv", '')
     
 def livetv():
+    addLink('MBC Rio', 'http://vodmall.imbc.com/util/player/OnairUrlUtil_wc.ashx', 'livetvplay2', '')
     addLink('SBS', 'http://t.tv.idol001.com/tvlist/idoltv1.json', 'livetvplay', '')
     addLink('MBC', 'http://t.tv.idol001.com/tvlist/idoltv2.json', 'livetvplay', '')
     addLink('KBS1', 'http://t.tv.idol001.com/tvlist/idoltv3.json', 'livetvplay', '')
@@ -459,8 +460,7 @@ def resolveAndPlayVideoLive(url):
         
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
-    
-
+        
 def livetvplay(url):
     try:
         req = urllib2.Request(url)
@@ -468,6 +468,20 @@ def livetvplay(url):
         response = url
         url=re.compile('/rt(.*?).com.*?/korea(.*?)","').findall(link)
         url2='rtmp://rt'+url[0][0]+'.com/live/korea'+url[0][1]
+
+        listItem = xbmcgui.ListItem(path=str(url2))
+        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+        
+    except urllib2.URLError:
+        addLink("성용이를 불러주세용.", '', '', '')    
+
+def livetvplay2(url):
+    try:
+        req = urllib2.Request(url)
+        link = urllib2.urlopen(req).read()
+        response = url
+        url=re.compile('CDATA\[(.*?)\]').findall(link)
+        url2=url[0]+url[2]
 
         listItem = xbmcgui.ListItem(path=str(url2))
         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
@@ -757,5 +771,6 @@ else:
         resolveAndPlayVideoLive(urlUnquoted)
     elif params["mode"] == 'livetvplay':
         livetvplay(urlUnquoted)
-
+    elif params["mode"] == 'livetvplay2':
+        livetvplay2(urlUnquoted)
 xbmcplugin.endOfDirectory(_thisPlugin)        

@@ -81,8 +81,7 @@ def livetv2():
     addLink(title,obj['onair']['source']['mediasource']['mediaurl'],'livetvplay3','')
     
     addLink('MBC Rio', 'http://vodmall.imbc.com/util/player/OnairUrlUtil_wc.ashx', 'livetvplay2', '')
-
-
+    addLink('KBS 임시', 'http://hls.live.kbskme.gscdn.com/rio2016/_definst_/rio2016.stream/playlist.m3u8?id=2101&si=3&secure=ODc3OTcxMjM2ZjUzOWRhODNhZTQ2MjNlMjFkMDg5ZTY2YTRmODRlYWZmYzBmYzc5OTU2ZDU0YzI0NzliNTc0ZjU4NGZhOTgxZDlhYjUxOTg5ZjZmZDQwZTI5ZTBlMTEyMmM5OTU2MzY0NWU4N2UwMzBjMjc3ZmI3YWJjYzA5MTg2N2QxODFiOTNlN2IzMmE2NGJlZmQ1ODE0YTMxNTk2MDRjZWE4NTcwZWFhODc2ZGE1ZWJjZmQ1ZTFhOTAzMjIyNThmODRkYjZlZDliMDAzNGQ2N2U4YzQ0ZjZhNDdkZTM1MmNmMzkyYzRkN2I2ZTI3M2I3ZDE0YmJlZjRhMTVhZjljYjExNmQzZTA3M2ZkNGU2ZTljYzljZTZhNWNmZDQ0MWMwOGMzNmQxZmE3MDc4NmRlZDZiZDVkMDE3NGFjMjM=&csu=false', 'livetvplay3', '')
 
 def league(url):
     req = urllib2.Request(url)
@@ -518,9 +517,11 @@ def livetvplay3(url):
     try:
         listItem = xbmcgui.ListItem(path=str(url))
         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-        
+     
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
+
+
 def High_Live_List(url):
     try:
         f=range(1,15)
@@ -809,4 +810,5 @@ else:
         livetvplay2(urlUnquoted)
     elif params["mode"] == 'livetvplay3':
         livetvplay3(urlUnquoted)
+
 xbmcplugin.endOfDirectory(_thisPlugin)        

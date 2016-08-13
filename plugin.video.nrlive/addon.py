@@ -6,6 +6,7 @@
 import os
 import xbmcplugin, xbmcgui, sys
 import urllib2, urllib, re
+import requests, json
 from BeautifulSoup import BeautifulSoup
 
 # magic; id of this plugin's instance - cast to integer
@@ -39,13 +40,14 @@ def vod():
         addDir(name, url, 'league', '')
 
 def live():
+    addDir("올림픽", " ", "livetv2", '')
     addDir("고화질", " ", "High", '')  
     addDir("중화질", " ", "Med", '')
     addDir("저화질", " ", "Low", '')
     addDir("티비", " ", "livetv", '')
+
     
 def livetv():
-    addLink('MBC Rio', 'http://vodmall.imbc.com/util/player/OnairUrlUtil_wc.ashx', 'livetvplay2', '')
     addLink('SBS', 'http://t.tv.idol001.com/tvlist/idoltv1.json', 'livetvplay', '')
     addLink('MBC', 'http://t.tv.idol001.com/tvlist/idoltv2.json', 'livetvplay', '')
     addLink('KBS1', 'http://t.tv.idol001.com/tvlist/idoltv3.json', 'livetvplay', '')
@@ -58,6 +60,29 @@ def livetv():
     addLink('arirang', 'http://t.tv.idol001.com/tvlist/idoltv8.json', 'livetvplay', '')
     addLink('SBS MTV', 'http://t.tv.idol001.com/tvlist/idoltv9.json', 'livetvplay', '')
     addLink('MBC everyone', 'http://t.tv.idol001.com/tvlist/idoltv10.json', 'livetvplay', '')
+
+def livetv2():
+    url='http://api.play.sbs.co.kr/1.0/onair/channel/S01?platform=pcweb&protocol=hls&jwt-token=&rnd=116'
+    req = urllib2.Request(url)
+    response = urllib2.urlopen(req)
+    link=response.read()
+    response.close()
+    obj = json.loads(link)
+    title=obj['onair']['info']['channelname']+' - '+obj['onair']['info']['title']
+    addLink(title,obj['onair']['source']['mediasource']['mediaurl'],'livetvplay3','')
+
+    url='http://api.play.sbs.co.kr/1.0/onair/channel/S02?platform=pcweb&protocol=hls&jwt-token=&rnd=116'
+    req = urllib2.Request(url)
+    response = urllib2.urlopen(req)
+    link=response.read()
+    response.close()
+    obj = json.loads(link)
+    title=obj['onair']['info']['channelname']+' - '+obj['onair']['info']['title']
+    addLink(title,obj['onair']['source']['mediasource']['mediaurl'],'livetvplay3','')
+    
+    addLink('MBC Rio', 'http://vodmall.imbc.com/util/player/OnairUrlUtil_wc.ashx', 'livetvplay2', '')
+
+
 
 def league(url):
     req = urllib2.Request(url)
@@ -489,6 +514,13 @@ def livetvplay2(url):
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
 
+def livetvplay3(url):
+    try:
+        listItem = xbmcgui.ListItem(path=str(url))
+        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+        
+    except urllib2.URLError:
+        addLink("성용이를 불러주세용.", '', '', '')
 def High_Live_List(url):
     try:
         f=range(1,15)
@@ -740,6 +772,8 @@ else:
         Low_list(urlUnquoted)
     elif params["mode"] == 'livetv':
         livetv()
+    elif params["mode"] == 'livetv2':
+        livetv2()
 
 
 
@@ -773,4 +807,6 @@ else:
         livetvplay(urlUnquoted)
     elif params["mode"] == 'livetvplay2':
         livetvplay2(urlUnquoted)
+    elif params["mode"] == 'livetvplay3':
+        livetvplay3(urlUnquoted)
 xbmcplugin.endOfDirectory(_thisPlugin)        

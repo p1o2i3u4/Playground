@@ -68,9 +68,7 @@ def listMainCategories():
     #addDir("음악", "109", "videoCategories", '')
     #addDir("게임", root_url+"games", "videoCategories", '')
     addDir("한국 영화", root_url+"movie", "MovieCategories", '')
-    #addDir("드라마 (저화질)", root_url+"drama", "videoCategoriesLow", '')
-    #addDir("예능/오락 (저화질)", root_url+"variety", "videoCategoriesLow", '')
-    #addDir("시사/다큐 (저화질)", root_url+"documentary", "videoCategoriesLow", '')
+
 
 
 def listRecentCategories(url):
@@ -88,18 +86,33 @@ def listRecentCategories(url):
     r = requests.post(url2, data=data, headers=headers)
     print(r.status_code, r.reason)
     obj = json.loads(r.text)
-    print obj['data']
+
 
     result = []
-    for item in obj['data']:
+    
+    today=obj['data'][2]['data'][0]['broadcastDate']
+    print today
+    for item in obj['data'][2]['data']:
         result.append({'id':item['id'], 'title':item['title'], 'broad_date':item['broadcastDate'], 'thumbnail':item["thumbnailUrl"], 'plusOnly':item['plusOnly'], 'cat':item['slug']})
 
-    for i in range(len(result)):
-        title=result[i]['title']+' - '+result[i]['broad_date']
-        eid=result[i]['id']+'^'+result[i]['plusOnly']+'^'+result[i]['cat']
-        result[i] = (title, eid, result[i]['thumbnail'])
+    for item in obj['data'][3]['data']:
+        result.append({'id':item['id'], 'title':item['title'], 'broad_date':item['broadcastDate'], 'thumbnail':item["thumbnailUrl"], 'plusOnly':item['plusOnly'], 'cat':item['slug']})
 
-    for name, url2, thumbnail in result:
+
+
+    result2=[]
+    
+            
+    for i in range(len(result)):
+        if result[i]['broad_date']==today:
+#            print 'today'
+            title=result[i]['title']+' - '+result[i]['broad_date']
+            eid=result[i]['id']+'^'+result[i]['plusOnly']+'^'+result[i]['cat']
+            result2.append([title, eid, result[i]['thumbnail']])
+            
+
+    print result2
+    for name, url2, thumbnail in result2:
         addLink(name, url2, 'resolveAndPlayVideo', thumbnail)
     
 def listVideoCategories(url):
@@ -126,13 +139,14 @@ def listVideoCategories(url):
             if result[i]['new']=='true':
                 title=result[i]['title']+' - NEW'
                 current.append([title, result[i]['id'], result[i]['thumbnail']])
+            
             else:
                 current.append([result[i]['title'], result[i]['id'], result[i]['thumbnail']])
         
             
         else:
             past.append([result[i]['title'], result[i]['id'], result[i]['thumbnail']])
-            
+    print current
     for name, url2, thumbnail in sorted(current):
         addDir(name, url2, 'dramaCategoryContent', thumbnail)
     

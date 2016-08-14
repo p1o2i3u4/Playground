@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
 	<setting id="quality" type="enum" label="30010" lvalues="30011|30012|30013" default="2" />
+	<setting id="mp4_url" type="bool" label="30003" default="true" />
 
 </settings>

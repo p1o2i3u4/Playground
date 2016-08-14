@@ -67,7 +67,7 @@ def listMainCategories():
     #addDir("종교", "75", "videoCategories", '')    
     #addDir("음악", "109", "videoCategories", '')
     #addDir("게임", root_url+"games", "videoCategories", '')
-    addDir("한국 영화", root_url+"movie", "MovieCategories", '')
+    #addDir("한국 영화", '808', "videoCategories", '')
 
 
 
@@ -111,7 +111,7 @@ def listRecentCategories(url):
             result2.append([title, eid, result[i]['thumbnail']])
             
 
-    print result2
+
     for name, url2, thumbnail in result2:
         addLink(name, url2, 'resolveAndPlayVideo', thumbnail)
     
@@ -204,9 +204,15 @@ def resolveAndPlayVideo(url):
 
         r = requests.post(url2, data=data, headers=headers)
         obj = json.loads(r.text)
-        
-        listItem = xbmcgui.ListItem(path=obj['episode']['videoSrc'])
-        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+
+
+        use_mp4_url = plugin.get_setting('mp4_url', bool)
+        if use_mp4_url:
+            listItem = xbmcgui.ListItem(path=obj['episode']['mp4Src'][0]['src'])
+            xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem) 
+        else:
+            listItem = xbmcgui.ListItem(path=obj['episode']['videoSrc'])
+            xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
     else:
         html='http://www.ondemandkorea.com/'+url[2]+'.html'
         req = urllib2.Request(html)
@@ -430,7 +436,7 @@ def resolveAndPlayVideo(url):
                     'http://lime2.ondemandkorea.com/documentary/'+title1[0]+'/'+date[0:4]+'/1080p-'+title1[0]+'/'+title[0]+'_'+title[1]+'-1.720p.2296k.mp4',                         
                     ]
 
-                    print m
+                
                     for i in range(len(url)):
                         try:
                             f = urllib2.Request(url[i])

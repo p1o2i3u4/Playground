@@ -36,20 +36,26 @@ default_hdr = {
 
 
 ## Get token
-tokenurl='http://api.ondemandkorea.com/api3/device/index.php'
-data={'language': '0',
-               'adid': '4617319a-7b87-40fd-a62e-d0ae587da6cc',
-               'appShorterVersion':'1.8.26',
-               'idfv':'f94606748c42f360',
-               'screenid':'0',
-               'appBundleVersion':'1.8.26'
-      }
-headers={'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
+try:
+    tokenurl='http://api.ondemandkorea.com/api3/device/index.php'
+    data={'language': '0',
+                   'adid': '4617319a-7b87-40fd-a62e-d0ae587da6cc',
+                   'appShorterVersion':'1.8.26',
+                   'idfv':'f94606748c42f360',
+                   'screenid':'0',
+                   'appBundleVersion':'1.8.26'
+          }
+    headers={
+        'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
+        'User-Agent': 'MMozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19',
+            }
 
-r = requests.post(tokenurl, data=data, headers=headers)
-obj = json.loads(r.text)
+    r = requests.post(tokenurl, data=data, headers=headers)
+    obj = json.loads(r.text)
 
-token=obj['accessToken']
+    token=obj['accessToken']
+except:
+    token='432b1a3e19ba4d68d169d85a71de3a0ded683edfe0239f24fafd2db611f1e081'
 
 def listMainCategories():
     addDir("최근 방영", '0', "RecentCategories", '')  
@@ -81,8 +87,10 @@ def listRecentCategories(url):
                    'appBundleVersion':'1.8.26',
                    'accessToken': token
           }
-    headers={'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
-
+    headers={
+        'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
+        'User-Agent': 'MMozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19',
+            }
     r = requests.post(url2, data=data, headers=headers)
     print(r.status_code, r.reason)
     obj = json.loads(r.text)
@@ -122,7 +130,10 @@ def listVideoCategories(url):
                    'accessToken': token,
                    'id':url
           }
-    headers={'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
+    headers={
+        'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
+        'User-Agent': 'MMozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19',
+            }
     r = requests.post(url2, data=data, headers=headers)
     print(r.status_code, r.reason)
     obj = json.loads(r.text)
@@ -167,8 +178,10 @@ def listdramaInCategory(url):
                   'size':'300',
                   'from':'0'
           }
-    headers={'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
-
+    headers={
+        'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
+        'User-Agent': 'MMozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19',
+            }
     r = requests.post(url2, data=data, headers=headers)
     print(r.status_code, r.reason)
     obj = json.loads(r.text)
@@ -200,8 +213,10 @@ def resolveAndPlayVideo(url):
                        'accessToken': token,
                        'id':url[0]
               }
-        headers={'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
-
+        headers={
+            'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
+            'User-Agent': 'MMozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19',
+                }
         r = requests.post(url2, data=data, headers=headers)
         obj = json.loads(r.text)
 

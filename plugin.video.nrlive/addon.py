@@ -7,9 +7,13 @@ import os
 import xbmcplugin, xbmcgui, sys
 import urllib2, urllib, re
 import requests, json
+from xbmcswift2 import Plugin
 from BeautifulSoup import BeautifulSoup
 
 # magic; id of this plugin's instance - cast to integer
+
+plugin = Plugin()
+Protocol = plugin.get_setting('Protocol', int)
 _pluginName = (sys.argv[0])
 _thisPlugin = int(sys.argv[1])
 _connectionTimeout = 20
@@ -218,7 +222,14 @@ def High_list(url):
             title = node.find('a', {'class': 'link_live cast_title'}).string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
             liveid = node.a['href']
             liveid=int(re.search(r'\d+', liveid).group())
-            url='http://videofarm.daum.net/controller/api/open/v1_0/BroadcastStreams.action?broadcastId='+str(liveid)+'&profile=HIGH'
+            if Protocol==0:
+                url='rtmp://203.133.176.170:1935/live/'+str(liveid)+'_1_2000'
+
+            elif Protocol==1:
+                url='rtsp://203.133.176.170:554/'+ str(liveid) +'_1_2000'
+            else:
+                url='http://cdn.live.daum.net/kakao_ch1/'+ str(liveid) +'_1_2000.m3u8?domain=cdn.live.daum.net&ch=35349604'
+            #url='http://videofarm.daum.net/controller/api/open/v1_0/BroadcastStreams.action?broadcastId='+str(liveid)+'&profile=HIGH'
             items.append({'title':title, 'broad_date':time, 'url':url, 'thumbnail':''})
             items.sort(reverse=True)
 
@@ -294,7 +305,14 @@ def Med_list(url):
             title = node.find('a', {'class': 'link_live cast_title'}).string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
             liveid = node.a['href']
             liveid=int(re.search(r'\d+', liveid).group())
-            url='http://videofarm.daum.net/controller/api/open/v1_0/BroadcastStreams.action?broadcastId='+str(liveid)+'&profile=MAIN'
+            if Protocol==0:
+                url='rtmp://203.133.176.170:1935/live/'+str(liveid)+'_1_1000'
+
+            elif Protocol==1:
+                url='rtsp://203.133.176.170:554/'+ str(liveid) +'_1_1000'
+            else:
+                url='http://cdn.live.daum.net/kakao_ch1/'+ str(liveid) +'_1_1000.m3u8?domain=cdn.live.daum.net&ch=35349604'
+            #url='http://videofarm.daum.net/controller/api/open/v1_0/BroadcastStreams.action?broadcastId='+str(liveid)+'&profile=MAIN'
             items.append({'title':title, 'broad_date':time, 'url':url, 'thumbnail':''})
             items.sort(reverse=True)
 
@@ -372,7 +390,14 @@ def Low_list(url):
             title = node.find('a', {'class': 'link_live cast_title'}).string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
             liveid = node.a['href']
             liveid=int(re.search(r'\d+', liveid).group())
-            url='http://videofarm.daum.net/controller/api/open/v1_0/BroadcastStreams.action?broadcastId='+str(liveid)+'&profile=BASE'
+            if Protocol==0:
+                url='rtmp://203.133.176.170:1935/live/'+str(liveid)+'_1_500'
+
+            elif Protocol==1:
+                url='rtsp://203.133.176.170:554/'+ str(liveid) +'_1_500'
+            else:
+                url='http://cdn.live.daum.net/kakao_ch1/'+ str(liveid) +'_1_500.m3u8?domain=cdn.live.daum.net&ch=35349604'
+            #url='http://videofarm.daum.net/controller/api/open/v1_0/BroadcastStreams.action?broadcastId='+str(liveid)+'&profile=BASE'
             items.append({'title':title, 'broad_date':time, 'url':url, 'thumbnail':''})
             items.sort(reverse=True)
 
@@ -389,14 +414,7 @@ def Low_list(url):
 
 def resolveAndPlayVideoDaum(url):
     try:
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        
-        #match=re.compile('"rtsp":"(.*?)"').search(link).group(1)
-        match=re.compile('"rtmp":"(.*?)"').search(link).group(1)
-        listItem = xbmcgui.ListItem(path=str(match))
+        listItem = xbmcgui.ListItem(path=str(url))
         xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
         
     except urllib2.URLError:

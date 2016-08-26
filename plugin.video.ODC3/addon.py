@@ -202,7 +202,8 @@ def listdramaInCategory(url):
 def resolveAndPlayVideo(url):
     url=url.split('%5E')
     print url
-    if url[1]=='0':
+    #if url[1]=='0':
+    if url[1]:
         url2='http://api.ondemandkorea.com/api3/episode/index.php'
         data={'language': '0',
                        'adid': '4617319a-7b87-40fd-a62e-d0ae587da6cc',

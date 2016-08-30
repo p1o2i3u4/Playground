@@ -1,832 +1,535 @@
 # -*- coding: utf-8 -*-
 """
-    NR live
+    Ondemand Korea
 """
-
+from xbmcswift2 import Plugin
+from urllib2 import unquote
 import os
-import xbmcplugin, xbmcgui, sys
 import urllib2, urllib, re
 import requests, json
-from xbmcswift2 import Plugin
 from BeautifulSoup import BeautifulSoup
 
-# magic; id of this plugin's instance - cast to integer
-
 plugin = Plugin()
-Protocol = plugin.get_setting('Protocol', int)
-_pluginName = (sys.argv[0])
-_thisPlugin = int(sys.argv[1])
-_connectionTimeout = 20
-_header = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
-tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
+_L = plugin.get_string
+Protocol = plugin.get_setting('Protocol', str)
 
-##채널 이름##
-ad=['','','KBS N Sorts','SBS Sports','MBC Sports+','','','','','','','','','','','','','','','','']
+plugin_path = plugin.addon.getAddonInfo('path')
+lib_path = os.path.join(plugin_path, 'resources', 'lib')
+sys.path.append(lib_path)
 
-def listMainCategories():
-    addDir("하이라이트", " ", "vod", '')
-    addDir("생방송", " ", "live", '')
 
-def vod():
+@plugin.route('/')
+def main_menu():
+    #urls = scraper.parseTop()
+    items = [
+        {'label':'하이라이트', 'path':plugin.url_for('VOD')},
+        {'label':'생방송', 'path':plugin.url_for('live')},
+    ]
+    return items
+
+@plugin.route('/VOD/')
+def VOD():
     url='http://sports.media.daum.net/rf/534b6e671652d99818d84ad0.json?callback=LegoLeagueInfoCallback'
-    req = urllib2.Request(url)
-    response = urllib2.urlopen(req)
-    link=response.read()
-    response.close()
 
-    league=re.compile('"userId" : "(.*?)" , "userName" : "(.*?)"').findall(link)
+    headers={'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3',
+             'Content-Type':'application/x-www-form-urlencoded'}
+    r = requests.post(url, '', headers=headers)
+    print(r.status_code, r.reason)
+    t=r.text[23:-2]
+    obj = json.loads(t)
+    ##print obj
 
-    for i in range(len(league)):
-        url='http://sports.media.daum.net/ronaldo/gallery/list.json?callback=VideoCallback&category-code='+league[i][0]
-        league[i] = (league[i][1], url)
-        
-    for name, url in league:
-        addDir(name, url, 'league', '')
+    result=[]
 
-def live():
-    addDir("올림픽", " ", "livetv2", '')
-    addDir("고화질", " ", "High", '')  
-    addDir("중화질", " ", "Med", '')
-    addDir("저화질", " ", "Low", '')
-    addDir("티비", " ", "livetv", '')
+
+    for item in obj['component']['data'][0]['component']['data']:
+        result.append({'league_id':item['component']['userId'], 'title':item['component']['userName']})
+
+    items=[]
+    items = [{'label':item['title'], 'path':plugin.url_for('league', league_id=item['league_id'], league=item['title'].encode('utf8')), 'thumbnail':''} for item in result]
+    items.pop(0)
+    return plugin.finish(items, update_listing=False)
 
     
-def livetv():
-    addLink('SBS', 'http://t.tv.idol001.com/tvlist/idoltv1.json', 'livetvplay', '')
-    addLink('MBC', 'http://t.tv.idol001.com/tvlist/idoltv2.json', 'livetvplay', '')
-    addLink('KBS1', 'http://t.tv.idol001.com/tvlist/idoltv3.json', 'livetvplay', '')
-    addLink('KBS2', 'http://t.tv.idol001.com/tvlist/idoltv4.json', 'livetvplay', '')
-    addLink('JTBC', 'http://t.tv.idol001.com/tvlist/idoltv7.json', 'livetvplay', '')
-    addLink('ONSTYLE', 'http://t.tv.idol001.com/tvlist/idoltv6.json', 'livetvplay', '')
-    addLink('MBC MUSIC', 'http://t.tv.idol001.com/tvlist/idoltv12.json', 'livetvplay', '')
-    addLink('Mnet', 'http://t.tv.idol001.com/tvlist/idoltv5.json', 'livetvplay', '')
-    addLink('TVN', 'http://t.tv.idol001.com/tvlist/idoltv11.json', 'livetvplay', '')
-    addLink('arirang', 'http://t.tv.idol001.com/tvlist/idoltv8.json', 'livetvplay', '')
-    addLink('SBS MTV', 'http://t.tv.idol001.com/tvlist/idoltv9.json', 'livetvplay', '')
-    addLink('MBC everyone', 'http://t.tv.idol001.com/tvlist/idoltv10.json', 'livetvplay', '')
 
-def livetv2():
-    url='http://api.play.sbs.co.kr/1.0/onair/channel/S01?platform=pcweb&protocol=hls&jwt-token=&rnd=116'
-    req = urllib2.Request(url)
-    response = urllib2.urlopen(req)
-    link=response.read()
-    response.close()
-    obj = json.loads(link)
-    title=obj['onair']['info']['channelname']+' - '+obj['onair']['info']['title']
-    addLink(title,obj['onair']['source']['mediasource']['mediaurl'],'livetvplay3','')
+@plugin.route('/VOD/<league>/<league_id>/')
+def league(league_id, league):
+    url='http://sports.media.daum.net/ronaldo/gallery/list.json?callback=VideoCallback&category-code='+league_id
 
-    url='http://api.play.sbs.co.kr/1.0/onair/channel/S02?platform=pcweb&protocol=hls&jwt-token=&rnd=116'
-    req = urllib2.Request(url)
-    response = urllib2.urlopen(req)
-    link=response.read()
-    response.close()
-    obj = json.loads(link)
-    title=obj['onair']['info']['channelname']+' - '+obj['onair']['info']['title']
-    addLink(title,obj['onair']['source']['mediasource']['mediaurl'],'livetvplay3','')
-    
-    addLink('MBC Rio', 'http://vodmall.imbc.com/util/player/OnairUrlUtil_wc.ashx', 'livetvplay2', '')
-    addLink('KBS 임시', 'http://hls.live.kbskme.gscdn.com/rio2016/_definst_/rio2016.stream/playlist.m3u8?id=2101&si=3&secure=ODc3OTcxMjM2ZjUzOWRhODNhZTQ2MjNlMjFkMDg5ZTY2YTRmODRlYWZmYzBmYzc5OTU2ZDU0YzI0NzliNTc0ZjU4NGZhOTgxZDlhYjUxOTg5ZjZmZDQwZTI5ZTBlMTEyMmM5OTU2MzY0NWU4N2UwMzBjMjc3ZmI3YWJjYzA5MTg2N2QxODFiOTNlN2IzMmE2NGJlZmQ1ODE0YTMxNTk2MDRjZWE4NTcwZWFhODc2ZGE1ZWJjZmQ1ZTFhOTAzMjIyNThmODRkYjZlZDliMDAzNGQ2N2U4YzQ0ZjZhNDdkZTM1MmNmMzkyYzRkN2I2ZTI3M2I3ZDE0YmJlZjRhMTVhZjljYjExNmQzZTA3M2ZkNGU2ZTljYzljZTZhNWNmZDQ0MWMwOGMzNmQxZmE3MDc4NmRlZDZiZDVkMDE3NGFjMjM=&csu=false', 'livetvplay3', '')
-
-def league(url):
     req = urllib2.Request(url)
     response = urllib2.urlopen(req)
     link=response.read()
     response.close()
 
-    match=re.compile('"home_team_name":"(.*?)","away_team_name":"(.*?)".*?"game_time":"([0-9]+)".*?"game_id":"(.*?)"').findall(link)
-
-    for i in range(len(match)):
-        l = str(match[i][2])
-        date=l[:4]+'/'+ l[4:6]+'/'+l[6:8]
-        title=match[i][0]+' vs. '+match[i][1] + ' - ' +date
-        url='http://sports.media.daum.net/proxy/ronaldo/gallery/view.json?game-id='+match[i][3]
-        match[i] = (unicode(title, 'utf-8'), url)
-
-
-    for name, url in match:
-        addDir(name, url, 'vodlist', '')
-
-    if len(match)<1:
-        match=re.compile('galleryList":\[{"id":"(.*?)"').search(link).group(1)
-        match2=re.compile('game_id":"1"}},{"id":"(.*?)"').findall(link)
-
-        a=list(match2)
-        a.insert(0,match)
-
-        b=re.compile('"game_name":"(.*?)"').findall(link)
-        d=re.compile('game_start_time":"([0-9]+)"').findall(link)
-
-        c=zip(b, a, d)
-
-        for i in range(len(c)):
-            l= str(c[i][2])[:4]+'/'+ str(c[i][2])[4:6]+'/'+str(c[i][2])[6:8]
-            title=c[i][0]+' - '+l
-            url='http://sports.media.daum.net/ronaldo/gallery/view.json?callback=videoGalleryCallback&id='+c[i][1]
-            c[i] = (unicode(title, 'utf-8'), url)
-
-        for name, url in c:
-            addDir(name, url, 'vodlist', '')
- 
-def vodlist(url):
-    req = urllib2.Request(url)
-    response = urllib2.urlopen(req)
-    link=response.read()
-    response.close()
-
-    match=re.compile('"vid":"(.*?)","title":"(.*?)","thumbnailUrl":"(.*?)"').findall(link)
-
-    for i in range(len(match)):
-        url='http://videofarm.daum.net/controller/api/open/v1_5/MovieLocation.apixml?vid='+match[i][0]+'&profile=HIGH'
-        match[i] = (unicode(match[i][1], 'utf-8'), url, match[i][2])
-        
-    match.sort()
-    
-    for name, url,thumbnail in match:
-        addLink(name, url, 'resolveAndPlayVod', thumbnail)
-
-
-def resolveAndPlayVod(url):
+    result=[]
+    t=link[16:-3]
+    obj = json.loads(t)
     try:
+        for item in obj['data']['galleryList']:
+            l = str(item['fieldValues']['game_time'])
+            date=l[:4]+'/'+ l[4:6]+'/'+l[6:8]
+            title=item['fieldValues']['home_team_name']+' vs. '+item['fieldValues']['away_team_name'] + ' - ' +date     
+            result.append({'title':title, 'vid':item['fieldValues']['game_id'], 'vtype':'sport'})
+        items=[]
+        items = [{'label':item['title'], 'path':plugin.url_for('VODlist', league=league, vid=item['vid'],vtype=item['vtype']), 'thumbnail':''} for item in result]
+        return plugin.finish(items, update_listing=False)
+    except:
+        for item in obj['data']['galleryList']:
+            l = str(item['fieldValues']['game_start_time'])
+            date=l[:4]+'/'+ l[4:6]+'/'+l[6:8]
+            title=item['fieldValues']['home_team_name']+' vs. '+item['fieldValues']['away_team_name'] + ' - ' +date     
+            result.append({'title':title, 'vid':item['fieldValues']['game_id'], 'vtype':'sport'})
+        items=[]
+        items = [{'label':item['title'], 'path':plugin.url_for('VODlist', league=league, vid=item['vid'],vtype=item['vtype']), 'thumbnail':''} for item in result]
+        return plugin.finish(items, update_listing=False)
+
+@plugin.route('/VOD/<league>/<vtype>/<vid>/')
+def VODlist(vid,vtype,league):
+##    if vtype=='sport':
+    url='http://sports.media.daum.net/proxy/ronaldo/gallery/view.json?game-id='+vid
+##    else:
+##    url='http://sports.media.daum.net/ronaldo/gallery/view.json?callback=videoGalleryCallback&id='+vid
+
+    req = urllib2.Request(url)
+    response = urllib2.urlopen(req)
+    link=response.read()
+    response.close()
+
+    obj = json.loads(link)
+    items=[]
+
+            
+    for item in obj['data']['gallery']['mediaRelations']:
+        items.append({'title':item['media']['fieldValues']['MEDIATYPE_tvpot']['title'], 'vodID':item['media']['fieldValues']['MEDIATYPE_tvpot']['vid'], 'thumbnail':item['media']['fieldValues']['MEDIATYPE_tvpot']['thumbnailUrl']})
+        
+    
+    items2 = [{'label':item['title'], 'path':plugin.url_for('VODPlay', title=item['title'].encode('utf8'), league=league, vid=vid,vtype=vtype, vodID=item['vodID']), 'thumbnail':item['thumbnail']} for item in items]
+    items2.sort()
+    return plugin.finish(items2, update_listing=False)
+    
+
+@plugin.route('/VOD/<league>/<vtype>/<vid>/<vodID>/<title>/')
+def VODPlay(vodID,league, vid,vtype,title):
+        url='http://videofarm.daum.net/controller/api/open/v1_5/MovieLocation.apixml?vid='+vodID+'&profile=HIGH'
         req = urllib2.Request(url)
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
 
         match=re.compile('<url><\!\[CDATA\[(.*?)\]\]></url>').search(link).group(1)
-    
-        listItem = xbmcgui.ListItem(path=str(match))
-        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-            
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-    
-def High_list(url):
-    try:
-        url='http://sports.news.naver.com/tv/onairScheduleList.nhn?gameId=&isScoreOn=true'
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        soup=BeautifulSoup(link)
+        print match
+        plugin.play_video( {'label': title, 'path':match} )
+        return plugin.finish(None, succeeded=False)
+
+@plugin.route('/live/')
+def live():
+    items = [
+        {'label':'티비', 'path':plugin.url_for('LiveTV')},
+        {'label':'고화질', 'path':plugin.url_for('High_list')},
+        {'label':'중화질', 'path':plugin.url_for('Med_list')},
+        {'label':'저화질', 'path':plugin.url_for('Low_list')},
+    ]
+    return plugin.finish(items, view_mode='list')
+
+@plugin.route('/live/LiveTV/')
+def LiveTV():
+    a=plugin.get_setting('a', bool)
+    url='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_chlist?istest=0&category_id=1'
+
+    headers={'User-Agent': 'OMS(compatible;ServiceType/OTN;DeviceType/Android;DeviceModel/LG-D852G;OSType/Android;OSVersion/5.0;AppVersion/5.0.32)',
+             'Content-Type':'text/plain;charset=UTF-8'}
+    r = requests.post(url, '', headers=headers)
+    print(r.status_code, r.reason)
+    obj = json.loads(r.text)
+    ##print obj
+
+    result=[]
 
 
-        items = []
+    ##result = obj['data']['live_url']
 
-        try:
-            for node in soup.findAll('li', {'class':'ing'}):
-                cat = re.compile('params1="(.*?)"').findall(str(node))
-                cat = [element.upper() for element in cat]
-                gid = re.compile('params2="(.*?)"').findall(str(node))
-                s1 = node.find("span", {"class":"score_num"}).find(text=True)
-                t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
-                s2 = node.find("span", {"class":"score_num b_num"}).find(text=True)
-                info = node.find("span", {"class":"score_info"}).find(text=True)
-                
-                title = cat[0]+ ': ' + unicode(t1[0],'utf-8') + ' ' +s1+ ' vs. ' + unicode(t1[1],'utf-8') + ' ' +s2+ ' ' +info
-                items.append({'title':title, 'url':gid[0]})
-        except:
-            print "No sport streams"
-            
-        for node in soup.findAll('li', {'class':'normal_e'}):
-            cat = re.compile('params1="(.*?)"').findall(str(node))
-            cat = [element.upper() for element in cat]
-            gid = re.compile('params2="(.*?)"').findall(str(node))
-            t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
-            
-            title = cat[0]+ ': ' + unicode(t1[0],'utf-8')
+    for item in obj['data']['list'][0]['list_channel']:
+        if item['type']=='EPG':
+            if item['adult_yn']=='N':
+                result.append({'chname':item['service_ch_name'], 'title':item['program_name'], 'ch_img':item['ch_image_detail'], 'thumbnail':item["still_cut_image"],'type':item['type']})
+        if a:
+            if item['adult_yn']=='Y':
+                result.append({'chname':item['service_ch_name'], 'title':item['program_name'], 'ch_img':item['ch_image_detail'], 'thumbnail':item["still_cut_image"],'type':item['type']})
 
-            items.append({'title':title, 'url':gid[0], 'thumbnail':''})
-
-        for i in range(len(items)):
-            items[i] = (items[i]['title'], items[i]['url'])
-         
-        for name, url in items:
-            addLink(name, url, 'resolveAndPlayVideo', '')
-
-        
-        addDir('네이버 생방송 목록',' ','High_Live', '')
-        addLink('##이하 다음 생중계##',' ','', '')
-        
-        ## daum ##
-        url='http://live.tvpot.daum.net/potplayer/service/LiveTimeTable.do'
-        req = urllib2.Request(url)
-        req.add_header('Accept-Langauge', 'ko')
-        req.add_header('Cookie', 'language=kr')
-        link = urllib2.urlopen(req).read()
-        soup=BeautifulSoup(link)
-        
-        items = []
-        for node in soup.findAll('li', {'class':'on'}):
-            if not node.span:
-                continue
-            time=node.span.string
-            title = node.find('a', {'class': 'link_live cast_title'}).string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
-            liveid = node.a['href']
-            liveid=int(re.search(r'\d+', liveid).group())
-            if Protocol==0:
-                url='rtmp://203.133.176.170:1935/live/'+str(liveid)+'_1_2000'
-
-            elif Protocol==1:
-                url='rtsp://203.133.176.170:554/'+ str(liveid) +'_1_2000'
-            else:
-                url='http://cdn.live.daum.net/kakao_ch1/'+ str(liveid) +'_1_2000.m3u8?domain=cdn.live.daum.net&ch=35349604'
-            #url='http://videofarm.daum.net/controller/api/open/v1_0/BroadcastStreams.action?broadcastId='+str(liveid)+'&profile=HIGH'
-            items.append({'title':title, 'broad_date':time, 'url':url, 'thumbnail':''})
-            items.sort(reverse=True)
-
-        for i in range(len(items)):
-            items[i] = (items[i]['title'], items[i]['url'])
-              
-
-        for name, url in items:
-            addLink(name, url, 'resolveAndPlayVideoDaum', '')
-
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-
-def Med_list(url):
-    try:
-        url='http://sports.news.naver.com/tv/onairScheduleList.nhn?gameId=&isScoreOn=true'
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        soup=BeautifulSoup(link)
-
-
-        items = []
-
-        try:
-            for node in soup.findAll('li', {'class':'ing'}):
-                cat = re.compile('params1="(.*?)"').findall(str(node))
-                cat = [element.upper() for element in cat]
-                gid = re.compile('params2="(.*?)"').findall(str(node))
-                s1 = node.find("span", {"class":"score_num"}).find(text=True)
-                t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
-                s2 = node.find("span", {"class":"score_num b_num"}).find(text=True)
-                info = node.find("span", {"class":"score_info"}).find(text=True)
-                
-                title = cat[0]+ ': ' + unicode(t1[0],'utf-8') + ' ' +s1+ ' vs. ' + unicode(t1[1],'utf-8') + ' ' +s2+ ' ' +info
-                items.append({'title':title, 'url':gid[0]})
-        except:
-            print "No sport streams"
-            
-        for node in soup.findAll('li', {'class':'normal_e'}):
-            cat = re.compile('params1="(.*?)"').findall(str(node))
-            cat = [element.upper() for element in cat]
-            gid = re.compile('params2="(.*?)"').findall(str(node))
-            t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
-            
-            title = cat[0]+ ': ' + unicode(t1[0],'utf-8')
-
-            items.append({'title':title, 'url':gid[0], 'thumbnail':''})
-
-        for i in range(len(items)):
-            items[i] = (items[i]['title'], items[i]['url'])
-         
-        for name, url in items:
-            addLink(name, url, 'resolveAndPlayVideo_med', '')
-            
-        addDir('네이버 생방송 목록',' ','Med_Live', '')
-        addLink('##이하 다음 생중계##',' ','', '')
-        
-        ## daum ##
-        url='http://live.tvpot.daum.net/potplayer/service/LiveTimeTable.do'
-        req = urllib2.Request(url)
-        req.add_header('Accept-Langauge', 'ko')
-        req.add_header('Cookie', 'language=kr')
-        link = urllib2.urlopen(req).read()
-        soup=BeautifulSoup(link)
-        
-        items = []
-        for node in soup.findAll('li', {'class':'on'}):
-            if not node.span:
-                continue
-            time=node.span.string
-            title = node.find('a', {'class': 'link_live cast_title'}).string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
-            liveid = node.a['href']
-            liveid=int(re.search(r'\d+', liveid).group())
-            if Protocol==0:
-                url='rtmp://203.133.176.170:1935/live/'+str(liveid)+'_1_1000'
-
-            elif Protocol==1:
-                url='rtsp://203.133.176.170:554/'+ str(liveid) +'_1_1000'
-            else:
-                url='http://cdn.live.daum.net/kakao_ch1/'+ str(liveid) +'_1_1000.m3u8?domain=cdn.live.daum.net&ch=35349604'
-            #url='http://videofarm.daum.net/controller/api/open/v1_0/BroadcastStreams.action?broadcastId='+str(liveid)+'&profile=MAIN'
-            items.append({'title':title, 'broad_date':time, 'url':url, 'thumbnail':''})
-            items.sort(reverse=True)
-
-        for i in range(len(items)):
-            items[i] = (items[i]['title'], items[i]['url'])
-              
-
-        for name, url in items:
-            addLink(name, url, 'resolveAndPlayVideoDaum', '')
-
-        
-            
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-
-def Low_list(url):
-    try:
-        url='http://sports.news.naver.com/tv/onairScheduleList.nhn?gameId=&isScoreOn=true'
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        soup=BeautifulSoup(link)
-
-
-        items = []
-
-        try:
-            for node in soup.findAll('li', {'class':'ing'}):
-                cat = re.compile('params1="(.*?)"').findall(str(node))
-                cat = [element.upper() for element in cat]
-                gid = re.compile('params2="(.*?)"').findall(str(node))
-                s1 = node.find("span", {"class":"score_num"}).find(text=True)
-                t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
-                s2 = node.find("span", {"class":"score_num b_num"}).find(text=True)
-                info = node.find("span", {"class":"score_info"}).find(text=True)
-                
-                title = cat[0]+ ': ' + unicode(t1[0],'utf-8') + ' ' +s1+ ' vs. ' + unicode(t1[1],'utf-8') + ' ' +s2+ ' ' +info
-                items.append({'title':title, 'url':gid[0]})
-        except:
-            print "No sport streams"
-            
-        for node in soup.findAll('li', {'class':'normal_e'}):
-            cat = re.compile('params1="(.*?)"').findall(str(node))
-            cat = [element.upper() for element in cat]
-            gid = re.compile('params2="(.*?)"').findall(str(node))
-            t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
-            
-            title = cat[0]+ ': ' + unicode(t1[0],'utf-8')
-
-            items.append({'title':title, 'url':gid[0], 'thumbnail':''})
-
-        for i in range(len(items)):
-            items[i] = (items[i]['title'], items[i]['url'])
-         
-        for name, url in items:
-            addLink(name, url, 'resolveAndPlayVideo_low', '')
-
-        addDir('네이버 생방송 목록',' ','Low_Live', '')
-        addLink('##이하 다음 생중계##',' ','', '')
-        
-        ## daum ##
-        url='http://live.tvpot.daum.net/potplayer/service/LiveTimeTable.do'
-        req = urllib2.Request(url)
-        req.add_header('Accept-Langauge', 'ko')
-        req.add_header('Cookie', 'language=kr')
-        link = urllib2.urlopen(req).read()
-        soup=BeautifulSoup(link)
-        
-        items = []
-        for node in soup.findAll('li', {'class':'on'}):
-            if not node.span:
-                continue
-            time=node.span.string
-            title = node.find('a', {'class': 'link_live cast_title'}).string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
-            liveid = node.a['href']
-            liveid=int(re.search(r'\d+', liveid).group())
-            if Protocol==0:
-                url='rtmp://203.133.176.170:1935/live/'+str(liveid)+'_1_500'
-
-            elif Protocol==1:
-                url='rtsp://203.133.176.170:554/'+ str(liveid) +'_1_500'
-            else:
-                url='http://cdn.live.daum.net/kakao_ch1/'+ str(liveid) +'_1_500.m3u8?domain=cdn.live.daum.net&ch=35349604'
-            #url='http://videofarm.daum.net/controller/api/open/v1_0/BroadcastStreams.action?broadcastId='+str(liveid)+'&profile=BASE'
-            items.append({'title':title, 'broad_date':time, 'url':url, 'thumbnail':''})
-            items.sort(reverse=True)
-
-        for i in range(len(items)):
-            items[i] = (items[i]['title'], items[i]['url'])
-              
-
-        for name, url in items:
-            addLink(name, url, 'resolveAndPlayVideoDaum', '')
-
-        
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-
-def resolveAndPlayVideoDaum(url):
-    try:
-        listItem = xbmcgui.ListItem(path=str(url))
-        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-        
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-        
-def resolveAndPlayVideo(url):
-    try:
-        url2='http://sports.news.naver.com/tv/index.nhn?gameId=' + url
-        req = urllib2.Request(url2)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        
-        ch=re.compile('"channelID":"high(.*?)"').search(link).group(1)
-
-        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2F'+ch+'%2F_definst_%2F'+ch+'_2000.stream%2Fplaylist.m3u8'
-            
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-
-        listItem = xbmcgui.ListItem(path=str(link))
-        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-        
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-
-def resolveAndPlayVideo_med(url):
-    try:
-        url2='http://sports.news.naver.com/tv/index.nhn?gameId=' + url
-        req = urllib2.Request(url2)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        
-        ch=re.compile('"channelID":"high(.*?)"').search(link).group(1)
-
-        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2F'+ch+'%2F_definst_%2F'+ch+'_800.stream%2Fplaylist.m3u8'
-            
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-
-        listItem = xbmcgui.ListItem(path=str(link))
-        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-        
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-
-
-def resolveAndPlayVideo_low(url):
-    try:
-        url2='http://sports.news.naver.com/tv/index.nhn?gameId=' + url
-        req = urllib2.Request(url2)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        
-        ch=re.compile('"channelID":"high(.*?)"').search(link).group(1)
-
-        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2F'+ch+'%2F_definst_%2F'+ch+'_300.stream%2Fplaylist.m3u8'
-            
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-
-        listItem = xbmcgui.ListItem(path=str(link))
-        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-        
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-
-def resolveAndPlayVideoLive(url):
-    try:
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        
-        listItem = xbmcgui.ListItem(path=str(link))
-        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-        
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-        
-def livetvplay(url):
-    try:
-        req = urllib2.Request(url)
-        link = urllib2.urlopen(req).read()
-        response = url
-        url=re.compile('/rt(.*?).com.*?/korea(.*?)","').findall(link)
-        url2='rtmp://rt'+url[0][0]+'.com/live/korea'+url[0][1]
-
-        listItem = xbmcgui.ListItem(path=str(url2))
-        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-        
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')    
-
-def livetvplay2(url):
-    try:
-        req = urllib2.Request(url)
-        link = urllib2.urlopen(req).read()
-        response = url
-        url=re.compile('CDATA\[(.*?)\]').findall(link)
-        url2=url[0]+url[2]
-
-        listItem = xbmcgui.ListItem(path=str(url2))
-        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
-        
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-
-def livetvplay3(url):
-    try:
-        listItem = xbmcgui.ListItem(path=str(url))
-        xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+    print'done'
+    result2=[]
+    for i in range(len(result)):
+        s=result[i]['title'].encode('latin1')
+        unquoted = unquote(s)
+        d=unquoted.decode('utf8').replace('+',' ')
+        title=result[i]['chname']+' - ' + d
+        a=result[i]['thumbnail']
+        b=unquote(a)
+        b=b.decode('utf8')
+        c=result[i]['chname']
+        d=c.encode('utf8')
+        result2.append({'title':title,'thumbnail':b,'channel':d})
      
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
+    items2 = [{'label':item['title'], 'path':plugin.url_for('LiveTVplay', title=item['title'].encode('utf-8'),url=item['thumbnail']), 'thumbnail':item['thumbnail']} for item in result2]
+    return plugin.finish(items2, update_listing=False)
 
-
-def High_Live_List(url):
-    try:
-        f=range(1,15)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-            if match == 'on':
-                name='채널 '+str(i)
-                link='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_2000.stream%2Fplaylist.m3u8'
-                addLink(name, link, 'resolveAndPlayVideoLive', '')
-                
-        f=range(100,102)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-            if match == 'on':
-                name='채널 '+str(i)
-                link='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_2000.stream%2Fplaylist.m3u8'
-                addLink(name, link, 'resolveAndPlayVideoLive', '')
-
-        f=range(200,212)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-            
-            if match == 'on':
-                name='채널 '+str(i)
-                link='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_2000.stream%2Fplaylist.m3u8'
-                addLink(name, link, 'resolveAndPlayVideoLive', '')
-                
-        f=range(1,15)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highad'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-                       
-            if match == 'on':
-                
-                name='ad채널 '+str(i) +' '+ad[i]
-                link='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad'+str(i)+'%2F_definst_%2Fad'+str(i)+'_2000.stream%2Fplaylist.m3u8'
-                addLink(name, link, 'resolveAndPlayVideoLive', '')
-      
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-
-def Med_Live_List(url):
-    try:
-        f=range(1,15)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-
-            if match == 'on':
-                name='채널 '+str(i)
-                link='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_800.stream%2Fplaylist.m3u8'
-                addLink(name, link, 'resolveAndPlayVideoLive', '')
-                
-        f=range(100,102)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-
-            if match == 'on':
-                name='채널 '+str(i)
-                link='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_800.stream%2Fplaylist.m3u8'
-                addLink(name, link, 'resolveAndPlayVideoLive', '')
-
-        f=range(200,212)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-
-            if match == 'on':
-                name='채널 '+str(i)
-                link='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_800.stream%2Fplaylist.m3u8'
-                addLink(name, link, 'resolveAndPlayVideoLive', '')
-                
-        f=range(1,15)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highad'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-
-            
-            if match == 'on':
-                name='ad채널 '+str(i) +' '+ad[i]
-                link='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad'+str(i)+'%2F_definst_%2Fad'+str(i)+'_800.stream%2Fplaylist.m3u8'
-                addLink(name, link, 'resolveAndPlayVideoLive', '')
-      
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-
-def Low_Live_List(url):
-    try:
-        f=range(1,15)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-
-            if match == 'on':
-                link='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_300.stream%2Fplaylist.m3u8'
-                name='채널 '+str(i)
-                addLink(name, link, 'resolveAndPlayVideoLive', '')
-                
-        f=range(100,102)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-
-            if match == 'on':
-                link='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_300.stream%2Fplaylist.m3u8'
-                name='채널 '+str(i)
-                addLink(name, link, 'resolveAndPlayVideoLive', '')
-
-        f=range(200,212)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highch'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-
-          
-            if match == 'on':
-                link='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fch'+str(i)+'%2F_definst_%2Fch'+str(i)+'_300.stream%2Fplaylist.m3u8'
-                name='채널 '+str(i)
-                addLink(name, link, 'resolveAndPlayVideoLive', '')
-                
-        f=range(1,15)
-        for i in f:
-            url='http://cvapi.ncast.nhncorp.com/chStatus.nhn?chid=highad'+str(i)
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
-            link=response.read()
-            response.close()
-            match=re.compile('"status":"(.*?)"').search(link).group(1)
-
-            
-            if match == 'on':
-                link='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2Fad'+str(i)+'%2F_definst_%2Fad'+str(i)+'_300.stream%2Fplaylist.m3u8'
-                name='ad채널 '+str(i)  +' '+ad[i]
-                addLink(name, link, 'resolveAndPlayVideoLive', '')
-      
-    except urllib2.URLError:
-        addLink("성용이를 불러주세용.", '', '', '')
-
-def addLink(name,url,mode,iconimage):
-    u=_pluginName+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)
-    ok=True
-    liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-    liz.setInfo( type="Video", infoLabels={ "Title": name } )
-    liz.setProperty("IsPlayable","true");
-    ok=xbmcplugin.addDirectoryItem(handle=_thisPlugin,url=u,listitem=liz,isFolder=False)
-    return ok
-
-def addDir(name,url,mode,iconimage):
-    u=_pluginName+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)#+"&name="+urllib.quote_plus(name)
-    ok=True
-    liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-    liz.setInfo( type="Video", infoLabels={ "Title": name } )
-    ok=xbmcplugin.addDirectoryItem(handle=_thisPlugin,url=u,listitem=liz,isFolder=True)
-    return ok
-
-def getparams():
-    """
-    Pick up parameters sent in via command line
-    @return dict list of parameters
-    @thanks Team XBM - I lifted this straight out of the
-    shoutcast addon
-    """
-    param=[]
-    paramstring=sys.argv[2]
-    if len(paramstring)>=2:
-        params=sys.argv[2]
-        cleanedparams=params.replace('?','')
-        if (params[len(params)-1]=='/'):
-            params=params[0:len(params)-2]
-        pairsofparams=cleanedparams.split('&')
-        param={}
-        for i in range(len(pairsofparams)):
-            splitparams={}
-            splitparams=pairsofparams[i].split('=')
-            if (len(splitparams))==2:
-                param[splitparams[0]]=splitparams[1]
-    return param
-
-params = getparams()
-
-try:
-    url = params["url"]
-    urlUnquoted = urllib.unquote_plus(url)
-except:
-    url = None
+@plugin.route('/live/LiveTV/<url>/<title>/')
+def LiveTVplay(url,title):
+    cid=re.compile('CHANNEL_IMAGE/([0-9]+)/').findall(url)
+    quality=plugin.get_setting('1080P', bool)
+    print quality
+    if quality:
+        print '1080p'
+        cid=int(cid[0])+1
+    else:
+        print 'SD'
+        cid=int(cid[0])+2
+    print cid
+    url2='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_play?istest=1&ch_no=404&bit_rate=S&bit_rate_option=1000&user_model=LG-D852G&user_os=5.0.1&user_type=Android&user_net=WIFI'
+    #url='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_proglist?istext=1&ch_no=404'
   
-if url == None:
-    #do listing
-    listMainCategories()
-else:
-    if params["mode"] == 'vod':
-        vod()
-    elif params["mode"] == 'live':
-        live()
-    elif params["mode"] == 'livetv':
-        livetv()        
-    elif params["mode"] == 'High':
-        High_list(urlUnquoted)
-    elif params["mode"] == 'Med':
-        Med_list(urlUnquoted)
-    elif params["mode"] == 'Low':
-        Low_list(urlUnquoted)
-    elif params["mode"] == 'livetv':
-        livetv()
-    elif params["mode"] == 'livetv2':
-        livetv2()
+    headers={'User-Agent': 'OMS(compatible;ServiceType/OTN;DeviceType/Android;DeviceModel/LG-D852G;OSType/Android;OSVersion/5.0;AppVersion/5.0.32)',
+             'Content-Type':'text/plain;charset=UTF-8'}
+    r = requests.post(url2, '', headers=headers)
+    print(r.status_code, r.reason)
+    obj = json.loads(r.text)
 
+    result = obj['data']['live_url']
 
+    print result
+    result=result.replace('10452',str(cid))
+    print result
 
-    elif params["mode"] == 'league':
-        league(urlUnquoted)
-    elif params["mode"] == 'vodlist':
-        vodlist(urlUnquoted)
-    elif params["mode"] == 'resolveAndPlayVod':
-        resolveAndPlayVod(urlUnquoted)
+    req = urllib2.Request(result,'', headers)
+    res = urllib2.urlopen(req)
+    finalurl = res.geturl()
+    
+    plugin.play_video( {'label': title, 'path':finalurl} )
+    return plugin.finish(None, succeeded=False)
 
+@plugin.route('/live/sports/High/')
+def High_list():
+
+    url='http://sports.news.naver.com/tv/onairScheduleList.nhn?gameId=&isScoreOn=true'
+    req = urllib2.Request(url)
+    response = urllib2.urlopen(req)
+    link=response.read()
+    soup=BeautifulSoup(link)
+
+    items = []
+
+    try:
+        for node in soup.findAll('li', {'class':'ing'}):
+            cat = re.compile('params1="(.*?)"').findall(str(node))
+            cat = [element.upper() for element in cat]
+            gid = re.compile('params2="(.*?)"').findall(str(node))
+            if len(gid)==0:
+                gid = re.compile('params1="(.*?)"').findall(str(node))
+                cat = re.compile('params="(.*?)"').findall(str(node))
+            s1 = node.find("span", {"class":"score_num"}).find(text=True)
+            t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
+            s2 = node.find("span", {"class":"score_num b_num"}).find(text=True)
+            info = node.find("span", {"class":"score_info"}).find(text=True)
+            
+            title = cat[0]+ ': ' + unicode(t1[0],'utf-8') + ' ' +s1+ ' vs. ' + unicode(t1[1],'utf-8') + ' ' +s2+ ' ' +info
+            items.append({'title':title, 'vid':gid[0]})
+            
+    except:
+        print "No sport streams"
         
-
-    elif params["mode"] == 'High_Live':
-        High_Live_List(urlUnquoted)
-    elif params["mode"] == 'Med_Live':
-        Med_Live_List(urlUnquoted)
-    elif params["mode"] == 'Low_Live':
-        Low_Live_List(urlUnquoted)
+    for node in soup.findAll('li', {'class':'normal_e'}):
+        cat = re.compile('params1="(.*?)"').findall(str(node))
+        cat = [element.upper() for element in cat]
+        gid = re.compile('params2="(.*?)"').findall(str(node))
+        if len(gid)==0:
+            gid = re.compile('params1="(.*?)"').findall(str(node))
+            cat = re.compile('params="(.*?)"').findall(str(node))
+        t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
         
-    elif params["mode"] == 'resolveAndPlayVideo':
-        resolveAndPlayVideo(urlUnquoted)
-    elif params["mode"] == 'resolveAndPlayVideo_med':
-        resolveAndPlayVideo_med(urlUnquoted)
-    elif params["mode"] == 'resolveAndPlayVideo_low':
-        resolveAndPlayVideo_low(urlUnquoted)
-    elif params["mode"] == 'resolveAndPlayVideoDaum':
-        resolveAndPlayVideoDaum(urlUnquoted)
-    elif params["mode"] == 'resolveAndPlayVideoLive':
-        resolveAndPlayVideoLive(urlUnquoted)
-    elif params["mode"] == 'livetvplay':
-        livetvplay(urlUnquoted)
-    elif params["mode"] == 'livetvplay2':
-        livetvplay2(urlUnquoted)
-    elif params["mode"] == 'livetvplay3':
-        livetvplay3(urlUnquoted)
+        title = cat[0]+ ': ' + unicode(t1[0],'utf-8')
 
-xbmcplugin.endOfDirectory(_thisPlugin)        
+        items.append({'title':title, 'vid':gid[0]})
+
+
+    items2=[]
+    items2 = ({'label':item['title'], 'path':plugin.url_for('resolveAndPlayVideo', title=item['title'].encode('utf-8'), vid=item['vid'], quality='2000'), 'thumbnail':''} for item in items)
+    items2=list(items2)
+    items2.append({'label':'##이하 DAUM 중계##', 'path':plugin.url_for('High_list'), 'thumbnail':''})
+    
+    url='http://live.tvpot.daum.net/potplayer/service/LiveTimeTable.do'
+    req = urllib2.Request(url)
+    req.add_header('Accept-Langauge', 'ko')
+    req.add_header('Cookie', 'language=kr')
+    link = urllib2.urlopen(req).read()
+    soup=BeautifulSoup(link)
+
+    items = []
+    for node in soup.findAll('li', {'class':'on'}):
+        if not node.span:
+            continue
+        time=node.span.string
+        title = node.find('a', {'class': 'link_live cast_title'}).string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
+        liveid = node.a['href']
+        liveid=int(re.search(r'\d+', liveid).group())
+    ####        if Protocol==0:
+    ####            url='rtmp://203.133.176.170:1935/live/'+str(liveid)+'_1_2000'
+    ####
+    ####        elif Protocol==1:
+    ####            url='rtsp://203.133.176.170:554/'+ str(liveid) +'_1_2000'
+    ####        else:
+    ####            url='http://cdn.live.daum.net/kakao_ch1/'+ str(liveid) +'_1_2000.m3u8?domain=cdn.live.daum.net&ch=35349604'
+        #url='http://videofarm.daum.net/controller/api/open/v1_0/BroadcastStreams.action?broadcastId='+str(liveid)+'&profile=HIGH'
+        items.append({'title':title, 'broad_date':time, 'liveid':liveid, 'thumbnail':''})
+        items.sort(reverse=True)
+
+    items3=({'label':item['title'], 'path':plugin.url_for('resolveAndPlayVideoDaum', title=item['title'].encode('utf-8'), liveid=item['liveid'], quality='2000'), 'thumbnail':''} for item in items)
+
+    items2.extend(items3)
+    return plugin.finish(items2, update_listing=False)
+
+@plugin.route('/live/sports/Med/')
+def Med_list():
+
+    url='http://sports.news.naver.com/tv/onairScheduleList.nhn?gameId=&isScoreOn=true'
+    req = urllib2.Request(url)
+    response = urllib2.urlopen(req)
+    link=response.read()
+    soup=BeautifulSoup(link)
+
+    items = []
+
+    try:
+        for node in soup.findAll('li', {'class':'ing'}):
+            cat = re.compile('params1="(.*?)"').findall(str(node))
+            cat = [element.upper() for element in cat]
+            gid = re.compile('params2="(.*?)"').findall(str(node))
+            if len(gid)==0:
+                gid = re.compile('params1="(.*?)"').findall(str(node))
+                cat = re.compile('params="(.*?)"').findall(str(node))
+            s1 = node.find("span", {"class":"score_num"}).find(text=True)
+            t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
+            s2 = node.find("span", {"class":"score_num b_num"}).find(text=True)
+            info = node.find("span", {"class":"score_info"}).find(text=True)
+            
+            title = cat[0]+ ': ' + unicode(t1[0],'utf-8') + ' ' +s1+ ' vs. ' + unicode(t1[1],'utf-8') + ' ' +s2+ ' ' +info
+            items.append({'title':title, 'vid':gid[0]})
+            
+    except:
+        print "No sport streams"
+        
+    for node in soup.findAll('li', {'class':'normal_e'}):
+        cat = re.compile('params1="(.*?)"').findall(str(node))
+        cat = [element.upper() for element in cat]
+        gid = re.compile('params2="(.*?)"').findall(str(node))
+        if len(gid)==0:
+            gid = re.compile('params1="(.*?)"').findall(str(node))
+            cat = re.compile('params="(.*?)"').findall(str(node))
+        t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
+        
+        title = cat[0]+ ': ' + unicode(t1[0],'utf-8')
+
+        items.append({'title':title, 'vid':gid[0]})
+
+
+    items2=[]
+    items2 = ({'label':item['title'], 'path':plugin.url_for('resolveAndPlayVideo', title=item['title'].encode('utf-8'), vid=item['vid'], quality='800'), 'thumbnail':''} for item in items)
+    items2=list(items2)
+    items2.append({'label':'##이하 DAUM 중계##', 'path':plugin.url_for('High_list'), 'thumbnail':''})
+    
+    url='http://live.tvpot.daum.net/potplayer/service/LiveTimeTable.do'
+    req = urllib2.Request(url)
+    req.add_header('Accept-Langauge', 'ko')
+    req.add_header('Cookie', 'language=kr')
+    link = urllib2.urlopen(req).read()
+    soup=BeautifulSoup(link)
+
+    items = []
+    for node in soup.findAll('li', {'class':'on'}):
+        if not node.span:
+            continue
+        time=node.span.string
+        title = node.find('a', {'class': 'link_live cast_title'}).string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
+        liveid = node.a['href']
+        liveid=int(re.search(r'\d+', liveid).group())
+    ####        if Protocol==0:
+    ####            url='rtmp://203.133.176.170:1935/live/'+str(liveid)+'_1_2000'
+    ####
+    ####        elif Protocol==1:
+    ####            url='rtsp://203.133.176.170:554/'+ str(liveid) +'_1_2000'
+    ####        else:
+    ####            url='http://cdn.live.daum.net/kakao_ch1/'+ str(liveid) +'_1_2000.m3u8?domain=cdn.live.daum.net&ch=35349604'
+        #url='http://videofarm.daum.net/controller/api/open/v1_0/BroadcastStreams.action?broadcastId='+str(liveid)+'&profile=HIGH'
+        items.append({'title':title, 'broad_date':time, 'liveid':liveid, 'thumbnail':''})
+        items.sort(reverse=True)
+
+    items3=({'label':item['title'], 'path':plugin.url_for('resolveAndPlayVideoDaum', title=item['title'].encode('utf-8'), liveid=item['liveid'], quality='1000'), 'thumbnail':''} for item in items)
+
+    items2.extend(items3)
+    return plugin.finish(items2, update_listing=False)
+
+
+@plugin.route('/live/sports/Low/')
+def Low_list():
+
+    url='http://sports.news.naver.com/tv/onairScheduleList.nhn?gameId=&isScoreOn=true'
+    req = urllib2.Request(url)
+    response = urllib2.urlopen(req)
+    link=response.read()
+    soup=BeautifulSoup(link)
+
+    items = []
+
+    try:
+        for node in soup.findAll('li', {'class':'ing'}):
+            cat = re.compile('params1="(.*?)"').findall(str(node))
+            cat = [element.upper() for element in cat]
+            gid = re.compile('params2="(.*?)"').findall(str(node))
+            if len(gid)==0:
+                gid = re.compile('params1="(.*?)"').findall(str(node))
+                cat = re.compile('params="(.*?)"').findall(str(node))
+            s1 = node.find("span", {"class":"score_num"}).find(text=True)
+            t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
+            s2 = node.find("span", {"class":"score_num b_num"}).find(text=True)
+            info = node.find("span", {"class":"score_info"}).find(text=True)
+            
+            title = cat[0]+ ': ' + unicode(t1[0],'utf-8') + ' ' +s1+ ' vs. ' + unicode(t1[1],'utf-8') + ' ' +s2+ ' ' +info
+            items.append({'title':title, 'vid':gid[0]})
+            
+    except:
+        print "No sport streams"
+        
+    for node in soup.findAll('li', {'class':'normal_e'}):
+        cat = re.compile('params1="(.*?)"').findall(str(node))
+        cat = [element.upper() for element in cat]
+        gid = re.compile('params2="(.*?)"').findall(str(node))
+        if len(gid)==0:
+            gid = re.compile('params1="(.*?)"').findall(str(node))
+            cat = re.compile('params="(.*?)"').findall(str(node))
+        t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
+        
+        title = cat[0]+ ': ' + unicode(t1[0],'utf-8')
+
+        items.append({'title':title, 'vid':gid[0]})
+
+
+    items2=[]
+    items2 = ({'label':item['title'], 'path':plugin.url_for('resolveAndPlayVideo', title=item['title'].encode('utf-8'), vid=item['vid'], quality='300'), 'thumbnail':''} for item in items)
+    items2=list(items2)
+    items2.append({'label':'##이하 DAUM 중계##', 'path':plugin.url_for('High_list'), 'thumbnail':''})
+    
+    url='http://live.tvpot.daum.net/potplayer/service/LiveTimeTable.do'
+    req = urllib2.Request(url)
+    req.add_header('Accept-Langauge', 'ko')
+    req.add_header('Cookie', 'language=kr')
+    link = urllib2.urlopen(req).read()
+    soup=BeautifulSoup(link)
+
+    items = []
+    for node in soup.findAll('li', {'class':'on'}):
+        if not node.span:
+            continue
+        time=node.span.string
+        title = node.find('a', {'class': 'link_live cast_title'}).string.replace('&amp;','&').replace('&lt;','<').replace('&gt;','>').replace('&#039;','\'')
+        liveid = node.a['href']
+        liveid=int(re.search(r'\d+', liveid).group())
+    ####        if Protocol==0:
+    ####            url='rtmp://203.133.176.170:1935/live/'+str(liveid)+'_1_2000'
+    ####
+    ####        elif Protocol==1:
+    ####            url='rtsp://203.133.176.170:554/'+ str(liveid) +'_1_2000'
+    ####        else:
+    ####            url='http://cdn.live.daum.net/kakao_ch1/'+ str(liveid) +'_1_2000.m3u8?domain=cdn.live.daum.net&ch=35349604'
+        #url='http://videofarm.daum.net/controller/api/open/v1_0/BroadcastStreams.action?broadcastId='+str(liveid)+'&profile=HIGH'
+        items.append({'title':title, 'broad_date':time, 'liveid':liveid, 'thumbnail':''})
+        items.sort(reverse=True)
+
+    items3=({'label':item['title'], 'path':plugin.url_for('resolveAndPlayVideoDaum', title=item['title'].encode('utf-8'), liveid=item['liveid'], quality='500'), 'thumbnail':''} for item in items)
+
+    items2.extend(items3)
+    return plugin.finish(items2, update_listing=False)
+
+
+@plugin.route('/live/sports/<quality>/<liveid>/daum/<title>')
+def resolveAndPlayVideoDaum(liveid,quality,title):
+    if Protocol==0:
+        url='rtmp://203.133.176.170:1935/live/'+liveid+'_1_'+quality
+
+    elif Protocol==1:
+        url='rtsp://203.133.176.170:554/'+ liveid +'_1_'+quality
+    else:
+        url='http://cdn.live.daum.net/kakao_ch1/'+ liveid +'_1_'+quality+'.m3u8?domain=cdn.live.daum.net&ch=35349604'  
+##    listItem = xbmcgui.ListItem(path=str(url))
+##    xbmcplugin.setResolvedUrl(_thisPlugin, True, listItem)
+##
+##    
+    plugin.play_video( {'label': title, 'path':url} )
+    return plugin.finish(None, succeeded=False)
+
+@plugin.route('/live/sports/<quality>/<vid>/<title>')
+def resolveAndPlayVideo(vid,quality,title):
+    url2='http://sports.news.naver.com/tv/index.nhn?gameId=' + vid
+    req = urllib2.Request(url2)
+    response = urllib2.urlopen(req)
+    link=response.read()
+    response.close()
+    
+    ch=re.compile('"channelID":"high(.*?)"').search(link).group(1)
+
+    if quality=='2000':
+        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2F'+ch+'%2F_definst_%2F'+ch+'_2000.stream%2Fplaylist.m3u8'
+    elif quality=='800':
+        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2F'+ch+'%2F_definst_%2F'+ch+'_800.stream%2Fplaylist.m3u8'
+    else:
+        url='http://surl.ncast.nhncorp.com/secUrl.nhn?orgUrl=http%3A%2F%2Fhls.live.m.nhn.gscdn.com%2F'+ch+'%2F_definst_%2F'+ch+'_300.stream%2Fplaylist.m3u8'
+        
+    req = urllib2.Request(url)
+    response = urllib2.urlopen(req)
+    link=response.read()
+    response.close()
+
+    plugin.play_video( {'label': title, 'path':link} )
+    return plugin.finish(None, succeeded=False)
+
+##
+##@plugin.route('/episode/<genre>/<page>/<url>')
+##def episode_view(url, page, genre):
+##    plugin.log.debug(url)
+##    koPage = plugin.get_setting('koPage', bool)
+##    info = scraper.parseEpisodePage2(url, page=int(page), koPage=koPage)
+##    items = [{'label':item['title'], 'label2':item['broad_date'], 'path':plugin.url_for('play_episode', url=item['url'], genre=genre), 'thumbnail':item['thumbnail']} for item in info['episode']]
+##    # navigation
+##    if 'prevpage' in info:
+##        items.append({'label':tPrevPage, 'path':plugin.url_for('episode_view', url=url, page=info['prevpage'], genre=genre)})
+##    if 'nextpage' in info:
+##        items.append({'label':tNextPage, 'path':plugin.url_for('episode_view', url=url, page=info['nextpage'], genre=genre)})
+##    return plugin.finish(items, update_listing=False)
+##
+##@plugin.route('/play/<genre>/<url>')
+##def play_episode(url, genre):
+##    global quality_tbl
+##    plugin.log.debug(url)
+##    resolution = quality_tbl[ plugin.get_setting('quality', int) ]
+##    use_mp4_url = plugin.get_setting('mp4_url', bool)
+##
+##    if use_mp4_url:
+##        info = scraper.extractVideoUrl(url, referer=url)
+##        if info is None:
+##            info = scraper.guessVideoUrl(url, genre=genre)
+##            plugin.log.info("use guessed url")
+##    else:
+##        info = scraper.extractStreamUrl(url, referer=url)
+##
+##    plugin.log.debug("resolution: "+resolution)
+##    avail_resolutions = info['videos'].keys()
+##    if not resolution in avail_resolutions:
+##        resolution = avail_resolutions[0]
+##    video = info['videos'][resolution]
+##
+##    plugin.play_video( {'label':info['title'], 'path':video['url']} )
+##
+##    return plugin.finish(None, succeeded=False)
+
+if __name__ == "__main__":
+    plugin.run()
+
+# vim:sw=4:sts=4:et

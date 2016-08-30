@@ -1,8 +1,34 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-    <!-- Root Menu -->
+    <string id="30000">Ondemand Korea</string>
+    <string id="30001">비디오 화질</string>
+    <string id="30002">한국어</string>
+    <string id="30003">MP4 비디오</string>
+    <string id="30004">대체 파서 사용</string>
+    <string id="30005">1080P</string>
+    <string id="30006">A</string>	
+
+    <string id="30100">이전 페이지</string>
+    <string id="30101">다음 페이지</string>
+    
     <string id="30010">Protocol</string>
-	<string id="30011">RTMP</string>
-	<string id="30012">RTSP</string>
-	<string id="30013">M3U8</string>
+    <string id="30011">RTMP</string>
+    <string id="30012">RSTP</string>
+    <string id="30013">M3U8</string>
+	
+	
+    <string id="30114">음식</string>
+    <string id="30115">음식/요리</string>
+    <string id="30116">여성</string>
+    <string id="30117">건강</string>
+    <string id="30118">스포츠</string>
+    <string id="30119">교육</string>
+    <string id="30120">경제</string>
+    <string id="30121">종교</string>
+    <string id="30122">화제영상</string>
+    <string id="30123">음악</string>
+    <string id="30124">게임</string>
+
+    <string id="30200">일반</string>
+    <string id="30201">고급</string>
 </strings>

@@ -34,21 +34,26 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.nrlive" name="NR Live" version="0.1.0" provider-name="Kevin Shin">
+<addon id="plugin.video.nrlive"
+       name="NR Live"
+       version="0.1.1"
+       provider-name="XBMC-Korea">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
-	<import addon="script.module.beautifulsoup" version="3.2.1"/>
-	<import addon="script.module.xbmcswift2" version="2.4.0"/>
+    <import addon="script.module.xbmcswift2" version="2.4.0"/>
+    <import addon="script.module.beautifulsoup" version="4.3.2"/>
 	<import addon="script.module.requests" version="2.7.0"/>
- </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-        <provides>video</provides>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             library="addon.py">
+    <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <language>en</language>
+    <summary lang="en">NR Live</summary>
+    <summary lang="ko">NR Live</summary>
+    <description lang="en">Live feeds</description>
+    <description lang="ko">Live feeds</description>
     <platform>all</platform>
-    <summary lang="en">Naver Live</summary>
-    <description lang="en">	</description>
   </extension>
 </addon>
 
@@ -69,7 +74,7 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.ODC3" name="ODC api" version="1.0.4" provider-name="Kevin Shin">
+<addon id="plugin.video.ODC3" name="ODC api" version="1.0.6" provider-name="Kevin Shin">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
 	<import addon="script.module.beautifulsoup" version="3.2.1"/>

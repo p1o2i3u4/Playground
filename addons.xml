@@ -58,7 +58,7 @@
 </addon>
 
 <addon id="plugin.video.nrlive2"
-       name="NR Live"
+       name="NR Live2"
        version="0.1.3"
        provider-name="Kevin Shin">
   <requires>

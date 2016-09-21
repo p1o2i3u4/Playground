@@ -101,13 +101,16 @@ def Recent():
     result = []
     for item in obj['data'][2]['data']:
         title=item['title']+' - '+item['broadcastDate']
-        result.append({'label':title, 'path':plugin.url_for('resolveAndPlayVideo',title=title.encode('utf-8'), eid=item['id'], plus=item['plusOnly'],cat=item['slug']), 'thumbnail':item["thumbnailUrl"] })
+        print item['plusOnly']
+        if item['plusOnly']=='0':           
+            result.append({'label':title, 'path':plugin.url_for('resolveAndPlayVideo',title=title.encode('utf-8'), eid=item['id'], plus=item['plusOnly'],cat=item['slug']), 'thumbnail':item["thumbnailUrl"] })
 
     result.append({'label':'##예능##', 'path':'', 'thumbnail':''})
     
     for item in obj['data'][3]['data']:
         title=item['title']+' - '+item['broadcastDate']
-        result.append({'label':title, 'path':plugin.url_for('resolveAndPlayVideo',title=title.encode('utf-8'), eid=item['id'], plus=item['plusOnly'],cat=item['slug']), 'thumbnail':item["thumbnailUrl"] })
+        if item['plusOnly']=='0':   
+            result.append({'label':title, 'path':plugin.url_for('resolveAndPlayVideo',title=title.encode('utf-8'), eid=item['id'], plus=item['plusOnly'],cat=item['slug']), 'thumbnail':item["thumbnailUrl"] })
 
     return plugin.finish(result, update_listing=False)
 
@@ -132,7 +135,8 @@ def VOD(gid):
     current = []
     past = []
     for item in obj['data']:
-        result.append({'id':item['id'], 'title':item['title'], 'broad_date':item['latestDate'], 'thumbnail':item["posterUrl"],'stat':item['status'], 'new':item['new']})
+        if item['odkPlus']=='0':       
+            result.append({'id':item['id'], 'title':item['title'], 'broad_date':item['latestDate'], 'thumbnail':item["posterUrl"],'stat':item['status'], 'new':item['new']})
 
     for i in range(len(result)):
         if result[i]['stat']=='current':

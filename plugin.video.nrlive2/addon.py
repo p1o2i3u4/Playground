@@ -147,15 +147,34 @@ def LiveTV():
 
 
     ##result = obj['data']['live_url']
+    
 
+    
     for item in obj['data']['list'][0]['list_channel']:
         if item['type']=='EPG':
             if item['adult_yn']=='N':
                 result.append({'chname':item['service_ch_name'], 'title':item['program_name'], 'ch_img':item['ch_image_detail'], 'thumbnail':item["still_cut_image"],'type':item['type']})
+
         if a:
             if item['adult_yn']=='Y':
                 result.append({'chname':item['service_ch_name'], 'title':item['program_name'], 'ch_img':item['ch_image_detail'], 'thumbnail':item["still_cut_image"],'type':item['type']})
-
+    #result.append({'chname':'WOW TV', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10480/'})
+    #result.append({'chname':'NAT GEO People', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10240/'})
+    #result.append({'chname':'Golf Korea', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10290/'})
+    #result.append({'chname':'Billiards', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10080/'})
+    #result.append({'chname':'CS Myshop', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10630/'})
+    result.append({'chname':'Sky ICT', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10360/'})
+    #result.append({'chname':'KBS1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10170/'})
+    #result.append({'chname':'KBS2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10140/'})
+    result.append({'chname':'MBC', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10540/'})
+    result.append({'chname':'SBS', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10550/'})
+    result.append({'chname':'SkySports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10440/'})
+    result.append({'chname':'KBS N SPORTS', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10410/'})
+    result.append({'chname':'MBC Sports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10430/'})
+    result.append({'chname':'XTM', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10130/'})
+    #result.append({'chname':'?', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11510/'})
+    #result.append({'chname':'K shopping', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10570/'})
+    
     print'done'
     result2=[]
     for i in range(len(result)):

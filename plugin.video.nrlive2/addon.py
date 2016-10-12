@@ -216,7 +216,11 @@ def LiveTVplay(url,title):
     result = obj['data']['live_url']
 
     print result
+    result=result.replace('10450',str(cid))
+    result=result.replace('10451',str(cid))
     result=result.replace('10452',str(cid))
+    result=result.replace('10453',str(cid))
+    
     print result
 
     req = urllib2.Request(result,'', headers)

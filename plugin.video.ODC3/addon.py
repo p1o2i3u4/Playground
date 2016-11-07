@@ -101,16 +101,23 @@ def Recent():
     result = []
     for item in obj['data'][2]['data']:
         title=item['title']+' - '+item['broadcastDate']
-        print item['plusOnly']
-        if item['plusOnly']=='0':           
-            result.append({'label':title, 'path':plugin.url_for('resolveAndPlayVideo',title=title.encode('utf-8'), eid=item['id'], plus=item['plusOnly'],cat=item['slug']), 'thumbnail':item["thumbnailUrl"] })
+        thumb1=item["thumbnailUrl"]
+        thumb=thumb1.replace('http://max.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://max.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
+        thumb='http://ondemandkorea.com'+thumb
+        thumb=thumb.replace('http://ondemandkorea.comhttp://lime6.ondemandkorea.com','http://lime6.ondemandkorea.com')
+        #if item['plusOnly']=='0':           
+        result.append({'label':title, 'path':plugin.url_for('resolveAndPlayVideo',title=title.encode('utf-8'), eid=item['id'], plus=item['plusOnly'],cat=item['slug']), 'thumbnail':thumb })
 
     result.append({'label':'##예능##', 'path':'', 'thumbnail':''})
     
     for item in obj['data'][3]['data']:
         title=item['title']+' - '+item['broadcastDate']
-        if item['plusOnly']=='0':   
-            result.append({'label':title, 'path':plugin.url_for('resolveAndPlayVideo',title=title.encode('utf-8'), eid=item['id'], plus=item['plusOnly'],cat=item['slug']), 'thumbnail':item["thumbnailUrl"] })
+        thumb1=item["thumbnailUrl"]
+        thumb=thumb1.replace('http://max.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://max.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
+        thumb='http://ondemandkorea.com'+thumb
+        thumb=thumb.replace('http://ondemandkorea.comhttp://lime6.ondemandkorea.com','http://lime6.ondemandkorea.com')
+        #if item['plusOnly']=='0':   
+        result.append({'label':title, 'path':plugin.url_for('resolveAndPlayVideo',title=title.encode('utf-8'), eid=item['id'], plus=item['plusOnly'],cat=item['slug']), 'thumbnail':thumb })
 
     return plugin.finish(result, update_listing=False)
 
@@ -135,8 +142,12 @@ def VOD(gid):
     current = []
     past = []
     for item in obj['data']:
-        if item['odkPlus']=='0':       
-            result.append({'id':item['id'], 'title':item['title'], 'broad_date':item['latestDate'], 'thumbnail':item["posterUrl"],'stat':item['status'], 'new':item['new']})
+        #if item['odkPlus']=='0':
+        thumb1=item["posterUrl"]
+        thumb=thumb1.replace('http://max.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://max.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
+        thumb='http://ondemandkorea.com'+thumb
+        thumb=thumb.replace('http://ondemandkorea.comhttp://ondemandkorea.com','http://ondemandkorea.com')
+        result.append({'id':item['id'], 'title':item['title'], 'broad_date':item['latestDate'], 'thumbnail':thumb,'stat':item['status'], 'new':item['new']})
 
     for i in range(len(result)):
         if result[i]['stat']=='current':
@@ -191,7 +202,11 @@ def CategoryContent(gid,cid):
     result = []
     for item in obj['data']:
         title=item['title']+' - '+item['broadcastDate']
-        result.append({'label':title, 'path':plugin.url_for('resolveAndPlayVideo',title=title.encode('utf-8'), eid=item['id'], plus=item['plusOnly'],cat=item['slug']), 'thumbnail':item["thumbnailUrl"] })
+        thumb1=item["thumbnailUrl"]
+        thumb=thumb1.replace('http://max.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://max.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
+        thumb='http://ondemandkorea.com'+thumb
+        thumb=thumb.replace('http://ondemandkorea.comhttp://lime6.ondemandkorea.com','http://lime6.ondemandkorea.com')
+        result.append({'label':title, 'path':plugin.url_for('resolveAndPlayVideo',title=title.encode('utf-8'), eid=item['id'], plus=item['plusOnly'],cat=item['slug']), 'thumbnail':thumb })
 
 
     return plugin.finish(result, update_listing=False)
@@ -219,10 +234,19 @@ def resolveAndPlayVideo(eid,plus,cat,title):
 
 
         use_mp4_url = plugin.get_setting('mp4_url', bool)
+        quality = plugin.get_setting("quality", str)
         if use_mp4_url:
-            plugin.play_video( {'label': title, 'path':obj['episode']['mp4Src'][0]['src']} )
+            if quality == '1':
+                plugin.play_video( {'label': title, 'path':obj['episode']['mp4Src'][1]['src']} )
+            else:
+                plugin.play_video( {'label': title, 'path':obj['episode']['mp4Src'][0]['src']} )
             return plugin.finish(None, succeeded=False)
         else:
+##            if quality == '1':
+##                vurl1=obj['episode']['videoSrc']
+##                vurl=vurl1.replace('1080','720')
+##                plugin.play_video( {'label': title, 'path':vurl} )
+##            else:
             plugin.play_video( {'label': title, 'path':obj['episode']['videoSrc']} )
             return plugin.finish(None, succeeded=False)
     else:

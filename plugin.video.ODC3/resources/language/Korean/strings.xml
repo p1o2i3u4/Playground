@@ -2,8 +2,8 @@
 <strings>
     <!-- Root Menu -->
     <string id="30010">동영상 품질</string>
-	<string id="30011">360p</string>
-	<string id="30012">480p</string>
-	<string id="30013">720p</string>
+	<string id="30011">480p</string>
+	<string id="30012">720p</string>
+	<string id="30013">1080p</string>
 	<string id="30003">mp4</string>
 </strings>

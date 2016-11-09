@@ -184,11 +184,9 @@ def listvideourl(url):
         except:
             print 'No kvid'
 
-
-            
-        hdmotion2=re.compile('<a href="//www.dailymotion.com/(.*?)" class=".*?" target=".*?"><span>(.+?)</').findall(link)
+        hdmotion2=re.compile('xink=//www.dailymotion.com/embed/video/(.*?)" class="button red xLarge" target=".*?"><span>(.+?) \|').findall(link)
         for i in range(len(hdmotion2)):
-            url2='http://dailymotion.com/'+hdmotion2[i][0]
+            url2='http://dailymotion.com/embed/video/'+hdmotion2[i][0]
             f = urllib2.Request(url2)
             f.add_header('User-Agent', _header)
             f2=urllib2.urlopen(f)

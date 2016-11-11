@@ -74,15 +74,36 @@ def league(league_id, league):
         items = [{'label':item['title'], 'path':plugin.url_for('VODlist', league=league, vid=item['vid'],vtype=item['vtype']), 'thumbnail':''} for item in result]
         return plugin.finish(items, update_listing=False)
     except:
-        for item in obj['data']['galleryList']:
-            l = str(item['fieldValues']['game_start_time'])
-            date=l[:4]+'/'+ l[4:6]+'/'+l[6:8]
-            title=item['fieldValues']['home_team_name']+' vs. '+item['fieldValues']['away_team_name'] + ' - ' +date     
-            result.append({'title':title, 'vid':item['fieldValues']['game_id'], 'vtype':'sport'})
-        items=[]
-        items = [{'label':item['title'], 'path':plugin.url_for('VODlist', league=league, vid=item['vid'],vtype=item['vtype']), 'thumbnail':''} for item in result]
-        return plugin.finish(items, update_listing=False)
-
+        if item['fieldValues']['game_id']=='1':
+            obj2=obj['data']['galleryList']
+            for item in obj2:
+                l = str(item['fieldValues']['game_start_time'])
+                date=l[:4]+'/'+ l[4:6]+'/'+l[6:8]
+                title='## '+item['fieldValues']['game_name'] + ' ## '+date     
+                result.append({'title':title, 'vid':item['fieldValues']['game_id'], 'thumb':'', 'vtype':'sport'})
+                for item2 in item['mediaRelations']:
+                    result.append({'title':item2['media']['fieldValues']['MEDIATYPE_tvpot']['title'], 'vid':item2['media']['fieldValues']['MEDIATYPE_tvpot']['vid'], 'thumb':item2['media']['fieldValues']['MEDIATYPE_tvpot']['thumbnailUrl'],'vtype':'sport'})
+            items=[]
+            items = [{'label':item['title'], 'path':plugin.url_for('VODPlay', title=item['title'].encode('utf8'), league=league, vid=item['vid'], vodID=item['vid'],vtype=item['vtype']), 'thumbnail':item['thumb']} for item in result]
+            return plugin.finish(items, update_listing=False)
+        else:            
+            for item in obj['data']['galleryList']:
+                l = str(item['fieldValues']['game_start_time'])
+                date=l[:4]+'/'+ l[4:6]+'/'+l[6:8]
+                title=item['fieldValues']['game_name'] + ' '+date     
+                result.append({'title':title, 'vid':item['fieldValues']['game_id'], 'vtype':'sport'})
+            items=[]
+            items = [{'label':item['title'], 'path':plugin.url_for('VODlist', league=league, vid=item['vid'],vtype=item['vtype']), 'thumbnail':''} for item in result]
+            return plugin.finish(items, update_listing=False)
+    
+##    except:
+##        for item in obj['data']['galleryList']:
+##            title=item['fieldValues']['title']    
+##            result.append({'title':title, 'vid':item['fieldValues']['MEDIATYPE_tvpot']['vid'], 'vtype':'sport'})
+##        items=[]
+##        items = [{'label':item['title'], 'path':plugin.url_for('VODPlay', title=item['title'].encode('utf8'), league=league, vid=item['vid'],vtype=item['vtype']), 'thumbnail':item['thumbnail_url']} for item in result]
+##        return plugin.finish(items, update_listing=False)
+    
 @plugin.route('/VOD/<league>/<vtype>/<vid>/')
 def VODlist(vid,vtype,league):
 ##    if vtype=='sport':

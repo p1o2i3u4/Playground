@@ -216,14 +216,17 @@ def LiveTV():
 @plugin.route('/live/LiveTV/<url>/<title>/')
 def LiveTVplay(url,title):
     cid=re.compile('CHANNEL_IMAGE/([0-9]+)/').findall(url)
-    quality=plugin.get_setting('1080P', bool)
-    print quality
-    if quality:
+    quality = plugin.get_setting("quality", str)    
+    #quality=plugin.get_setting('1080P', bool)
+    if quality == '2':
         print '1080p'
         cid=int(cid[0])+1
+    elif quality == '1':
+        print 'HD'
+        cid=int(cid[0])+2
     else:
         print 'SD'
-        cid=int(cid[0])+2
+        cid=int(cid[0])+3        
     print cid
     url2='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_play?istest=1&ch_no=404&bit_rate=S&bit_rate_option=1000&user_model=LG-D852G&user_os=5.0.1&user_type=Android&user_net=WIFI'
     #url='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_proglist?istext=1&ch_no=404'

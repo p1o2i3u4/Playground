@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <settings>
   <category label="30200">
-    <setting id="quality" type="enum" label="30001" values="180p|240p|300p|360p|480p|720p" default="3" />
+    <setting id="quality" type="enum" label="30001" values="480p|720p|1080p" default="3" />
     <setting id="1080P" type="bool" label="30005" default="false" />
 	<setting id="a" type="bool" label="30006" default="false" />
 	<setting id="Protocol" type="enum" label="30010" lvalues="30011|30012|30013" default="0"/>

@@ -144,7 +144,7 @@ def VOD(gid):
     for item in obj['data']:
         #if item['odkPlus']=='0':
         thumb1=item["posterUrl"]
-        thumb=thumb1.replace('http://max.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://max.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
+        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
         thumb='http://ondemandkorea.com'+thumb
         thumb=thumb.replace('http://ondemandkorea.comhttp://ondemandkorea.com','http://ondemandkorea.com')
         result.append({'id':item['id'], 'title':item['title'], 'broad_date':item['latestDate'], 'thumbnail':thumb,'stat':item['status'], 'new':item['new']})

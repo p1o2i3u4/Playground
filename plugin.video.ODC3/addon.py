@@ -23,7 +23,7 @@ _connectionTimeout = 40
 tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
 root_url = "http://www.ondemandkorea.com/"
 
-img_base = "http://max.ondemandkorea.com/includes/timthumb.php?w=175&h=100&src="
+img_base = "http://sp.ondemandkorea.com/includes/timthumb.php?w=175&h=100&src="
 eplist_url = "includes/episode_page.php?cat={program:s}&id={videoid:s}&page={page:d}"
 
 default_hdr = {
@@ -102,7 +102,7 @@ def Recent():
     for item in obj['data'][2]['data']:
         title=item['title']+' - '+item['broadcastDate']
         thumb1=item["thumbnailUrl"]
-        thumb=thumb1.replace('http://max.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://max.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
+        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
         thumb='http://ondemandkorea.com'+thumb
         thumb=thumb.replace('http://ondemandkorea.comhttp://lime6.ondemandkorea.com','http://lime6.ondemandkorea.com')
         #if item['plusOnly']=='0':           
@@ -113,7 +113,7 @@ def Recent():
     for item in obj['data'][3]['data']:
         title=item['title']+' - '+item['broadcastDate']
         thumb1=item["thumbnailUrl"]
-        thumb=thumb1.replace('http://max.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://max.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
+        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
         thumb='http://ondemandkorea.com'+thumb
         thumb=thumb.replace('http://ondemandkorea.comhttp://lime6.ondemandkorea.com','http://lime6.ondemandkorea.com')
         #if item['plusOnly']=='0':   
@@ -203,7 +203,7 @@ def CategoryContent(gid,cid):
     for item in obj['data']:
         title=item['title']+' - '+item['broadcastDate']
         thumb1=item["thumbnailUrl"]
-        thumb=thumb1.replace('http://max.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://max.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
+        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
         thumb='http://ondemandkorea.com'+thumb
         thumb=thumb.replace('http://ondemandkorea.comhttp://lime6.ondemandkorea.com','http://lime6.ondemandkorea.com')
         result.append({'label':title, 'path':plugin.url_for('resolveAndPlayVideo',title=title.encode('utf-8'), eid=item['id'], plus=item['plusOnly'],cat=item['slug']), 'thumbnail':thumb })

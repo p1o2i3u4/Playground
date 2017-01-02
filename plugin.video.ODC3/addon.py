@@ -102,9 +102,7 @@ def Recent():
     for item in obj['data'][2]['data']:
         title=item['title']+' - '+item['broadcastDate']
         thumb1=item["thumbnailUrl"]
-        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
-        thumb='http://ondemandkorea.com'+thumb
-        thumb=thumb.replace('http://ondemandkorea.comhttp://lime6.ondemandkorea.com','http://lime6.ondemandkorea.com')
+        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','').replace('&w=424&h=239','http://ondemandkorea.com')
         #if item['plusOnly']=='0':           
         result.append({'label':title, 'path':plugin.url_for('resolveAndPlayVideo',title=title.encode('utf-8'), eid=item['id'], plus=item['plusOnly'],cat=item['slug']), 'thumbnail':thumb })
 
@@ -113,9 +111,7 @@ def Recent():
     for item in obj['data'][3]['data']:
         title=item['title']+' - '+item['broadcastDate']
         thumb1=item["thumbnailUrl"]
-        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
-        thumb='http://ondemandkorea.com'+thumb
-        thumb=thumb.replace('http://ondemandkorea.comhttp://lime6.ondemandkorea.com','http://lime6.ondemandkorea.com')
+        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','').replace('&w=424&h=239','http://ondemandkorea.com')
         #if item['plusOnly']=='0':   
         result.append({'label':title, 'path':plugin.url_for('resolveAndPlayVideo',title=title.encode('utf-8'), eid=item['id'], plus=item['plusOnly'],cat=item['slug']), 'thumbnail':thumb })
 
@@ -144,9 +140,7 @@ def VOD(gid):
     for item in obj['data']:
         #if item['odkPlus']=='0':
         thumb1=item["posterUrl"]
-        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
-        thumb='http://ondemandkorea.com'+thumb
-        thumb=thumb.replace('http://ondemandkorea.comhttp://ondemandkorea.com','http://ondemandkorea.com')
+        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','').replace('&w=424&h=239','http://ondemandkorea.com')
         result.append({'id':item['id'], 'title':item['title'], 'broad_date':item['latestDate'], 'thumbnail':thumb,'stat':item['status'], 'new':item['new']})
 
     for i in range(len(result)):
@@ -203,9 +197,7 @@ def CategoryContent(gid,cid):
     for item in obj['data']:
         title=item['title']+' - '+item['broadcastDate']
         thumb1=item["thumbnailUrl"]
-        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://ondemandkorea.com').replace('&w=424&h=239','')
-        thumb='http://ondemandkorea.com'+thumb
-        thumb=thumb.replace('http://ondemandkorea.comhttp://lime6.ondemandkorea.com','http://lime6.ondemandkorea.com')
+        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','').replace('&w=424&h=239','http://ondemandkorea.com')
         result.append({'label':title, 'path':plugin.url_for('resolveAndPlayVideo',title=title.encode('utf-8'), eid=item['id'], plus=item['plusOnly'],cat=item['slug']), 'thumbnail':thumb })
 
 
@@ -237,9 +229,25 @@ def resolveAndPlayVideo(eid,plus,cat,title):
         quality = plugin.get_setting("quality", str)
         if use_mp4_url:
             if quality == '1':
-                plugin.play_video( {'label': title, 'path':obj['episode']['mp4Src'][1]['src']} )
+                #plugin.play_video( {'label': title, 'path':obj['episode']['mp4Src'][1]['src']} )
+                item = xbmcgui.ListItem(title, path=obj['episode']['mp4Src'][1]['src'], iconImage='', thumbnailImage='')
+                xbmcplugin.setResolvedUrl(handle=self.handle, succeeded=True, listitem=item)
             else:
-                plugin.play_video( {'label': title, 'path':obj['episode']['mp4Src'][0]['src']} )
+                try:
+                    f = urllib2.Request(obj['episode']['mp4Src'][0]['src'])
+                    f.add_header('User-Agent', default_hdr)
+                    f=urllib2.urlopen(f)    
+                    dead = False
+                except:
+                    dead = True
+           
+                if dead==False:
+                    plugin.play_video( {'label': title, 'path':obj['episode']['mp4Src'][0]['src']} )
+                else:
+                    add=re.compile('/v1/[0-9]+/').search(obj['episode']['videoSrc']).group()
+                    url=obj['episode']['mp4Src'][0]['src']
+                    url=url.replace('ondemandkorea.com/','ondemandkorea.com/'+add)
+                    plugin.play_video( {'label': title, 'path':url} )
             return plugin.finish(None, succeeded=False)
         else:
 ##            if quality == '1':

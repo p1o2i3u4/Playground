@@ -98,7 +98,7 @@ def listRecentCategories(url):
     for item in obj['data'][2]['data']:
         title=item['title']+' - '+item['broadcastDate']
         thumb1=item["thumbnailUrl"]
-        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://sp.ondemandkorea.com').replace('&w=424&h=239','')
+        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://sp.ondemandkorea.com').replace('&w=424&h=239','').replace('&w=320&h=468','')
         rootch=re.compile('ondemandkorea.com').search(thumb)
         if rootch:
             thumb=thumb
@@ -114,7 +114,7 @@ def listRecentCategories(url):
     for item in obj['data'][3]['data']:
         title=item['title']+' - '+item['broadcastDate']
         thumb1=item["thumbnailUrl"]
-        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://sp.ondemandkorea.com').replace('&w=424&h=239','')
+        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://sp.ondemandkorea.com').replace('&w=424&h=239','').replace('&w=320&h=468','')
         rootch=re.compile('ondemandkorea.com').search(thumb)
         if rootch:
             thumb=thumb
@@ -149,7 +149,7 @@ def listVideoCategories(url):
     for item in obj['data']:
         #if item['odkPlus']=='0':
         thumb1=item["posterUrl"]
-        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','http://sp.ondemandkorea.com').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://sp.ondemandkorea.com').replace('&w=424&h=239','')
+        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','http://sp.ondemandkorea.com').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://sp.ondemandkorea.com').replace('&w=424&h=239','').replace('&w=320&h=468','')
         rootch=re.compile('ondemandkorea.com').search(thumb)
         if rootch:
             thumb=thumb
@@ -205,7 +205,7 @@ def listdramaInCategory(url):
     for item in obj['data']:
         title=item['title']+' - '+item['broadcastDate']
         thumb1=item["thumbnailUrl"]
-        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&&src=','http://sp.ondemandkorea.com').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://sp.ondemandkorea.com').replace('&w=424&h=239','')
+        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&&src=','http://sp.ondemandkorea.com').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://sp.ondemandkorea.com').replace('&w=424&h=239','').replace('&w=320&h=468','')
         rootch=re.compile('ondemandkorea.com').search(thumb)
         if rootch:
             thumb=thumb

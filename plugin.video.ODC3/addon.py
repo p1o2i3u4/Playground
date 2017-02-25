@@ -155,14 +155,14 @@ def listVideoCategories(url):
             thumb=thumb
         else:
             thumb='http://sp.ondemandkorea.com'+thumb
-        print thumb
+
         result.append({'id':item['id'], 'title':item['title'], 'broad_date':item['latestDate'], 'thumbnail':thumb,'stat':item['status'], 'new':item['new']})
 
     for i in range(len(result)):
         if result[i]['stat']=='current':
             if result[i]['new']=='true':
                 title=result[i]['title']+' - NEW'
-                current.append([result[i]['title'], result[i]['id'], result[i]['thumbnail']])
+                current.append([title, result[i]['id'], result[i]['thumbnail']])
             
             else:
                 current.append([result[i]['title'], result[i]['id'], result[i]['thumbnail']])
@@ -172,7 +172,7 @@ def listVideoCategories(url):
             past.append([result[i]['title'], result[i]['id'], result[i]['thumbnail']])
 
     current=sorted(current)
-    current.append(['##이하 종영방송##','', ''])
+    current.append(['## ## ## ## ##이하 종영방송## ## ## ## ##','', ''])
     current.extend(past)
 
     for name, url2, thumbnail in current:

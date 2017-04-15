@@ -266,7 +266,7 @@ def High_list():
     items = []
 
     try:
-        for node in soup.findAll('li', {'class':'ing'}):
+        for node in soup.findAll('li', {'class':''}):
             cat = re.compile('params1="(.*?)"').findall(str(node))
             cat = [element.upper() for element in cat]
             gid = re.compile('params2="(.*?)"').findall(str(node))
@@ -284,7 +284,7 @@ def High_list():
     except:
         print "No sport streams"
         
-    for node in soup.findAll('li', {'class':'normal_e'}):
+    for node in soup.findAll('li', {'class':''}):
         cat = re.compile('params1="(.*?)"').findall(str(node))
         cat = [element.upper() for element in cat]
         gid = re.compile('params2="(.*?)"').findall(str(node))

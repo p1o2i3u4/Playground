@@ -346,7 +346,7 @@ def Med_list():
     items = []
 
     try:
-        for node in soup.findAll('li', {'class':'ing'}):
+        for node in soup.findAll('li', {'class':''}):
             cat = re.compile('params1="(.*?)"').findall(str(node))
             cat = [element.upper() for element in cat]
             gid = re.compile('params2="(.*?)"').findall(str(node))
@@ -364,7 +364,7 @@ def Med_list():
     except:
         print "No sport streams"
         
-    for node in soup.findAll('li', {'class':'normal_e'}):
+    for node in soup.findAll('li', {'class':''}):
         cat = re.compile('params1="(.*?)"').findall(str(node))
         cat = [element.upper() for element in cat]
         gid = re.compile('params2="(.*?)"').findall(str(node))
@@ -425,27 +425,27 @@ def Low_list():
     soup=BeautifulSoup(link)
 
     items = []
-
-    try:
-        for node in soup.findAll('li', {'class':'ing'}):
-            cat = re.compile('params1="(.*?)"').findall(str(node))
-            cat = [element.upper() for element in cat]
-            gid = re.compile('params2="(.*?)"').findall(str(node))
-            if len(gid)==0:
-                gid = re.compile('params1="(.*?)"').findall(str(node))
-                cat = re.compile('params="(.*?)"').findall(str(node))
-            s1 = node.find("span", {"class":"score_num"}).find(text=True)
-            t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
-            s2 = node.find("span", {"class":"score_num b_num"}).find(text=True)
-            info = node.find("span", {"class":"score_info"}).find(text=True)
-            
-            title = cat[0]+ ': ' + unicode(t1[0],'utf-8') + ' ' +s1+ ' vs. ' + unicode(t1[1],'utf-8') + ' ' +s2+ ' ' +info
-            items.append({'title':title, 'vid':gid[0]})
-            
-    except:
-        print "No sport streams"
+##
+##    try:
+##        for node in soup.findAll('li', {'class':''}):
+##            cat = re.compile('params1="(.*?)"').findall(str(node))
+##            cat = [element.upper() for element in cat]
+##            gid = re.compile('params2="(.*?)"').findall(str(node))
+##            if len(gid)==0:
+##                gid = re.compile('params1="(.*?)"').findall(str(node))
+##                cat = re.compile('params="(.*?)"').findall(str(node))
+##            s1 = node.find("span", {"class":"score_num"}).find(text=True)
+##            t1=re.compile('<strong>(.*?)</strong>').findall(str(node))
+##            s2 = node.find("span", {"class":"score_num b_num"}).find(text=True)
+##            info = node.find("span", {"class":"score_info"}).find(text=True)
+##            
+##            title = cat[0]+ ': ' + unicode(t1[0],'utf-8') + ' ' +s1+ ' vs. ' + unicode(t1[1],'utf-8') + ' ' +s2+ ' ' +info
+##            items.append({'title':title, 'vid':gid[0]})
+##            
+##    except:
+##        print "No sport streams"
         
-    for node in soup.findAll('li', {'class':'normal_e'}):
+    for node in soup.findAll('li', {'class':''}):
         cat = re.compile('params1="(.*?)"').findall(str(node))
         cat = [element.upper() for element in cat]
         gid = re.compile('params2="(.*?)"').findall(str(node))

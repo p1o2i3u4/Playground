@@ -195,6 +195,34 @@ def LiveTV():
     result.append({'chname':'XTM', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10130/'})
     #result.append({'chname':'?', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11510/'})
     #result.append({'chname':'K shopping', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10570/'})
+##    result.append({'chname':'SPOTV 2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11990/'})
+##    result.append({'chname':'EBS e', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11910/'})
+##    result.append({'chname':'EBS +2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11900/'})
+##    result.append({'chname':'EBS +1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11890/'})
+##    result.append({'chname':'YTN weather', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11880/'})
+##    result.append({'chname':'Tomayotv', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11860/'})
+##    result.append({'chname':'k baduk', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11850/'})
+##    result.append({'chname':'(i)Kids TalkTalk', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11830/'})
+##    result.append({'chname':'Dae', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11820/'})
+##    result.append({'chname':'Olleh tv', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11790/'})
+##    result.append({'chname':'Disney Jr', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11780/'})
+##    result.append({'chname':'?', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11770/'})    
+##    result.append({'chname':'Play web drama', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11760/'})
+##    result.append({'chname':'Playy premium movie', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11750/'})    
+##    result.append({'chname':'Playy well made movie', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11740/'})
+##    result.append({'chname':'?', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11730/'})    
+##    result.append({'chname':'error', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11030/'})
+##    result.append({'chname':'error', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11020/'})    
+##    result.append({'chname':'error', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11010/'})
+##    result.append({'chname':'shopping1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10570/'})  
+##    result.append({'chname':'GSShop', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10560/'}) 
+##    result.append({'chname':'sbssports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10490/'})
+##    result.append({'chname':'skysports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10440/'})
+##    result.append({'chname':'skysports2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10420/'})
+##    result.append({'chname':'skypetpark', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10310/'})
+##    result.append({'chname':'7', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10240/'})
+##    result.append({'chname':'kbs1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10170/'})
+##    result.append({'chname':'billiards tv', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10080/'})
     
     print'done'
     result2=[]
@@ -244,6 +272,7 @@ def LiveTVplay(url,title):
     result=result.replace('10451',str(cid))
     result=result.replace('10452',str(cid))
     result=result.replace('10453',str(cid))
+    result=re.sub('121\.156\.46\.[0-9]+','121.156.46.119',result)
     
     print result
 

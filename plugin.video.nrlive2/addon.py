@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    Ondemand Korea
+    NR LIVE
 """
 from xbmcswift2 import Plugin
 from urllib2 import unquote
@@ -179,22 +179,59 @@ def LiveTV():
         if a:
             if item['adult_yn']=='Y':
                 result.append({'chname':item['service_ch_name'], 'title':item['program_name'], 'ch_img':item['ch_image_detail'], 'thumbnail':item["still_cut_image"],'type':item['type']})
-    #result.append({'chname':'WOW TV', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10480/'})
-    #result.append({'chname':'NAT GEO People', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10240/'})
-    #result.append({'chname':'Golf Korea', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10290/'})
-    #result.append({'chname':'Billiards', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10080/'})
-    #result.append({'chname':'CS Myshop', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10630/'})
-    result.append({'chname':'Sky ICT', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10360/'})
+##    result.append({'chname':'HD shop', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10670/'})
+##    result.append({'chname':'NS Shop', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10680/'})
+##    result.append({'chname':'V - music video', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10690/'})
+##    result.append({'chname':'JTBC3 - Fox sports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10700/'})
+##    result.append({'chname':'SPOTV Games', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10710/'})
+    #result.append({'chname':'ENCODER_M?', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10720/'})
+##    result.append({'chname':'Viki', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10730/'})
+##    result.append({'chname':'adult1 prob midnight', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10740/'})
+##    result.append({'chname':'error', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10750/'})
+##    result.append({'chname':'Disney', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10760/'})
+##    result.append({'chname':'tooniverse', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10770/'})
+##    result.append({'chname':'JTBC2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10780/'})
+##    result.append({'chname':'China Channel', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10790/'})
+##    result.append({'chname':'Dramax', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10800/'})
+##    result.append({'chname':'home & shop', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10810/'})
+##    result.append({'chname':'NS shop+', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10820/'})
+##    result.append({'chname':'Shinsege shop', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10830/'})
+##    result.append({'chname':'discovery', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10840/'})
+##    result.append({'chname':'w channel', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10850/'})
+##    result.append({'chname':'CJ mall', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10860/'})
+##    result.append({'chname':'Playboy', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10870/'})
+##    result.append({'chname':'Honey', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10880/'})
+##
+
+    #result.append({'chname':'tvn', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11800/'})
+    #result.append({'chname':'tvn - broken', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11790/'})
+    #result.append({'chname':'kids', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11780/'})
+    #result.append({'chname':'error', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11770/'})
+    #result.append({'chname':'Play web drama', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11760/'})
+    #result.append({'chname':'Play well made drama', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11750/'})
+    #result.append({'chname':'Play well made movie', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11740/'})
+    
+    #result.append({'chname':'GS SHOP', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10560/'})
+    #result.append({'chname':'SBS Sprts', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10490/'})
+    
+    #result.append({'chname':'SBS Sprts covered logo', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10420/'})
+
+
+    ##
+    #result.append({'chname':'Sky ICT', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10360/'})
     #result.append({'chname':'KBS1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10170/'})
+    result.append({'chname':'KBS1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11970/'})
+    result.append({'chname':'KBS2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11980/'})
     #result.append({'chname':'KBS2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10140/'})
     result.append({'chname':'MBC', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10540/'})
     result.append({'chname':'SBS', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10550/'})
     result.append({'chname':'SkySports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10440/'})
     result.append({'chname':'KBS N SPORTS', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10410/'})
     result.append({'chname':'MBC Sports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10430/'})
+    result.append({'chname':'SBS Sprts', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10490/'})
     result.append({'chname':'XTM', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10130/'})
-    #result.append({'chname':'?', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11510/'})
-    #result.append({'chname':'K shopping', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10570/'})
+    #result.append({'chname':'Mnet', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10150/'})
+    #result.append({'chname':'K shopping', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11526/'})
 ##    result.append({'chname':'SPOTV 2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11990/'})
 ##    result.append({'chname':'EBS e', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11910/'})
 ##    result.append({'chname':'EBS +2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11900/'})

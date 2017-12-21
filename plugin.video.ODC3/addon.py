@@ -37,7 +37,7 @@ default_hdr = {
 
 ## Get token
 ##try:
-##    tokenurl='http://api.ondemandkorea.com/api3/device/index.php'
+##    tokenurl='http://api.ondemandkorea.com/api3/device/'
 ##    data={'language': '0',
 ##                   'adid': '4617319a-7b87-40fd-a62e-d0ae587da6cc',
 ##                   'appShorterVersion':'1.8.26',
@@ -78,7 +78,7 @@ def listMainCategories():
 
 
 def listRecentCategories(url):
-    url='http://api.ondemandkorea.com/api3/home/index.php'
+    url='http://api.ondemandkorea.com/api3/home/'
     data={'language': '0',
                    'adid': '4617319a-7b87-40fd-a62e-d0ae587da6cc',
                    'appShorterVersion':'1.8.26',
@@ -128,7 +128,7 @@ def listRecentCategories(url):
         addLink(name, url2, 'resolveAndPlayVideo', thumbnail)
     
 def listVideoCategories(url):
-    url2='http://api.ondemandkorea.com/api3/category/index.php'
+    url2='http://api.ondemandkorea.com/api3/category/'
     data={'language': '0',
 
                    'accessToken': token,
@@ -180,7 +180,7 @@ def listVideoCategories(url):
 
 
 def listdramaInCategory(url):
-    url2='http://api.ondemandkorea.com/api3/program/index.php'
+    url2='http://api.ondemandkorea.com/api3/program/'
     data={'language': '0',
                    'adid': '4617319a-7b87-40fd-a62e-d0ae587da6cc',
                    'appShorterVersion':'1.8.26',
@@ -221,7 +221,7 @@ def resolveAndPlayVideo(url):
     url=url.split('%5E')
     plus=0
     if plus==0:
-        url2='http://api.ondemandkorea.com/api3/episode/index.php'
+        url2='http://api.ondemandkorea.com/api3/episode/'
         data={'language': '0',
                        'adid': '4617319a-7b87-40fd-a62e-d0ae587da6cc',
                        'appShorterVersion':'1.8.26',

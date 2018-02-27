@@ -220,8 +220,10 @@ def LiveTV():
     ##
     #result.append({'chname':'Sky ICT', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10360/'})
     #result.append({'chname':'KBS1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10170/'})
-    result.append({'chname':'KBS1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11970/'})
-    result.append({'chname':'KBS2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11980/'})
+    #result.append({'chname':'KBS1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11970/'})
+    #result.append({'chname':'KBS2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11980/'})
+    result.append({'chname':'KBS1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10170/'})
+    result.append({'chname':'KBS2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10140/'})
     #result.append({'chname':'KBS2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10140/'})
     result.append({'chname':'MBC', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10540/'})
     result.append({'chname':'SBS', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10550/'})

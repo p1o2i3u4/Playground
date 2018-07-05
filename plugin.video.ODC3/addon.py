@@ -23,7 +23,7 @@ _connectionTimeout = 40
 tablet_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19"
 root_url = "http://www.ondemandkorea.com/"
 
-img_base = "http://sp.ondemandkorea.com/includes/timthumb.php?w=175&h=100&src="
+img_base = "https://sp.ondemandkorea.com/includes/timthumb.php?w=175&h=100&src="
 eplist_url = "includes/episode_page.php?cat={program:s}&id={videoid:s}&page={page:d}"
 
 default_hdr = {
@@ -37,13 +37,13 @@ default_hdr = {
 
 ## Get token
 ##try:
-##    tokenurl='http://api.ondemandkorea.com/api3/device/'
+##    tokenurl='https://api.ondemandkorea.com/api3/device/'
 ##    data={'language': '0',
-##                   'adid': '4617319a-7b87-40fd-a62e-d0ae587da6cc',
-##                   'appShorterVersion':'1.8.26',
-##                   'idfv':'f94606748c42f360',
+##                   'adid': 'a36f8a5d-edae-44b7-b88d-ff0981008535',
+##                   'appShorterVersion':'1.8.93',
+##                   'idfv':'ef4212b0a9778005',
 ##                   'screenid':'0',
-##                   'appBundleVersion':'1.8.26'
+##                   'appBundleVersion':'1.8.93'
 ##          }
 ##    headers={
 ##        'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
@@ -63,28 +63,31 @@ def listMainCategories():
     addDir("예능/오락", "6", "videoCategories", '')
     addDir("시사/다큐", "450", "videoCategories", '')
     addDir("음식/요리", "452", "videoCategories", '')
+    #addDir("화제영상", "39", "videoCategories", '')
     addDir("뷰티/패션", "453", "videoCategories", '')
     #addDir("여성", root_url+"women", "videoCategories", '')
     addDir("건강", "455", "videoCategories", '')
-    #addDir("교육", "1", "videoCategories", '')  
-    #addDir("어린이", "22", "videoCategories", '')          
+    #addDir("교육", "1", "videoCategories", '')        
     #addDir("스포츠", "17", "videoCategories", '')    
     #addDir("경제", ""180, "videoCategories", '')    
     #addDir("종교", "75", "videoCategories", '')    
     #addDir("음악", "109", "videoCategories", '')
     #addDir("게임", root_url+"games", "videoCategories", '')
+    #addDir("웹 드라마", '2730', "videoCategories", '')
+    #addDir("웹 예능", '2731', "videoCategories", '')
     addDir("한국 영화", '808', "videoCategories", '')
+    addDir("어린이", "22", "videoCategories", '')  
 
 
 
 def listRecentCategories(url):
-    url='http://api.ondemandkorea.com/api3/home/'
+    url='https://api.ondemandkorea.com/api3/home2/'
     data={'language': '0',
-                   'adid': '4617319a-7b87-40fd-a62e-d0ae587da6cc',
-                   'appShorterVersion':'1.8.26',
-                   'idfv':'f94606748c42f360',
+                   'adid': 'a36f8a5d-edae-44b7-b88d-ff0981008535',
+                   'appShorterVersion':'1.8.93',
+                   'idfv':'ef4212b0a9778005',
                    'screenid':'0',
-                   'appBundleVersion':'1.8.26',
+                   'appBundleVersion':'1.8.93',
                    'accessToken': token,
           }
     headers={'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
@@ -98,12 +101,12 @@ def listRecentCategories(url):
     for item in obj['data'][2]['data']:
         title=item['title']+' - '+item['broadcastDate']
         thumb1=item["thumbnailUrl"]
-        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://sp.ondemandkorea.com').replace('&w=424&h=239','').replace('&w=320&h=468','')
+        thumb=thumb1.replace('https://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('https://sp.ondemandkorea.com/includes/timthumb.php?src=','https://sp.ondemandkorea.com').replace('&w=424&h=239','').replace('&w=320&h=468','')
         rootch=re.compile('ondemandkorea.com').search(thumb)
         if rootch:
             thumb=thumb
         else:
-            thumb='http://sp.ondemandkorea.com'+thumb
+            thumb='https://sp.ondemandkorea.com'+thumb
         
         #if item['plusOnly']=='0':
         eid=item['id']+'^'+item['plusOnly']+'^'+item['slug']
@@ -114,12 +117,12 @@ def listRecentCategories(url):
     for item in obj['data'][3]['data']:
         title=item['title']+' - '+item['broadcastDate']
         thumb1=item["thumbnailUrl"]
-        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://sp.ondemandkorea.com').replace('&w=424&h=239','').replace('&w=320&h=468','')
+        thumb=thumb1.replace('https://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','').replace('https://sp.ondemandkorea.com/includes/timthumb.php?src=','https://sp.ondemandkorea.com').replace('&w=424&h=239','').replace('&w=320&h=468','')
         rootch=re.compile('ondemandkorea.com').search(thumb)
         if rootch:
             thumb=thumb
         else:
-            thumb='http://sp.ondemandkorea.com'+thumb
+            thumb='https://sp.ondemandkorea.com'+thumb
         #if item['plusOnly']=='0':   
         eid=item['id']+'^'+item['plusOnly']+'^'+item['slug']
         result.append([title, eid, thumb])
@@ -128,7 +131,7 @@ def listRecentCategories(url):
         addLink(name, url2, 'resolveAndPlayVideo', thumbnail)
     
 def listVideoCategories(url):
-    url2='http://api.ondemandkorea.com/api3/category/'
+    url2='https://api.ondemandkorea.com/api3/category/'
     data={'language': '0',
 
                    'accessToken': token,
@@ -149,12 +152,12 @@ def listVideoCategories(url):
     for item in obj['data']:
         #if item['odkPlus']=='0':
         thumb1=item["posterUrl"]
-        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','http://sp.ondemandkorea.com').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://sp.ondemandkorea.com').replace('&w=424&h=239','').replace('&w=320&h=468','')
+        thumb=thumb1.replace('https://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','https://sp.ondemandkorea.com').replace('https://sp.ondemandkorea.com/includes/timthumb.php?src=','https://sp.ondemandkorea.com').replace('&w=424&h=239','').replace('&w=320&h=468','')
         rootch=re.compile('ondemandkorea.com').search(thumb)
         if rootch:
             thumb=thumb
         else:
-            thumb='http://sp.ondemandkorea.com'+thumb
+            thumb='https://sp.ondemandkorea.com'+thumb
 
         result.append({'id':item['id'], 'title':item['title'], 'broad_date':item['latestDate'], 'thumbnail':thumb,'stat':item['status'], 'new':item['new']})
 
@@ -180,13 +183,13 @@ def listVideoCategories(url):
 
 
 def listdramaInCategory(url):
-    url2='http://api.ondemandkorea.com/api3/program/'
+    url2='https://api.ondemandkorea.com/api3/program/'
     data={'language': '0',
-                   'adid': '4617319a-7b87-40fd-a62e-d0ae587da6cc',
-                   'appShorterVersion':'1.8.26',
-                   'idfv':'f94606748c42f360',
+                   'adid': 'a36f8a5d-edae-44b7-b88d-ff0981008535',
+                   'appShorterVersion':'1.8.93',
+                   'idfv':'ef4212b0a9778005',
                    'screenid':'0',
-                   'appBundleVersion':'1.8.26',
+                   'appBundleVersion':'1.8.93',
                    'accessToken': token,
                   'id': url,
                   'size':'300',
@@ -205,12 +208,12 @@ def listdramaInCategory(url):
     for item in obj['data']:
         title=item['title']+' - '+item['broadcastDate']
         thumb1=item["thumbnailUrl"]
-        thumb=thumb1.replace('http://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&&src=','http://sp.ondemandkorea.com').replace('http://sp.ondemandkorea.com/includes/timthumb.php?src=','http://sp.ondemandkorea.com').replace('&w=424&h=239','').replace('&w=320&h=468','')
+        thumb=thumb1.replace('https://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&&src=','https://sp.ondemandkorea.com').replace('https://sp.ondemandkorea.com/includes/timthumb.php?src=','https://sp.ondemandkorea.com').replace('&w=424&h=239','').replace('&w=320&h=468','')
         rootch=re.compile('ondemandkorea.com').search(thumb)
         if rootch:
             thumb=thumb
         else:
-            thumb='http://sp.ondemandkorea.com'+thumb
+            thumb='https://sp.ondemandkorea.com'+thumb
         eid=item['id']+'^'+item['plusOnly']+'^'+item['slug']
         result.append([title, eid,thumb ])
 
@@ -221,13 +224,13 @@ def resolveAndPlayVideo(url):
     url=url.split('%5E')
     plus=0
     if plus==0:
-        url2='http://api.ondemandkorea.com/api3/episode/'
+        url2='https://api.ondemandkorea.com/api3/episode/'
         data={'language': '0',
-                       'adid': '4617319a-7b87-40fd-a62e-d0ae587da6cc',
-                       'appShorterVersion':'1.8.26',
-                       'idfv':'f94606748c42f360',
+                       'adid': 'a36f8a5d-edae-44b7-b88d-ff0981008535',
+                       'appShorterVersion':'1.8.93',
+                       'idfv':'ef4212b0a9778005',
                        'screenid':'0',
-                       'appBundleVersion':'1.8.26',
+                       'appBundleVersion':'1.8.93',
                        'accessToken': token,
                        'id':url[0]
               }

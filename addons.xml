@@ -135,6 +135,23 @@
   </extension>
 </addon>
 
+<addon id="plugin.video.qooqoo" name="qooqoo" version="0.0.1" provider-name="Kevin Shin">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+	<import addon="script.module.beautifulsoup" version="3.2.1"/>
+	<import addon="script.module.xbmcswift2" version="2.4.0"/>
+ </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <language>en</language>
+    <platform>all</platform>
+    <summary lang="en">QooQoo</summary>
+    <description lang="en">My first addon! base: plugin.video.cybc</description>
+  </extension>
+</addon>
+
 <addon id="plugin.video.stalker" name="IPTV Stalker" version="9.0.19" provider-name="esxbr">
     <requires>
 		<import addon="xbmc.python" version="2.19.0"/>
@@ -172,7 +189,7 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.tvnamu" name="Namu" version="0.0.1" provider-name="Kevin Shin">
+<addon id="plugin.video.qooqoo" name="qooqoo" version="0.0.1" provider-name="Kevin Shin">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
 	<import addon="script.module.beautifulsoup" version="3.2.1"/>

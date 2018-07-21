@@ -11,7 +11,7 @@
   <extension point="xbmc.addon.metadata">
     <language>en</language>
     <platform>all</platform>
-    <summary lang="en">Namu</summary>
+    <summary lang="en">QooQoo</summary>
     <description lang="en">My first addon! base: plugin.video.cybc</description>
   </extension>
 </addon>

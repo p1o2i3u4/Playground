@@ -27,7 +27,7 @@ headers = {'User-Agent': USER_AGENT,
 def listMainCategories():
 #    addDir("사랑만 할래", "http://drama.baykoreans.net/index.php?mid=drama&search_target=title&search_keyword=사랑만 할래", "EntCategoryContent", '')
 #s    addDir("내일도 칸타빌레", "http://drama.baykoreans.net/index.php?mid=drama&search_target=title&search_keyword=칸타빌레", "EntCategoryContent", '')
-    addDir("드라마", "https://www.tvnamu2.me/category/%EB%93%9C%EB%9D%BC%EB%A7%88-1/1/1.html", "videoCategories", '')
+    addDir("드라마", "https://qooqootv.pro/category/%EB%93%9C%EB%9D%BC%EB%A7%88/", "videoCategories", '')
     #addDir("드라마", " ", "dramaDate", '')
     #addDir("예능/오락", " ", "varietyDate", '')
     addDir("예능/오락", "http://baykoreans.net/entertain", "EntCategoryContent", '')
@@ -83,20 +83,13 @@ def listVideoCategories(url):
         response.close()
         
         soup=BeautifulSoup(link, fromEncoding='utf-8')
-        #match=re.compile('<img src="(.*?)" alt.*?>\n.*?</div>\n.*?</a>\n.*?</div>\n\t\t\t\t\t\t.*?\n.*?\n.*?\n.*?\n.*?<p class="title">\n.*?<a href=".+?mid=(.+?)\&.+?document_srl=(.+?)" class="title" >(.*?)</a>').findall(link)
-        items = []
-            # looking for tags td and something that has attribute class="title"
-        soup2=soup.find("div", {"id":"load_video1"})
+       items = []
+ 
+        for item in soup.findAll("li", {"class":"entry-category"}):
 
-
-                    
-        for item in soup2.findAll("div", {"class":"col-md-3 each-video"}):
-            if item.div:
-                thumb = item.div.img['src']
-                title = item.a['title'].replace('&amp;','&').encode('utf-8')
-                href = item.a['href'].encode('utf-8')
-                did=re.compile('https://www.tvnamu2.me/playlist_gogo/(\d+)/').search(href).group(1)
-                items.append({'3title':title.decode('utf-8'), '2did':str(did), '1thumbnail':thumb})
+            title = item.a.string
+            href = item.a['href']
+            items.append({'3title':title, 'url':href})
 
         items.sort(reverse=True)
         
@@ -112,7 +105,6 @@ def listVideoCategories(url):
                 
 def listVideosInCategory(url):
     try:
-        url="https://www.tvnamu2.me/playlist/page_in_detailjs/"+url
         req = urllib2.Request(url)
         req.add_header('User-Agent', _header)
         req.add_header('Accept-Langauge', 'ko')
@@ -124,20 +116,19 @@ def listVideosInCategory(url):
         #match=re.compile('<img src="(.*?)" alt.*?>\n.*?</div>\n.*?</a>\n.*?</div>\n\t\t\t\t\t\t.*?\n.*?\n.*?\n.*?\n.*?<p class="title">\n.*?<a href=".+?mid=(.+?)\&.+?document_srl=(.+?)" class="title" >(.*?)</a>').findall(link)
         items = []
             # looking for tags td and something that has attribute class="title"
-        for item in soup.findAll("div", {"class":"col-md-3 each-video"}):
-            thumb = ""
-            if item.div:
-                thumb = item.div.img['src']
-                title = item.a['title'].replace('&amp;','&').encode('utf-8')
-                url = item.a['href']
-                items.append({'title':title.decode('utf-8'), 'url':url, 'thumbnail':thumb})
+        for item in soup.findAll("div", {"class":"td-module-thumb"}):
+
+            thumb = item.img['src']
+            title = item.a['title'].replace('&amp;','&').encode('utf-8')
+            href = item.a['href']
+            items.append({'3title':title, 'url':href, 'thumbnail':thumb})
 
         for i in range(len(items)):
             items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
                   
 
         for title, url, thumbnail in items:
-            addLink(title, url, 'listvideourl2', thumbnail)
+            addLink(title, url, 'listepisodes', thumbnail)
 
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
@@ -152,19 +143,22 @@ def listepisodes(url):
         response = urllib2.urlopen(req, timeout = _connectionTimeout)
         link=response.read()
         response.close()
-        for item in soup.findAll("div", {"class":"col-md-3 each-video"}):
-            thumb = ""
-            if item.div:
-                thumb = item.div.img['src']
-                title = item.a['title'].replace('&amp;','&').encode('utf-8')
-                url = item.a['href']
-                items.append({'title':title.decode('utf-8'), 'url':url, 'thumbnail':thumb})
+        for item in soup2.findAll("li"):
+
+            t=item.find("span", {"class":"linkhigh"})
+            if t:
+                title = item.find("span", {"class":"link01"}).string
+                href = item.a['val'].encode('utf-8')
+                items.append({'title':title, 'href':href})
+            else:
+                continue
+
 
         for i in range(len(items)):
-            items[i] = (items[i]['title'], items[i]['url'], items[i]['thumbnail'])
+            items[i] = (items[i]['title'], items[i]['url'])
             
-        for title, url, thumbnail in items:
-            addLink(title, url, 'listvideourl2', thumbnail)
+        for title, url in items:
+            addLink(title, url, 'listvideourl2', '')
   
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
@@ -202,18 +196,9 @@ def listvideourl(url):
         link=response.read()
         response.close()
         soup=BeautifulSoup(link, fromEncoding='utf-8')
+
         
-        soup2=soup.find("input", {"id":"link_gogovid"})['value'].encode('euc_kr')
-        print soup2
-        req = urllib2.Request(soup2)
-        req.add_header('User-Agent', _header)
-        req.add_header('Accept-Langauge', 'ko')
-        req.add_header('Cookie', 'language=kr')        
-        response = urllib2.urlopen(req, timeout = _connectionTimeout)
-        link=response.read()
-        response.close()
-        
-        videourl=re.compile('var hdSrc = \'(.*?)\'').search(link).group(1)
+        videourl=re.compile('file: \'(.*?)\'').search(link).group(1)
         print videourl
         item = xbmcgui.ListItem(path = videourl)
         xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)

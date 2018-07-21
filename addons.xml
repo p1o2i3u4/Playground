@@ -24,23 +24,6 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.bay" name="Bay" version="0.2.0" provider-name="Kevin Shin">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-	<import addon="script.module.beautifulsoup" version="3.2.1"/>
-	<import addon="script.module.xbmcswift2" version="2.4.0"/>
- </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-        <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <language>en</language>
-    <platform>all</platform>
-    <summary lang="en">Bay</summary>
-    <description lang="en">My first addon! base: plugin.video.cybc</description>
-  </extension>
-</addon>
-
 <addon id="plugin.video.KRLive" name="KR Live" version="0.0.9" provider-name="Kevin Shin">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>

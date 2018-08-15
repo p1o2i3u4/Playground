@@ -135,10 +135,11 @@ def Play(url):
         items.sort()
         for title, url in items:
 
-            if title =='HDvid ':
-                hdvid(url)
-                break
-            elif title =='K-vid ':
+           #if title =='HDvid ':
+           #     hdvid(url)
+                #addLink(title, url, 'hdvid', '')
+           #     break
+            if title =='K-vid ':
                 #addLink(title, url, 'kvid', '')
                 kvid(url)
                 break

@@ -155,7 +155,7 @@ def VODPlay(vodID,league, vid,vtype,title):
 ##    ]
 ##    return plugin.finish(items, view_mode='list')
 
-@plugin.route('/live/LiveTV/')
+@plugin.route('/LiveTV/')
 def LiveTV():
     a=plugin.get_setting('a', bool)
     url='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_chlist?istest=0&category_id=1'
@@ -283,7 +283,7 @@ def LiveTV():
     items2 = [{'label':item['title'], 'path':plugin.url_for('LiveTVplay', title=item['title'].encode('utf-8'),url=item['thumbnail']), 'thumbnail':item['thumbnail']} for item in result2]
     return plugin.finish(items2, update_listing=False)
 
-@plugin.route('/live/LiveTV/<url>/<title>/')
+@plugin.route('/LiveTV/<url>/<title>/')
 def LiveTVplay(url,title):
     cid=re.compile('CHANNEL_IMAGE/([0-9]+)/').findall(url)
     quality = plugin.get_setting("quality", str)    

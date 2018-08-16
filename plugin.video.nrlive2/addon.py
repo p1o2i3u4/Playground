@@ -145,15 +145,15 @@ def VODPlay(vodID,league, vid,vtype,title):
         plugin.play_video( {'label': title, 'path':match} )
         return plugin.finish(None, succeeded=False)
 
-##@plugin.route('/live/')
-##def live():
-##    items = [
-##        {'label':'티비', 'path':plugin.url_for('LiveTV')},
-##        {'label':'고화질', 'path':plugin.url_for('High_list')},
-##        {'label':'중화질', 'path':plugin.url_for('Med_list')},
-##        {'label':'저화질', 'path':plugin.url_for('Low_list')},
-##    ]
-##    return plugin.finish(items, view_mode='list')
+@plugin.route('/live/')
+def live():
+    items = [
+        {'label':'티비', 'path':plugin.url_for('LiveTV')},
+        #{'label':'고화질', 'path':plugin.url_for('High_list')},
+        #{'label':'중화질', 'path':plugin.url_for('Med_list')},
+        #{'label':'저화질', 'path':plugin.url_for('Low_list')},
+    ]
+    return plugin.finish(items, view_mode='list')
 
 @plugin.route('/LiveTV/')
 def LiveTV():

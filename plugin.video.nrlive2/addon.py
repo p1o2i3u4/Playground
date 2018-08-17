@@ -23,7 +23,7 @@ def main_menu():
     #urls = scraper.parseTop()
     items = [
         {'label':'하이라이트', 'path':plugin.url_for('VOD')},
-        {'label':'생방송', 'path':plugin.url_for('LiveTV')},
+        {'label':'생방송', 'path':plugin.url_for('live')},
     ]
     return items
 
@@ -145,18 +145,18 @@ def VODPlay(vodID,league, vid,vtype,title):
         plugin.play_video( {'label': title, 'path':match} )
         return plugin.finish(None, succeeded=False)
 
+##@plugin.route('/live/')
+##def live():
+##    items = [
+##        {'label':'티비', 'path':plugin.url_for('LiveTV')},
+##        #{'label':'고화질', 'path':plugin.url_for('High_list')},
+##        #{'label':'중화질', 'path':plugin.url_for('Med_list')},
+##        #{'label':'저화질', 'path':plugin.url_for('Low_list')},
+##    ]
+##    return plugin.finish(items, view_mode='list')
+
 @plugin.route('/live/')
 def live():
-    items = [
-        {'label':'티비', 'path':plugin.url_for('LiveTV')},
-        #{'label':'고화질', 'path':plugin.url_for('High_list')},
-        #{'label':'중화질', 'path':plugin.url_for('Med_list')},
-        #{'label':'저화질', 'path':plugin.url_for('Low_list')},
-    ]
-    return plugin.finish(items, view_mode='list')
-
-@plugin.route('/LiveTV/')
-def LiveTV():
     a=plugin.get_setting('a', bool)
     url='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_chlist?istest=0&category_id=1'
 
@@ -283,7 +283,7 @@ def LiveTV():
     items2 = [{'label':item['title'], 'path':plugin.url_for('LiveTVplay', title=item['title'].encode('utf-8'),url=item['thumbnail']), 'thumbnail':item['thumbnail']} for item in result2]
     return plugin.finish(items2, update_listing=False)
 
-@plugin.route('/LiveTV/<url>/<title>/')
+@plugin.route('/live/<url>/<title>/')
 def LiveTVplay(url,title):
     cid=re.compile('CHANNEL_IMAGE/([0-9]+)/').findall(url)
     quality = plugin.get_setting("quality", str)    

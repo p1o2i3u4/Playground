@@ -10,13 +10,14 @@ import json
 from xbmcswift2 import Plugin
 #from YDStreamExtractor import getVideoInfo
 from BeautifulSoup import BeautifulSoup
+import urlresolver
 
 # magic; id of this plugin's instance - cast to integer
 plugin = Plugin()
 _pluginName = (sys.argv[0])
 _thisPlugin = int(sys.argv[1])
 _connectionTimeout = 20
-_header = 'Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36'
+_header = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'
 tablet_UA = "Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36"
 USER_AGENT = 'Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36'
 
@@ -100,6 +101,8 @@ def Episodes(url):
         for title, url, thumbnail in items:
             addLink(title, url, 'Play', thumbnail)
 
+        #addLink('dmotion', "https://streamango.com/embed/bobfrlstomlnbscl/_E06_181016_720p_mp4", 'dmotion', thumbnail)        
+
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
     
@@ -120,10 +123,11 @@ def Play(url):
         
         for item in soup2.findAll("li"):
 
-            t=item.find("span", {"class":"linkhigh"})
+            t=item.find("span", {"class":"mdline"})
             if t:
                 title = item.find("span", {"class":"link01"}).string
                 href = item.a['val'].encode('utf-8')
+                #href = item.a['href'].encode('utf-8')
                 items.append({'title':title, 'href':href})
             else:
                 continue
@@ -132,19 +136,29 @@ def Play(url):
         for i in range(len(items)):
             items[i] = (items[i]['title'], items[i]['href'])
 
-        items.sort()
+        #items.sort()
         for title, url in items:
 
-           #if title =='HDvid ':
-           #     hdvid(url)
-                #addLink(title, url, 'hdvid', '')
-           #     break
-            if title =='K-vid ':
-                #addLink(title, url, 'kvid', '')
-                kvid(url)
-                break
+            if title =='Streamango ':
+               dmotion(url)
+               break
             else:
                 continue
+
+##            if title =='Dailymotion ':
+##                #hqvid(url)
+##                addLink(title, url, 'dmotion', '')
+##            elif title =='K-vid ':
+##                #hqvid(url)
+##                addLink(title, url, 'kvid', '')
+##             #   break
+##            elif title =='Streamango ':
+##            #    print url
+##                addLink(title, url, 'dmotion', '')
+##             #   dmotion(url)
+##                #break
+##            else:
+##                continue
   
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
@@ -184,7 +198,7 @@ def kvid(url):
         soup=BeautifulSoup(link, fromEncoding='utf-8')
 
         
-        videourl=re.compile('file: \'(.*?)\'').search(link).group(1)
+        videourl=re.compile('file: \"(.*?)\"').search(link).group(1)
         print videourl
         item = xbmcgui.ListItem(path = videourl)
         xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
@@ -210,6 +224,36 @@ def hdvid(url):
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')
         
+        
+def hqvid(url):
+    try:
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', _header)
+        req.add_header('Accept-Langauge', 'ko')
+        req.add_header('Cookie', 'language=kr')        
+        response = urllib2.urlopen(req, timeout = _connectionTimeout)
+        link=response.read()
+        response.close()
+        soup=BeautifulSoup(link, fromEncoding='utf-8')
+
+        
+        videourl=re.compile('file\":\"(.*?)\",\"label\":\"720').search(link).group(1)
+        print videourl
+        item = xbmcgui.ListItem(path = videourl)
+        xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
+    except urllib2.URLError:
+        addLink("성용이를 불러주세용.", '', '', '')
+
+
+def dmotion(url):
+    try:
+        videourl = urlresolver.resolve(url)
+        print videourl
+        print "hello"
+        item = xbmcgui.ListItem(path = videourl)
+        xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
+    except urllib2.URLError:
+        addLink("성용이를 불러주세용.", '', '', '')
         
 def addLink(name,url,mode,iconimage):
     u=_pluginName+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)
@@ -273,5 +317,9 @@ else:
         kvid(urlUnquoted)
     elif params["mode"] == 'hdvid':
         hdvid(urlUnquoted)
-
+    elif params["mode"] == 'hqvid':
+        hqvid(urlUnquoted)
+    elif params["mode"] == 'dmotion':
+        dmotion(urlUnquoted)
+        
 xbmcplugin.endOfDirectory(_thisPlugin)        

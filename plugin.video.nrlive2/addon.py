@@ -314,9 +314,28 @@ def LiveTVplay(url,title):
     result=result.replace('10451',str(cid))
     result=result.replace('10452',str(cid))
     result=result.replace('10453',str(cid))
-    server = plugin.get_setting("Fixed Server", bool)
-    if server:
-        result=re.sub('121\.156\.46\.[0-9]+','121.156.46.123',result)
+    serverfix = plugin.get_setting("Fixed Server", bool)
+    server = plugin.get_setting("Servers", str)
+    if serverfix:
+            
+        if server == '75':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.75',result)
+        if server == '76':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.76',result)
+        if server == '77':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.77',result)
+        if server == '79':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.79',result)
+        if server == '119':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.119',result)
+        if server == '120':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.123',result)
+        if server == '121':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.123',result)
+        if server == '122':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.123',result)
+        if server == '123':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.123',result)
     
     print result
 

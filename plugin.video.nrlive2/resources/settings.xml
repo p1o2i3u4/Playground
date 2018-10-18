@@ -4,7 +4,7 @@
     <setting id="quality" type="enum" label="30001" values="480p|720p|1080p" default="3" />
     <setting id="1080P" type="bool" label="30005" default="false" />
 	<setting id="a" type="bool" label="30006" default="false" />
-	<setting id="Fixed Server" type="bool" label="30007" default="false" />
+	<setting id="Fixed Server" type="enum" label="30007" values="75|76|77|79|119|120|121|122|123" default="5" />
 	<setting id="Protocol" type="enum" label="30010" lvalues="30011|30012|30013" default="0"/>
   </category>
   <category label="30201">

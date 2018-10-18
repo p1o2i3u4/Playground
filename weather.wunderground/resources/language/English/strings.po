@@ -24,11 +24,7 @@ msgctxt "#32102"
 msgid "Advanced options"
 msgstr ""
 
-#empty strings from id 32103 to 32109
-
-msgctxt "#32110"
-msgid "Enabled"
-msgstr ""
+#empty strings from id 32103 to 32110
 
 msgctxt "#32111"
 msgid "Location 1"
@@ -180,4 +176,32 @@ msgstr ""
 
 msgctxt "#32516"
 msgid "Synopsis"
+msgstr ""
+
+#empty strings from id 32517 to 32520
+
+msgctxt "#32521"
+msgid "Infrared Satellite"
+msgstr ""
+
+msgctxt "#32522"
+msgid "Visual Satellite"
+msgstr ""
+
+msgctxt "#32523"
+msgid "Radar"
+msgstr ""
+
+#empty strings from id 32524 to 32600
+
+msgctxt "#32601"
+msgid "API key"
+msgstr ""
+
+msgctxt "#32602"
+msgid "Get your free API key (Anvil Plan) at:"
+msgstr ""
+
+msgctxt "#32603"
+msgid "http://www.wunderground.com/weather/api/d/login.html"
 msgstr ""

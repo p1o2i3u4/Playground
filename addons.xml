@@ -284,10 +284,9 @@
 	</extension>
 </addon>
 
-<addon id="weather.wunderground" name="Weather Underground" version="4.0.1" provider-name="Team-Kodi">
+<addon id="weather.wunderground" name="Weather Underground" version="6.0.1" provider-name="ronie">
 	<requires>
-		<import addon="xbmc.python" version="2.12.0"/>
-		<import addon="script.module.simplejson" version="3.3.0"/>
+		<import addon="xbmc.python" version="2.25.0"/>
 	</requires>
 	<extension point="xbmc.python.weather" library="default.py"/>
 	<extension point="xbmc.addon.metadata">
@@ -467,7 +466,6 @@
 		<website></website>
 		<email></email>
 		<source>https://github.com/XBMC-Addons/weather.wunderground/</source>
-		<broken>This addon is no longer functional. Please select a different weather addon.</broken>
 	</extension>
 </addon>
 </addons>

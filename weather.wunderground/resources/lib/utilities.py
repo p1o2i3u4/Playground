@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import sys
+import sys, math
 import xbmc
 
-__language__ = sys.modules[ "__main__" ].__language__
+LANGUAGE = sys.modules[ "__main__" ].LANGUAGE
 
 #http://www.wunderground.com/weather/api/d/docs?d=language-support
-        # xbmc lang name         # wu code
+        # kodi lang name         # wu code
 LANG = { 'afrikaans'             : 'AF',
          'albanian'              : 'AL',
          'amharic'               : 'EN', # AM is n/a, use AR or EN?
@@ -53,6 +53,7 @@ LANG = { 'afrikaans'             : 'AF',
          'malayalam'             : 'EN', # ML is n/a, use EN
          'maltese'               : 'MT',
          'maori'                 : 'MI',
+         'mongolian (mongolia)'  : 'MN',
          'norwegian'             : 'NO',
          'ossetic'               : 'EN', # OS is n/a, use EN
          'persian'               : 'FA',
@@ -64,6 +65,8 @@ LANG = { 'afrikaans'             : 'AF',
          'russian'               : 'RU',
          'serbian'               : 'SR',
          'serbian (cyrillic)'    : 'SR',
+         'silesian'              : 'PL', # SZL is n/a, use PL or EN?
+         'sinhala'               : 'EN', # SI is n/a, use EN?
          'slovak'                : 'SK',
          'slovenian'             : 'SL',
          'spanish'               : 'SP',
@@ -144,33 +147,33 @@ WEEKDAY = { 0  : xbmc.getLocalizedString(41),
             5  : xbmc.getLocalizedString(46),
             6  : xbmc.getLocalizedString(47)}
 
-SEVERITY = { 'W' : __language__(32510),
-             'A' : __language__(32511),
-             'Y' : __language__(32512),
-             'S' : __language__(32513),
-             'O' : __language__(32514),
-             'F' : __language__(32515),
-             'N' : __language__(32516),
+SEVERITY = { 'W' : LANGUAGE(32510),
+             'A' : LANGUAGE(32511),
+             'Y' : LANGUAGE(32512),
+             'S' : LANGUAGE(32513),
+             'O' : LANGUAGE(32514),
+             'F' : LANGUAGE(32515),
+             'N' : LANGUAGE(32516),
              'L' :'', # no idea
              ''  : ''}
 
 def MOONPHASE(age, percent):
     if (percent == 0) and (age == 0):
-        phase = __language__(32501)
+        phase = LANGUAGE(32501)
     elif (age < 17) and (age > 0) and (percent > 0) and (percent < 50):
-        phase = __language__(32502)
+        phase = LANGUAGE(32502)
     elif (age < 17) and (age > 0) and (percent == 50):
-        phase = __language__(32503)
+        phase = LANGUAGE(32503)
     elif (age < 17) and (age > 0) and (percent > 50) and (percent < 100):
-        phase = __language__(32504)
+        phase = LANGUAGE(32504)
     elif (age > 0) and (percent == 100):
-        phase = __language__(32505)
+        phase = LANGUAGE(32505)
     elif (age > 15) and (percent < 100) and (percent > 50):
-        phase = __language__(32506)
+        phase = LANGUAGE(32506)
     elif (age > 15) and (percent == 50):
-        phase = __language__(32507)
+        phase = LANGUAGE(32507)
     elif (age > 15) and (percent < 50) and (percent > 0):
-        phase = __language__(32508)
+        phase = LANGUAGE(32508)
     else:
         phase = ''
     return phase
@@ -205,3 +208,39 @@ def KPHTOBFT(spd):
     else:
         bft = ''
     return bft
+
+def FEELS_LIKE(T, V=0, R=0, ext=''):
+    if T <= 10 and V >= 8:
+        FeelsLike = WIND_CHILL(T, V)
+    elif T >= 26:
+        FeelsLike = HEAT_INDEX(T, R)
+    else:
+        FeelsLike = T
+    if ext == 'F':
+        FeelsLike = FeelsLike * 1.8 + 32
+    return str(int(round(FeelsLike)))
+
+#### thanks to FrostBox @ http://forum.kodi.tv/showthread.php?tid=114637&pid=937168#pid937168
+def WIND_CHILL(T, V):
+    FeelsLike = ( 13.12 + ( 0.6215 * T ) - ( 11.37 * V**0.16 ) + ( 0.3965 * T * V**0.16 ) )
+    return FeelsLike
+
+### https://en.wikipedia.org/wiki/Heat_index
+def HEAT_INDEX(T, R):
+    T = T * 1.8 + 32 # calaculation is done in F
+    FeelsLike = -42.379 + (2.04901523 * T) + (10.14333127 * R) + (-0.22475541 * T * R) + (-0.00683783 * T**2) + (-0.05481717 * R**2) + (0.00122874 * T**2 * R) + (0.00085282 * T * R**2) + (-0.00000199 * T**2 * R**2)
+    FeelsLike = (FeelsLike - 32) / 1.8 # convert to C
+    return FeelsLike
+
+#### thanks to FrostBox @ http://forum.kodi.tv/showthread.php?tid=114637&pid=937168#pid937168
+def DEW_POINT(Tc=0, RH=93, ext='', minRH=( 0, 0.075 )[ 0 ]):
+    Es = 6.11 * 10.0**( 7.5 * Tc / ( 237.7 + Tc ) )
+    RH = RH or minRH
+    E = ( RH * Es ) / 100
+    try:
+        DewPoint = ( -430.22 + 237.7 * math.log( E ) ) / ( -math.log( E ) + 19.08 )
+    except ValueError:
+        DewPoint = 0
+    if ext == 'F':
+        DewPoint = DewPoint * 1.8 + 32
+    return str(int(round(DewPoint)))

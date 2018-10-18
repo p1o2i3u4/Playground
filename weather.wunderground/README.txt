@@ -1,4 +1,24 @@
+==============
+INFO FOR USERS
+==============
+
+To use this addon, you need to enter your personal API key in the addon settings.
+To get a free API key:
+1) please sign-up here: http://www.wunderground.com/weather/api/d/login.html
+2) click on the activation link in the confirmation email
+3) log in to your account
+4) go to: http://www.wunderground.com/weather/api/
+5) select 'Explore my options'
+6) on the next page, select 'Anvil Plan' and click 'Purchase Key'
+7) fill in the registration form (doesn't really mater what info you supply here)
+8) on the next page, find your 'Key ID'
+
+
+
+
+=================
 INFO FOR SKINNERS
+=================
 
 ---------------------------
 DEFAULT KODI WEATHER LABELS
@@ -37,9 +57,9 @@ WeatherProviderLogo
 
 
 
--------------------------
-ADDITIONAL WEATHER LABELS
--------------------------
+-----------------------
+EXTENDED WEATHER LABELS
+-----------------------
 
 
 FORECAST
@@ -123,6 +143,8 @@ Weekend.%i.WindDirection
 Weekend.%i.ShortWindDirection
 Weekend.%i.WindDegree
 Weekend.%i.Humidity
+Weekend.%i.DewPoint
+Weekend.%i.FeelsLike
 Weekend.%i.MinHumidity
 Weekend.%i.MaxHumidity
 Weekend.%i.HighTemperature
@@ -137,11 +159,13 @@ Weekend.%i.ChancePrecipitation
 36HOUR [1-3]
 ------------
 36Hour.IsFetched
-36Hour.%i.Forecast
+36Hour.%i.Outlook
 36Hour.%i.TemperatureHeading
 36Hour.%i.Temperature
 36Hour.%i.Heading
+36Hour.%i.Precipitation			(same as ChancePrecipitation)
 36Hour.%i.ChancePrecipitation
+36Hour.%i.WindSpeed
 36Hour.%i.OutlookIcon
 36Hour.%i.FanartCode
 
@@ -185,7 +209,11 @@ Alerts
 Alerts.Count
 
 
-[MAP]
+MAP [1-3]
+---------
 Map.IsFetched
-MapPath
+Map.%i.Area                     (image path, same as Layer)
+Map.%i.Layer                    (image path, same as Area)
+Map.%i.Heading                  (image label)
+
 

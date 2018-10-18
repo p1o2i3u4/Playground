@@ -316,7 +316,7 @@ def LiveTVplay(url,title):
     result=result.replace('10453',str(cid))
     server = plugin.get_setting("Fixed Server", bool)
     if server:
-        result=re.sub('121\.156\.46\.[0-9]+','121.156.46.119',result)
+        result=re.sub('121\.156\.46\.[0-9]+','121.156.46.123',result)
     
     print result
 

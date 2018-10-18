@@ -99,7 +99,7 @@ def Episodes(url):
                   
 
         for title, url, thumbnail in items:
-            addLink(title, url, 'Play', thumbnail)
+            addDir(title, url, 'Play', thumbnail)
 
         #addLink('dmotion', "https://streamango.com/embed/bobfrlstomlnbscl/_E06_181016_720p_mp4", 'dmotion', thumbnail)        
 
@@ -138,27 +138,27 @@ def Play(url):
 
         #items.sort()
         for title, url in items:
-
-            if title =='Streamango ':
-               dmotion(url)
-               break
-            else:
-                continue
-
-##            if title =='Dailymotion ':
-##                #hqvid(url)
-##                addLink(title, url, 'dmotion', '')
-##            elif title =='K-vid ':
-##                #hqvid(url)
-##                addLink(title, url, 'kvid', '')
-##             #   break
-##            elif title =='Streamango ':
-##            #    print url
-##                addLink(title, url, 'dmotion', '')
-##             #   dmotion(url)
-##                #break
+##
+##            if title =='Streamango ':
+##               dmotion(url)
+##               break
 ##            else:
 ##                continue
+
+            if title =='Dailymotion ':
+                #hqvid(url)
+                addLink(title, url, 'dmotion', '')
+            #elif title =='K-vid ':
+                #hqvid(url)
+             #   addLink(title, url, 'kvid', '')
+             #   break
+            elif title =='Streamango ':
+            #    print url
+                addLink(title, url, 'dmotion', '')
+             #   dmotion(url)
+                #break
+            else:
+                continue
   
     except urllib2.URLError:
         addLink("성용이를 불러주세용.", '', '', '')

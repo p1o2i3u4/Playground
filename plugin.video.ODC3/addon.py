@@ -223,6 +223,7 @@ def listdramaInCategory(url):
 def resolveAndPlayVideo(url):
     url=url.split('%5E')
     plus=0
+    print url
     if plus==0:
         url2='https://api.ondemandkorea.com/api3/episode/'
         data={'language': '0',
@@ -279,7 +280,7 @@ def resolveAndPlayVideo(url):
 def addLink(name,url,mode,iconimage):
     u=_pluginName+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)
     liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-    
+    liz.setInfo( type="Video", infoLabels={ "Title": name } )    
     liz.setProperty("IsPlayable","true")
     xbmcplugin.addDirectoryItem(handle=_thisPlugin,url=u,listitem=liz,isFolder=False)
     

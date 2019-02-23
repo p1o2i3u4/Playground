@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <settings>
   <category label="30200">
-    <setting id="quality" type="enum" label="30001" values="480p|720p|1080p" default="3" />
+    <setting id="quality" type="enum" label="30001" values="480p|720p|1080p" default="2" />
     <setting id="1080P" type="bool" label="30005" default="false" />
 	<setting id="a" type="bool" label="30006" default="false" />
 	<setting id="Fixed Server" type="bool" label="30007" default="true" />
-	<setting id="Servers" type="enum" label="30008" values="75|76|77|79|119|120|121|122|123" default="5" />
-	<setting id="Protocol" type="enum" label="30010" lvalues="30011|30012|30013" default="0"/>
+	<setting id="Servers" type="enum" label="30008" values="75|76|77|79|119|120|121|122|123" default="8" />
+	<setting id="Protocol" type="enum" label="30010" lvalues="30011|30012|30013" default="2"/>
   </category>
   <category label="30201">
     <setting id="mp4_url" type="bool" label="30003" default="false" />

@@ -60,7 +60,9 @@ token='432b1a3e19ba4d68d169d85a71de3a0ded683edfe0239f24fafd2db611f1e081'
 def listMainCategories():
     addDir("최근 방영", '0', "RecentCategories", '')  
     addDir("드라마", "2", "videoCategories", '')
+    addDir("종영 드라마", "2", "VideoCategoriesPast", '')
     addDir("예능/오락", "6", "videoCategories", '')
+    addDir("종영 예능/오락", "6", "VideoCategoriesPast", '')
     addDir("시사/다큐", "450", "videoCategories", '')
     addDir("음식/요리", "452", "videoCategories", '')
     #addDir("화제영상", "39", "videoCategories", '')
@@ -171,17 +173,59 @@ def listVideoCategories(url):
                 current.append([result[i]['title'], result[i]['id'], result[i]['thumbnail']])
         
             
-        else:
-            past.append([result[i]['title'], result[i]['id'], result[i]['thumbnail']])
+##        else:
+##            past.append([result[i]['title'], result[i]['id'], result[i]['thumbnail']])
 
     current=sorted(current)
-    current.append(['## ## ## ## ##이하 종영방송## ## ## ## ##','', ''])
-    current.extend(past)
+##    current.append(['## ## ## ## ##이하 종영방송## ## ## ## ##','', ''])
+##    current.extend(past)
 
     for name, url2, thumbnail in current:
         addDir(name, url2, 'dramaCategoryContent', thumbnail)
 
 
+def listVideoCategoriesPast(url):
+    url2='https://api.ondemandkorea.com/api3/category/'
+    data={'language': '0',
+
+                   'accessToken': token,
+                   'id':url
+          }
+    headers={
+        'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
+        'User-Agent': 'MMozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19',
+            }
+    r = requests.post(url2, data=data, headers=headers)
+    print(r.status_code, r.reason)
+    obj = json.loads(r.text)
+
+
+    result = []
+    current = []
+    past = []
+    for item in obj['data']:
+        #if item['odkPlus']=='0':
+        thumb1=item["posterUrl"]
+        thumb=thumb1.replace('https://sp.ondemandkorea.com/includes/timthumb.php?w=424&h=239&src=','https://sp.ondemandkorea.com').replace('https://sp.ondemandkorea.com/includes/timthumb.php?src=','https://sp.ondemandkorea.com').replace('&w=424&h=239','').replace('&w=320&h=468','')
+        rootch=re.compile('ondemandkorea.com').search(thumb)
+        if rootch:
+            thumb=thumb
+        else:
+            thumb='https://sp.ondemandkorea.com'+thumb
+
+        result.append({'id':item['id'], 'title':item['title'], 'broad_date':item['latestDate'], 'thumbnail':thumb,'stat':item['status'], 'new':item['new']})
+
+    for i in range(len(result)):
+        if result[i]['stat']=='current':
+            pass
+        else:
+            past.append([result[i]['title'], result[i]['id'], result[i]['thumbnail']])
+
+    past=sorted(past)
+
+    for name, url2, thumbnail in past:
+        addDir(name, url2, 'dramaCategoryContent', thumbnail)
+        
 def listdramaInCategory(url):
     url2='https://api.ondemandkorea.com/api3/program/'
     data={'language': '0',
@@ -328,6 +372,8 @@ if url == None:
 else:
     if params["mode"] == 'videoCategories':
         listVideoCategories(url)
+    elif params["mode"] == 'VideoCategoriesPast':
+        listVideoCategoriesPast(url)    
 ##    elif params["mode"] == 'videoCategoryContent':
 ##        listVideosInCategory(urlUnquoted)
         

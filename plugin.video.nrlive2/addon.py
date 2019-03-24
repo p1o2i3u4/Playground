@@ -330,6 +330,22 @@ def LiveTVplay(url,title):
             result=re.sub('121\.156\.46\.[0-9]+','121.156.46.77',result)
         if server == '79':
             result=re.sub('121\.156\.46\.[0-9]+','121.156.46.79',result)
+        if server == '111':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.111',result)
+        if server == '112':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.112',result)
+        if server == '113':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.113',result)
+        if server == '114':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.114',result)
+        if server == '115':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.115',result)
+        if server == '116':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.116',result)
+        if server == '117':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.117',result)
+        if server == '118':
+            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.118',result)
         if server == '119':
             result=re.sub('121\.156\.46\.[0-9]+','121.156.46.119',result)
         if server == '120':

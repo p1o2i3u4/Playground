@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+	<!-- Labels -->
+	<string id="30001">NotAvailable</string>
+	<string id="30002">PREVIOS</string>
+	<string id="30003">NEXT</string>
+	<!-- Settings labels -->
+	<string id="30100">ID</string>
+	<string id="30101">PW</string>
+	<string id="30102">Saved login data</string>
+	<string id="30103">Stream Quality</string>
+	<string id="30104">Manually select the stream quality</string>
+	<string id="30105">FHD</string>
+	<string id="30106">HD</string>
+	<string id="30107">SD</string>
+	<!-- Warning -->
+	<string id="30201">No login data saved.</string>
+	<string id="30202">Are you change settings now?</string>
+</strings>

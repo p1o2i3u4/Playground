@@ -180,6 +180,42 @@ version="2.23.0"/>
   </extension>
 </addon>
 
+<addon id="plugin.video.oksusu" name="oksusu" version="0.2.1" provider-name="soju6jan">
+	<requires>
+		<import addon="xbmc.python" version="2.1.0"/>
+	</requires>
+	<extension point="xbmc.python.pluginsource" library="kodi.py">
+    	<provides>video</provides>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en">oksusu</summary>
+		<summary lang="kr">oksusu</summary>
+		<description lang="en">oksusu</description>
+		<description lang="kr">oksusu</description>
+		<language></language>
+		<platform>all</platform>
+	</extension>
+</addon>
+
+<addon id="plugin.video.pooq" name="pooq tv" version="0.3.4" provider-name="AnAs">
+	<requires>
+		<import addon="xbmc.python" version="2.1.0"/>
+	</requires>
+	<extension point="xbmc.python.pluginsource" library="default.py">
+    	<provides>video</provides>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en">pooq for Kodi</summary>
+		<summary lang="kr">pooq for Kodi</summary>
+		<description lang="en">pooq Live and Vod service</description>
+		<description lang="kr">pooq Live 및 다시보기 서비스</description>
+		<language></language>
+		<platform>all</platform>
+		<license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
+		<email>irow14@gmail.com</email>
+	</extension>
+</addon>
+
 <addon id="plugin.video.qooqoo" name="BAY" version="0.0.6" provider-name="Kevin Shin">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+	<!-- Labels -->
+	<string id="30001">Preview</string>
+	<string id="30002">Next Page</string>
+	<string id="30003">Input Search Keyword</string>
+	<string id="30004">TV VOD</string>
+	<string id="30005">Movie</string>
+	<string id="30006">Search</string>
+	<string id="30007">Recent</string>
+	<string id="30008">Hot</string>
+	<string id="30009">Live TV</string>
+	<string id="30010">Recommendation</string>
+	<string id="30011">Watched</string>
+	<!-- Settings labels -->
+	<string id="30100">ID:</string>
+	<string id="30101">Password:</string>
+	<string id="30102">Stream Quality</string>
+	<string id="30103">Manually select the stream quality</string>
+	<string id="30104">Ultra-High</string>
+	<string id="30105">High</string>
+	<string id="30106">Normal</string>
+	<string id="30107">Mobile</string>
+	<string id="30108">Display Grade On The Title</string>
+	<string id="30109">Over 19 Only to Display Grade On The Title</string>
+	<!-- Warning -->
+	<string id="30201">Set your ID or Password.</string>
+	<string id="30202">Are you change settings now?</string>
+	<string id="30203">Login Failed!</string>
+	<string id="30204">Can't broadcast because no copyright.</string>
+	<string id="30205">Select stream quality.</string>
+</strings>

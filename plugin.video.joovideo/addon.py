@@ -140,8 +140,8 @@ class JooVideoAddon(JVABase):
             file_size = self.toMegabytes(file_info['size'])
             video_resolution = self.getVideoResolutionFromVStreamFilename(file_info['name'])
 
-            title_template = "{0}, {1}MBytes [{2}]"
-            title = title_template.format(item_title, file_size, video_resolution)
+            title_template = "{0}Mbytes [{1}]: {2}"
+            title = title_template.format(file_size, video_resolution, item_title)
 
             item = xbmcgui.ListItem(title, iconImage=ICON)
             item.setInfo(
@@ -151,13 +151,14 @@ class JooVideoAddon(JVABase):
                     'studio': ADDON.getAddonInfo('name')
                 }
             )
+        
             item.setProperty('Fanart_Image', FANART)
             item.setProperty('IsPlayable', 'true')  # IMPORTANT : mandatory, if not, HANDLE not to be valid
 
             _url = PLUGIN_PATH + '?' + ('url=%s' % urllib.quote_plus(dm_embed_url['dm_video_id'])) + '&mode=play'
 
             xbmcplugin.addDirectoryItem(HANDLE, _url, item, False)  # File
-
+        xbmcplugin.addSortMethod(HANDLE, xbmcplugin.SORT_METHOD_TITLE)
         xbmcplugin.endOfDirectory(HANDLE)
 
     def getVStreamStreamUrl(self, vid):

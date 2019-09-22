@@ -99,8 +99,8 @@ def listRecentCategories(url):
     print(r.status_code, r.reason)
     obj = json.loads(r.text)
 
-    print "testingx"
-    print obj
+    #print "testingx"
+    #print obj
     result = []
     for item in obj['data'][2]['data']:
         title=item['title']+' - '+item['broadcastDate']

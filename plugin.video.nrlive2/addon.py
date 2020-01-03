@@ -233,12 +233,12 @@ def live():
     result.append({'chname':'SkySports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10440/'})
     result.append({'chname':'KBS N SPORTS', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10410/'})
     result.append({'chname':'MBC Sports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10430/'})
-    result.append({'chname':'MBC Sprts2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10490/'})
+    result.append({'chname':'MBC Sports2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10490/'})
     result.append({'chname':'SBS Sports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10420/'})
     result.append({'chname':'XTM', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10130/'})
-
-
-    
+    result.append({'chname':'SPOTV', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10071/'})
+    result.append({'chname':'SPOTV2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11991/'})  
+    result.append({'chname':'SPOTV GAMES', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10711/'})  
     #result.append({'chname':'Mnet', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10150/'})
     #result.append({'chname':'K shopping', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11526/'})
 ##    result.append({'chname':'SPOTV 2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11990/'})

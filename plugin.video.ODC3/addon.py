@@ -268,8 +268,8 @@ def listdramaInCategory(url):
         src2= src.replace(src[inds[-2]+1:inds[-1]], item['slug'])
 
         inds= [i for i,c in enumerate(src2) if c=='/']
-        src3=src2.replace(src2[inds[4]+1:inds[5]], item['broadcastDate'][-4]+item['broadcastDate'][-3]+item['broadcastDate'][-2]+item['broadcastDate'][-1]+item['broadcastDate'][0]+item['broadcastDate'][1])
-            
+        src3=src2.replace(src2[inds[3]+1:inds[4]], item['broadcastDate'][-4]+item['broadcastDate'][-3]+item['broadcastDate'][-2]+item['broadcastDate'][-1]+item['broadcastDate'][0]+item['broadcastDate'][1])
+        
         eid=item['id']+'^'+item['plusOnly']+'^'+item['slug']+'^'+src3
         result.append([title, eid,thumb ])
 

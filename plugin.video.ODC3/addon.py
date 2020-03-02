@@ -384,19 +384,19 @@ def resolveAndPlayVideoRecent(url):
             name=re.findall(".*?-e[0-9]",url[2])[0]
         except:
             name2=re.findall(".*?-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]",url[2])[0]
-
+            
         try:
             name
         except NameError:
             if url[3]=="2":
-                base_url = "http://odk-hls.akamaized.net/"+prefix+"/v1/"+url[4][-4]+url[4][-3]+url[4][-2]+url[4][-1]+url[4][0]+url[4][1]+"/drama/"+ name2[:-9] +"/"+url[2]+"/playlist_720.m3u8"
+                base_url = "https://hls.ondemandkorea.com/v1/"+url[4][-4]+url[4][-3]+url[4][-2]+url[4][-1]+url[4][0]+url[4][1]+"/drama/"+ name2[:-9] +"/"+url[2]+"/playlist_720.m3u8"
             else:
-                base_url = "http://odk-hls.akamaized.net/"+prefix+"/v1/"+url[4][-4]+url[4][-3]+url[4][-2]+url[4][-1]+url[4][0]+url[4][1]+"/variety/"+ name2[:-9] +"/"+url[2]+"/playlist_720.m3u8"
+                base_url = "https://hls.ondemandkorea.com/v1/"+url[4][-4]+url[4][-3]+url[4][-2]+url[4][-1]+url[4][0]+url[4][1]+"/variety/"+ name2[:-9] +"/"+url[2]+"/playlist_720.m3u8"
         else:
             if url[3]=="2":
-                base_url = "http://odk-hls.akamaized.net/"+prefix+"/v1/"+url[4][-4]+url[4][-3]+url[4][-2]+url[4][-1]+url[4][0]+url[4][1]+"/drama/"+ name[:-3] +"/"+url[2]+"/playlist_720.m3u8"
+                base_url = "https://hls.ondemandkorea.com/v1/"+url[4][-4]+url[4][-3]+url[4][-2]+url[4][-1]+url[4][0]+url[4][1]+"/drama/"+ name[:-3] +"/"+url[2]+"/playlist_720.m3u8"
             else:
-                base_url = "http://odk-hls.akamaized.net/"+prefix+"/v1/"+url[4][-4]+url[4][-3]+url[4][-2]+url[4][-1]+url[4][0]+url[4][1]+"/variety/"+ name[:-3] +"/"+url[2]+"/playlist_720.m3u8"
+                base_url = "https://hls.ondemandkorea.com/v1/"+url[4][-4]+url[4][-3]+url[4][-2]+url[4][-1]+url[4][0]+url[4][1]+"/variety/"+ name[:-3] +"/"+url[2]+"/playlist_720.m3u8"
         
         if use_mp4_url:
             if quality == '1':

@@ -7,7 +7,6 @@ from urllib2 import unquote
 import os
 import urllib2, urllib, re
 import requests, json
-from BeautifulSoup import BeautifulSoup
 
 plugin = Plugin()
 _L = plugin.get_string
@@ -20,143 +19,6 @@ sys.path.append(lib_path)
 
 @plugin.route('/')
 def main_menu():
-    #urls = scraper.parseTop()
-    items = [
-        {'label':'하이라이트', 'path':plugin.url_for('VOD')},
-        {'label':'생방송', 'path':plugin.url_for('live')},
-    ]
-    return items
-
-@plugin.route('/VOD/')
-def VOD():
-    url='http://sports.media.daum.net/rf/534b6e671652d99818d84ad0.json?callback=LegoLeagueInfoCallback'
-
-    headers={'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3',
-             'Content-Type':'application/x-www-form-urlencoded'}
-    r = requests.post(url, '', headers=headers)
-    print(r.status_code, r.reason)
-    t=r.text[23:-2]
-    obj = json.loads(t)
-    ##print obj
-
-    result=[]
-
-
-    for item in obj['component']['data'][0]['component']['data']:
-        result.append({'league_id':item['component']['userId'], 'title':item['component']['userName']})
-
-    items=[]
-    items = [{'label':item['title'], 'path':plugin.url_for('league', league_id=item['league_id'], league=item['title'].encode('utf8')), 'thumbnail':''} for item in result]
-    items.pop(0)
-    return plugin.finish(items, update_listing=False)
-
-    
-
-@plugin.route('/VOD/<league>/<league_id>/')
-def league(league_id, league):
-    url='http://sports.media.daum.net/ronaldo/gallery/list.json?callback=VideoCallback&category-code='+league_id
-
-    req = urllib2.Request(url)
-    response = urllib2.urlopen(req)
-    link=response.read()
-    response.close()
-
-    result=[]
-    t=link[16:-3]
-    obj = json.loads(t)
-    try:
-        for item in obj['data']['galleryList']:
-            try:
-                l = str(item['fieldValues']['game_time'])
-                date=l[:4]+'/'+ l[4:6]+'/'+l[6:8]
-                title=item['fieldValues']['home_team_name']+' vs. '+item['fieldValues']['away_team_name'] + ' - ' +date     
-                result.append({'title':title, 'vid':item['fieldValues']['game_id'], 'vtype':'sport'})
-            except KeyError:
-                continue
-        items=[]
-        items = [{'label':item['title'], 'path':plugin.url_for('VODlist', league=league, vid=item['vid'],vtype=item['vtype']), 'thumbnail':''} for item in result]
-        return plugin.finish(items, update_listing=False)
-    except:
-        if item['fieldValues']['game_id']=='1':
-            obj2=obj['data']['galleryList']
-            for item in obj2:
-                l = str(item['fieldValues']['game_start_time'])
-                date=l[:4]+'/'+ l[4:6]+'/'+l[6:8]
-                title='## '+item['fieldValues']['game_name'] + ' ## '+date     
-                result.append({'title':title, 'vid':item['fieldValues']['game_id'], 'thumb':'', 'vtype':'sport'})
-                for item2 in item['mediaRelations']:
-                    result.append({'title':item2['media']['fieldValues']['MEDIATYPE_tvpot']['title'], 'vid':item2['media']['fieldValues']['MEDIATYPE_tvpot']['vid'], 'thumb':item2['media']['fieldValues']['MEDIATYPE_tvpot']['thumbnailUrl'],'vtype':'sport'})
-            items=[]
-            items = [{'label':item['title'], 'path':plugin.url_for('VODPlay', title=item['title'].encode('utf8'), league=league, vid=item['vid'], vodID=item['vid'],vtype=item['vtype']), 'thumbnail':item['thumb']} for item in result]
-            return plugin.finish(items, update_listing=False)
-        else:            
-            for item in obj['data']['galleryList']:
-                l = str(item['fieldValues']['game_start_time'])
-                date=l[:4]+'/'+ l[4:6]+'/'+l[6:8]
-                title=item['fieldValues']['game_name'] + ' '+date     
-                result.append({'title':title, 'vid':item['fieldValues']['game_id'], 'vtype':'sport'})
-            items=[]
-            items = [{'label':item['title'], 'path':plugin.url_for('VODlist', league=league, vid=item['vid'],vtype=item['vtype']), 'thumbnail':''} for item in result]
-            return plugin.finish(items, update_listing=False)
-    
-##    except:
-##        for item in obj['data']['galleryList']:
-##            title=item['fieldValues']['title']    
-##            result.append({'title':title, 'vid':item['fieldValues']['MEDIATYPE_tvpot']['vid'], 'vtype':'sport'})
-##        items=[]
-##        items = [{'label':item['title'], 'path':plugin.url_for('VODPlay', title=item['title'].encode('utf8'), league=league, vid=item['vid'],vtype=item['vtype']), 'thumbnail':item['thumbnail_url']} for item in result]
-##        return plugin.finish(items, update_listing=False)
-    
-@plugin.route('/VOD/<league>/<vtype>/<vid>/')
-def VODlist(vid,vtype,league):
-##    if vtype=='sport':
-    url='http://sports.media.daum.net/proxy/ronaldo/gallery/view.json?game-id='+vid
-##    else:
-##    url='http://sports.media.daum.net/ronaldo/gallery/view.json?callback=videoGalleryCallback&id='+vid
-
-    req = urllib2.Request(url)
-    response = urllib2.urlopen(req)
-    link=response.read()
-    response.close()
-
-    obj = json.loads(link)
-    items=[]
-
-            
-    for item in obj['data']['gallery']['mediaRelations']:
-        items.append({'title':item['media']['fieldValues']['MEDIATYPE_tvpot']['title'], 'vodID':item['media']['fieldValues']['MEDIATYPE_tvpot']['vid'], 'thumbnail':item['media']['fieldValues']['MEDIATYPE_tvpot']['thumbnailUrl']})
-        
-    
-    items2 = [{'label':item['title'], 'path':plugin.url_for('VODPlay', title=item['title'].encode('utf8'), league=league, vid=vid,vtype=vtype, vodID=item['vodID']), 'thumbnail':item['thumbnail']} for item in items]
-    items2.sort()
-    return plugin.finish(items2, update_listing=False)
-    
-
-@plugin.route('/VOD/<league>/<vtype>/<vid>/<vodID>/<title>/')
-def VODPlay(vodID,league, vid,vtype,title):
-        url='http://videofarm.daum.net/controller/api/open/v1_5/MovieLocation.apixml?vid='+vodID+'&profile=HIGH'
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-
-        match=re.compile('<url><\!\[CDATA\[(.*?)\]\]></url>').search(link).group(1)
-        print match
-        plugin.play_video( {'label': title, 'path':match} )
-        return plugin.finish(None, succeeded=False)
-
-##@plugin.route('/live/')
-##def live():
-##    items = [
-##        {'label':'티비', 'path':plugin.url_for('LiveTV')},
-##        #{'label':'고화질', 'path':plugin.url_for('High_list')},
-##        #{'label':'중화질', 'path':plugin.url_for('Med_list')},
-##        #{'label':'저화질', 'path':plugin.url_for('Low_list')},
-##    ]
-##    return plugin.finish(items, view_mode='list')
-
-@plugin.route('/live/')
-def live():
     a=plugin.get_setting('a', bool)
     url='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_chlist?istest=0&category_id=1'
 
@@ -170,139 +32,141 @@ def live():
     result=[]
 
 
-    ##result = obj['data']['live_url']
-    
 
-    
+    ##result = obj['data']['live_url']
+   
     for item in obj['data']['list'][0]['list_channel']:
         if item['type']=='EPG':
             if item['adult_yn']=='N':
-                result.append({'chname':item['service_ch_name'], 'title':item['program_name'], 'ch_img':item['ch_image_detail'], 'thumbnail':item["still_cut_image"],'type':item['type']})
+                cid=re.compile('CHANNEL_IMAGE/([0-9]+)/').findall(item["still_cut_image"])
+                result.append([item['service_ch_name'],item['program_name'],item['still_cut_image'],cid[0],item['type']])
 
         if a:
             if item['adult_yn']=='Y':
-                result.append({'chname':item['service_ch_name'], 'title':item['program_name'], 'ch_img':item['ch_image_detail'], 'thumbnail':item["still_cut_image"],'type':item['type']})
-##    result.append({'chname':'HD shop', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10670/'})
-##    result.append({'chname':'NS Shop', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10680/'})
-##    result.append({'chname':'V - music video', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10690/'})
-##    result.append({'chname':'JTBC3 - Fox sports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10700/'})
-##    result.append({'chname':'SPOTV Games', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10710/'})
-    #result.append({'chname':'ENCODER_M?', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10720/'})
-##    result.append({'chname':'Viki', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10730/'})
-##    result.append({'chname':'adult1 prob midnight', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10740/'})
-##    result.append({'chname':'error', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10750/'})
-##    result.append({'chname':'Disney', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10760/'})
-##    result.append({'chname':'tooniverse', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10770/'})
-##    result.append({'chname':'JTBC2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10780/'})
-##    result.append({'chname':'China Channel', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10790/'})
-##    result.append({'chname':'Dramax', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10800/'})
-##    result.append({'chname':'home & shop', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10810/'})
-##    result.append({'chname':'NS shop+', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10820/'})
-##    result.append({'chname':'Shinsege shop', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10830/'})
-##    result.append({'chname':'discovery', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10840/'})
-##    result.append({'chname':'w channel', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10850/'})
-##    result.append({'chname':'CJ mall', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10860/'})
-##    result.append({'chname':'Playboy', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10870/'})
-##    result.append({'chname':'Honey', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10880/'})
-##
+                cid=re.compile('CHANNEL_IMAGE/([0-9]+)/').findall(item["still_cut_image"])
+                result.append([item['service_ch_name'],item['program_name'],item['still_cut_image'],cid[0],item['type']])
+##----------------------
+####    result.append(['HD shop','','','10670'])
+####    result.append(['NS Shop','','','10680'])
+####    result.append(['V - music video','','','10690'])
+####    result.append(['JTBC3 - Fox sports','','','10700'])
+####    result.append(['SPOTV Games','','','10710'])
+##    #result.append(['ENCODER_M?','','','10720'])
+####    result.append(['Viki','','','10730'])
+####    result.append(['adult1 prob midnight','','','10740'])
+####    result.append(['error','','','10750'])
+####    result.append(['Disney','','','10760'])
+####    result.append(['tooniverse','','','10770'])
+####    result.append(['JTBC2','','','10780'])
+####    result.append(['China Channel','','','10790'])
+####    result.append(['Dramax','','','10800'])
+####    result.append(['home & shop','','','10810'])
+####    result.append(['NS shop+','','','10820'])
+####    result.append(['Shinsege shop','','','10830'])
+####    result.append(['discovery','','','10840'])
+####    result.append(['w channel','','','10850'])
+####    result.append(['CJ mall','','','10860'])
+####    result.append(['Playboy','','','10870'])
+####    result.append(['Honey','','','10880'])
+####
 
-    #result.append({'chname':'tvn', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11800/'})
-    #result.append({'chname':'tvn - broken', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11790/'})
-    #result.append({'chname':'kids', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11780/'})
-    #result.append({'chname':'error', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11770/'})
-    #result.append({'chname':'Play web drama', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11760/'})
-    #result.append({'chname':'Play well made drama', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11750/'})
-    #result.append({'chname':'Play well made movie', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11740/'})
+    #result.append(['tvn','','','11800'])
+    #result.append(['tvn - broken','','','11790'])
+    #result.append(['kids','','','11780'])
+    #result.append(['error','','','11770'])
+    #result.append(['Play web drama','','','11760'])
+    #result.append(['Play well made drama','','','11750'])
+    #result.append(['Play well made movie','','','11740'])
     
-    #result.append({'chname':'GS SHOP', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10560/'})
-    #result.append({'chname':'SBS Sprts', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10490/'})
+    #result.append(['GS SHOP','','','10560'])
+    #result.append(['SBS Sprts','','','10490'])
     
-    #result.append({'chname':'SBS Sprts covered logo', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10420/'})
+    #result.append(['SBS Sprts covered logo','','','10420'])
 
 
     ##
-    #result.append({'chname':'Sky ICT', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10360/'})
-    #result.append({'chname':'KBS1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10170/'})
-    #result.append({'chname':'KBS1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11970/'})
-    #result.append({'chname':'KBS2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11980/'})
-    result.append({'chname':'KBS1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10170/'})
-    result.append({'chname':'KBS2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10140/'})
-    #result.append({'chname':'KBS2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10140/'})
-    result.append({'chname':'MBC', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10540/'})
-    result.append({'chname':'SBS', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10550/'})
-    result.append({'chname':'SkySports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10440/'})
-    result.append({'chname':'KBS N SPORTS', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10410/'})
-    result.append({'chname':'MBC Sports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10430/'})
-    result.append({'chname':'MBC Sports2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10490/'})
-    result.append({'chname':'SBS Sports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10420/'})
-    result.append({'chname':'XTM', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10130/'})
-    result.append({'chname':'SPOTV', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10071/'})
-    result.append({'chname':'SPOTV2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11991/'})  
-    result.append({'chname':'SPOTV GAMES', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10711/'})  
-    #result.append({'chname':'Mnet', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10150/'})
-    #result.append({'chname':'K shopping', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11526/'})
-##    result.append({'chname':'SPOTV 2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11990/'})
-##    result.append({'chname':'EBS e', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11910/'})
-##    result.append({'chname':'EBS +2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11900/'})
-##    result.append({'chname':'EBS +1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11890/'})
-##    result.append({'chname':'YTN weather', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11880/'})
-##    result.append({'chname':'Tomayotv', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11860/'})
-##    result.append({'chname':'k baduk', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11850/'})
-##    result.append({'chname':'(i)Kids TalkTalk', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11830/'})
-##    result.append({'chname':'Dae', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11820/'})
-##    result.append({'chname':'Olleh tv', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11790/'})
-##    result.append({'chname':'Disney Jr', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11780/'})
-##    result.append({'chname':'?', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11770/'})    
-##    result.append({'chname':'Play web drama', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11760/'})
-##    result.append({'chname':'Playy premium movie', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11750/'})    
-##    result.append({'chname':'Playy well made movie', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11740/'})
-##    result.append({'chname':'?', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11730/'})    
-##    result.append({'chname':'error', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11030/'})
-##    result.append({'chname':'error', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11020/'})    
-##    result.append({'chname':'error', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/11010/'})
-##    result.append({'chname':'shopping1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10570/'})  
-##    result.append({'chname':'GSShop', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10560/'}) 
-##    result.append({'chname':'sbssports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10490/'})
-##    result.append({'chname':'skysports', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10440/'})
-##    result.append({'chname':'skysports2', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10420/'})
-##    result.append({'chname':'skypetpark', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10310/'})
-##    result.append({'chname':'7', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10240/'})
-##    result.append({'chname':'kbs1', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10170/'})
-##    result.append({'chname':'billiards tv', 'title':'', 'ch_img':'','thumbnail':'CHANNEL_IMAGE/10080/'})
-    
-    print'done'
+    #result.append(['Sky ICT','','','10360'])
+    #result.append(['KBS1','','','10170'])
+    #result.append(['KBS1','','','11970'])
+    #result.append(['KBS2','','','11980'])
+    result.append(['KBS1','','','10170'])
+    result.append(['KBS2','','','10140'])
+        #result.append(['KBS2','','','10140'])
+    result.append(['MBC','','','10540'])
+    result.append(['SBS','','','10550'])
+    result.append(['SkySports','','','10440'])
+    result.append(['KBS N SPORTS','','','10410'])
+    result.append(['MBC Sports','','','10430'])
+    result.append(['MBC Sports2','','','10490'])
+    result.append(['SBS Sports','','','10420'])
+    result.append(['XTM','','','10130'])
+    result.append(['SPOTV','','','10071'])
+    result.append(['SPOTV2','','','11991'])  
+    result.append(['SPOTV GAMES','','','10711'])  
+##    #result.append(['Mnet','','','10150'])
+##    #result.append(['K shopping','','','11526'])
+####    result.append(['SPOTV 2','','','11990'])
+####    result.append(['EBS e','','','11910'])
+####    result.append(['EBS +2','','','11900'])
+####    result.append(['EBS +1','','','11890'])
+####    result.append(['YTN weather','','','11880'])
+####    result.append(['Tomayotv','','','11860'])
+####    result.append(['k baduk','','','11850'])
+####    result.append(['(i)Kids TalkTalk','','','11830'])
+####    result.append(['Dae','','','11820'])
+####    result.append(['Olleh tv','','','11790'])
+####    result.append(['Disney Jr','','','11780'])
+####    result.append(['?','','','11770'])    
+####    result.append(['Play web drama','','','11760'])
+####    result.append(['Playy premium movie','','','11750'])    
+####    result.append(['Playy well made movie','','','11740'])
+####    result.append(['?','','','11730'])    
+####    result.append(['error','','','11030'])
+####    result.append(['error','','','11020'])    
+####    result.append(['error','','','11010'])
+####    result.append(['shopping1','','','10570'])  
+####    result.append(['GSShop','','','10560']) 
+####    result.append(['sbssports','','','10490'])
+####    result.append(['skysports','','','10440'])
+####    result.append(['skysports2','','','10420'])
+####    result.append(['skypetpark','','','10310'])
+####    result.append(['7','','','10240'])
+####    result.append(['kbs1','','','10170'])
+####    result.append(['billiards tv','','','10080'])
+
     result2=[]
+    print result
     for i in range(len(result)):
-        s=result[i]['title'].encode('latin1')
+        s=result[i][1].encode('latin1')
         unquoted = unquote(s)
         d=unquoted.decode('utf8').replace('+',' ')
-        title=result[i]['chname']+' - ' + d
-        a=result[i]['thumbnail']
+        title=result[i][0]+' - ' + d
+        a=result[i][2]
         b=unquote(a)
         b=b.decode('utf8')
-        c=result[i]['chname']
-        d=c.encode('utf8')
-        result2.append({'title':title,'thumbnail':b,'channel':d})
+    ##        c=result[i][0]
+    ##        d=c.encode('utf8')
+        result2.append({'title':title,'thumbnail':b,'ch_no':result[i][3]})
      
-    items2 = [{'label':item['title'], 'path':plugin.url_for('LiveTVplay', title=item['title'].encode('utf-8'),url=item['thumbnail']), 'thumbnail':item['thumbnail']} for item in result2]
+    items2 = [{'label':item['title'], 'path':plugin.url_for('LiveTVplay', title=item['title'].encode('utf-8'),cid=item['ch_no']), 'thumbnail':item['thumbnail']} for item in result2]
     return plugin.finish(items2, update_listing=False)
 
-@plugin.route('/live/<url>/<title>/')
-def LiveTVplay(url,title):
-    cid=re.compile('CHANNEL_IMAGE/([0-9]+)/').findall(url)
+@plugin.route('/<cid>/<title>/')
+def LiveTVplay(cid,title):
+    #cid=re.compile('CHANNEL_IMAGE/([0-9]+)/').findall(cid)
     quality = plugin.get_setting("quality", str)    
     #quality=plugin.get_setting('1080P', bool)
     if quality == '2':
         print '1080p'
-        cid=int(cid[0])+1
+        cid=int(cid)+1
     elif quality == '1':
         print 'HD'
-        cid=int(cid[0])+2
+        cid=int(cid)+2
     else:
         print 'SD'
-        cid=int(cid[0])+3        
+        cid=int(cid)+3        
     print cid
-    url2='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_play?istest=1&ch_no=404&bit_rate=S&bit_rate_option=1000&user_model=LG-D852G&user_os=5.0.1&user_type=Android&user_net=WIFI'
+    url2='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_play?istest=1&ch_no=404&bit_rate=S&bit_rate_option=4000&user_model=LG-D852G&user_os=5.0.1&user_type=Android&user_net=WIFI'
     #url='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_proglist?istext=1&ch_no=404'
   
     headers={'User-Agent': 'OMS(compatible;ServiceType/OTN;DeviceType/Android;DeviceModel/LG-D852G;OSType/Android;OSVersion/5.0;AppVersion/5.0.32)',
@@ -313,51 +177,128 @@ def LiveTVplay(url,title):
 
     result = obj['data']['live_url']
 
-    print result
-    result=result.replace('10450',str(cid))
-    result=result.replace('10451',str(cid))
-    result=result.replace('10452',str(cid))
-    result=result.replace('10453',str(cid))
+    chd = result.split('10451.m3u8')
+
+    #result='http://121.156.46.112:80/'+str(cid)+'.m3u8'+chd[1]
+
+    
+##    #result=result.replace('10450',str(cid))
+##    result=result.replace('10451',str(cid))
+##    #result=result.replace('10452',str(cid))
+##    #result=result.replace('10453',str(cid))
     serverfix = plugin.get_setting("Fixed Server", bool)
     server = plugin.get_setting("Servers", str)
-    if serverfix:
-            
-        if server == '75':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.75',result)
-        if server == '76':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.76',result)
-        if server == '77':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.77',result)
-        if server == '79':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.79',result)
-        if server == '111':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.111',result)
-        if server == '112':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.112',result)
-        if server == '113':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.113',result)
-        if server == '114':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.114',result)
-        if server == '115':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.115',result)
-        if server == '116':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.116',result)
-        if server == '117':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.117',result)
-        if server == '118':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.118',result)
-        if server == '119':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.119',result)
-        if server == '120':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.123',result)
-        if server == '121':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.123',result)
-        if server == '122':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.123',result)
-        if server == '123':
-            result=re.sub('121\.156\.46\.[0-9]+','121.156.46.123',result)
-    
-    print result
+    print server + 'test'
+    result='http://121.156.46.'+server+':80/'+str(cid)+'.m3u8'+chd[1] 
+##    if serverfix:
+##        if server == '69':
+##            result='http://121.156.46.69:80/'+str(cid)+'.m3u8'+chd[1]            
+##        if server == '75':
+##            result='http://121.156.46.75:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '76':
+##            result='http://121.156.46.76:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '77':
+##            result='http://121.156.46.77:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '79':
+##            result='http://121.156.46.79:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '80':
+##            result='http://121.156.46.80:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '81':
+##            result='http://121.156.46.81:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '82':
+##            result='http://121.156.46.82:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '83':
+##            result='http://121.156.46.83:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '84':
+##            result='http://121.156.46.84:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '85':
+##            result='http://121.156.46.85:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '86':
+##            result='http://121.156.46.86:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '87':
+##            result='http://121.156.46.87:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '88':
+##            result='http://121.156.46.88:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '89':
+##            result='http://121.156.46.89:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '90':
+##            result='http://121.156.46.90:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '91':
+##            result='http://121.156.46.91:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '92':
+##            result='http://121.156.46.92:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '93':
+##            result='http://121.156.46.93:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '94':
+##            result='http://121.156.46.94:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '95':
+##            result='http://121.156.46.95:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '96':
+##            result='http://121.156.46.96:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '97':
+##            result='http://121.156.46.97:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '98':
+##            result='http://121.156.46.98:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '99':
+##            result='http://121.156.46.99:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '100':
+##            result='http://121.156.46.100:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '101':
+##            result='http://121.156.46.101:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '102':
+##            result='http://121.156.46.102:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '103':
+##            result='http://121.156.46.103:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '104':
+##            result='http://121.156.46.104:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '105':
+##            result='http://121.156.46.105:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '106':
+##            result='http://121.156.46.106:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '107':
+##            result='http://121.156.46.107:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '108':
+##            result='http://121.156.46.108:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '109':
+##            result='http://121.156.46.109:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '110':
+##            result='http://121.156.46.110:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '111':
+##            result='http://121.156.46.111:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '112':
+##            result='http://121.156.46.112:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '113':
+##            result='http://121.156.46.113:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '114':
+##            result='http://121.156.46.114:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '115':
+##            result='http://121.156.46.115:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '116':
+##            result='http://121.156.46.116:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '117':
+##            result='http://121.156.46.117:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '118':
+##            result='http://121.156.46.118:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '119':
+##            result='http://121.156.46.119:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '120':
+##            result='http://121.156.46.120:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '121':
+##            result='http://121.156.46.121:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '122':
+##            result='http://121.156.46.122:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '123':
+##            result='http://121.156.46.123:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '124':
+##            result='http://121.156.46.124:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '125':
+##            result='http://121.156.46.125:80/'+str(cid)+'.m3u8'+chd[1]
+##        if server == '126':
+##            result='http://121.156.46.126:80/'+str(cid)+'.m3u8'+chd[1]
+##   
+##        else:
+##            result=chd[0]+str(cid)+'.m3u8'+chd[1]
+#    print 'no server selection ' + result
 
     req = urllib2.Request(result,'', headers)
     res = urllib2.urlopen(req)

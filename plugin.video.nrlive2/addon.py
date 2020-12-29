@@ -20,6 +20,7 @@ sys.path.append(lib_path)
 @plugin.route('/')
 def main_menu():
     a=plugin.get_setting('a', bool)
+    b=plugin.get_setting('b', bool)
     url='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_chlist?istest=0&category_id=1'
 
     headers={'User-Agent': 'OMS(compatible;ServiceType/OTN;DeviceType/Android;DeviceModel/LG-D852G;OSType/Android;OSVersion/5.0;AppVersion/5.0.32)',
@@ -39,12 +40,12 @@ def main_menu():
         if item['type']=='EPG':
             if item['adult_yn']=='N':
                 cid=re.compile('CHANNEL_IMAGE/([0-9]+)/').findall(item["still_cut_image"])
-                result.append([item['service_ch_name'],item['program_name'],item['still_cut_image'],cid[0],item['type']])
+                result.append([item['service_ch_name'],item['program_name'],item['still_cut_image'],int(cid[0]),item['type']])
 
         if a:
             if item['adult_yn']=='Y':
                 cid=re.compile('CHANNEL_IMAGE/([0-9]+)/').findall(item["still_cut_image"])
-                result.append([item['service_ch_name'],item['program_name'],item['still_cut_image'],cid[0],item['type']])
+                result.append([item['service_ch_name'],item['program_name'],item['still_cut_image'],int(cid[0]),item['type']])
 ##----------------------
 ####    result.append(['HD shop','','','10670'])
 ####    result.append(['NS Shop','','','10680'])
@@ -89,19 +90,26 @@ def main_menu():
     #result.append(['KBS1','','','10170'])
     #result.append(['KBS1','','','11970'])
     #result.append(['KBS2','','','11980'])
-    result.append(['KBS1','','','10170'])
-    result.append(['KBS2','','','10140'])
+    result.append(['KBS1','','',10170])
+    result.append(['KBS2','','',10140])
         #result.append(['KBS2','','','10140'])
-    result.append(['MBC','','','10540'])
-    result.append(['SBS','','','10550'])
-    result.append(['SkySports','','','10440'])
-    result.append(['KBS N SPORTS','','','10410'])
-    result.append(['MBC Sports','','','10430'])
-    result.append(['MBC Sports2','','','10490'])
-    result.append(['SBS Sports','','','10420'])
-    result.append(['XTM','','','10130'])
-    result.append(['SPOTV','','','10070'])
-    result.append(['SPOTV2','','','11990'])  
+    result.append(['MBC','','',10540])
+    result.append(['SBS','','',10550])
+    result.append(['SkySports','','',10440])
+    result.append(['KBS N SPORTS','','',10410])
+    result.append(['MBC Sports','','',10430])
+    result.append(['MBC Sports2','','',10490])
+    result.append(['SBS Sports','','',10420])
+    result.append(['XTM','','',10130])
+    result.append(['SPOTV','','',10070])
+    result.append(['SPOTV2','','',11990])
+
+    if b:
+        result.append(['SPOTV','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv'])
+        result.append(['SPOTV 2','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv2'])
+        result.append(['SPOTV On','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow1'])
+        result.append(['SPOTV On 2','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow2'])
+
 #    result.append(['SPOTV GAMES','','','10710'])  
 ##    #result.append(['Mnet','','','10150'])
 ##    #result.append(['K shopping','','','11526'])
@@ -149,163 +157,185 @@ def main_menu():
         result2.append({'title':title,'thumbnail':b,'ch_no':result[i][3]})
      
     items2 = [{'label':item['title'], 'path':plugin.url_for('LiveTVplay', title=item['title'].encode('utf-8'),cid=item['ch_no']), 'thumbnail':item['thumbnail']} for item in result2]
+##
+##    result3=[]
+##
+##    fixed=[]
+##    fixed.append(['SPOTV','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv'])
+##    fixed.append(['SPOTV 2','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv2'])
+##    fixed.append(['SPOTV On','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow1'])
+##    fixed.append(['SPOTV On 2','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvno2'])
+##
+##    
+##    if b:
+##        items2.append({'label':fixed[0][0], 'path':plugin.url_for('LiveTVplayfixed', title='SPOTV',cid='http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv'), 'thumbnail':fixed[0][1]})
+##        items2.append({'label':fixed[1][0], 'path':plugin.url_for('LiveTVplayfixed', title='SPOTV2',cid='http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv2'), 'thumbnail':fixed[1][1]})
+##        items2.append({'label':fixed[2][0], 'path':plugin.url_for('LiveTVplayfixed', title='SPOTV On',cid='http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow1'), 'thumbnail':fixed[2][1]})
+##        items2.append({'label':fixed[3][0], 'path':plugin.url_for('LiveTVplayfixed', title='SPOTV On 2',cid='http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow2'), 'thumbnail':fixed[3][1]})
+##        
     return plugin.finish(items2, update_listing=False)
 
 @plugin.route('/<cid>/<title>/')
 def LiveTVplay(cid,title):
-    #cid=re.compile('CHANNEL_IMAGE/([0-9]+)/').findall(cid)
-    quality = plugin.get_setting("quality", str)    
-    #quality=plugin.get_setting('1080P', bool)
-    if quality == '2':
-        print '1080p'
-        cid=int(cid)+1
-    elif quality == '1':
-        print 'HD'
-        cid=int(cid)+2
-    else:
-        print 'SD'
-        cid=int(cid)+3        
-    print cid
-    url2='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_play?istest=1&ch_no=404&bit_rate=S&bit_rate_option=4000&user_model=LG-D852G&user_os=5.0.1&user_type=Android&user_net=WIFI'
-    #url='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_proglist?istext=1&ch_no=404'
-  
-    headers={'User-Agent': 'OMS(compatible;ServiceType/OTN;DeviceType/Android;DeviceModel/LG-D852G;OSType/Android;OSVersion/5.0;AppVersion/5.0.32)',
-             'Content-Type':'text/plain;charset=UTF-8'}
-    r = requests.post(url2, '', headers=headers)
-    print(r.status_code, r.reason)
-    obj = json.loads(r.text)
+    try:
 
-    result = obj['data']['live_url']
+        #cid=re.compile('CHANNEL_IMAGE/([0-9]+)/').findall(cid)
+        quality = plugin.get_setting("quality", str)    
+        #quality=plugin.get_setting('1080P', bool)
+        if quality == '2':
+            print '1080p'
+            cid=int(cid)+1
+        elif quality == '1':
+            print 'HD'
+            cid=int(cid)+2
+        else:
+            print 'SD'
+            cid=int(cid)+3        
 
-    chd = result.split('10451.m3u8')
+        url2='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_play?istest=1&ch_no=404&bit_rate=S&bit_rate_option=4000&user_model=LG-D852G&user_os=5.0.1&user_type=Android&user_net=WIFI'
+        #url='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_proglist?istext=1&ch_no=404'
+      
+        headers={'User-Agent': 'OMS(compatible;ServiceType/OTN;DeviceType/Android;DeviceModel/LG-D852G;OSType/Android;OSVersion/5.0;AppVersion/5.0.32)',
+                 'Content-Type':'text/plain;charset=UTF-8'}
+        r = requests.post(url2, '', headers=headers)
+        print(r.status_code, r.reason)
+        obj = json.loads(r.text)
 
-    #result='http://121.156.46.112:80/'+str(cid)+'.m3u8'+chd[1]
+        result = obj['data']['live_url']
 
-    
-##    #result=result.replace('10450',str(cid))
-##    result=result.replace('10451',str(cid))
-##    #result=result.replace('10452',str(cid))
-##    #result=result.replace('10453',str(cid))
-    serverfix = plugin.get_setting("Fixed Server", bool)
-    server = plugin.get_setting("Servers", str)
-    print server + 'test'
-    result='http://121.156.46.'+server+':80/'+str(cid)+'.m3u8'+chd[1] 
-##    if serverfix:
-##        if server == '69':
-##            result='http://121.156.46.69:80/'+str(cid)+'.m3u8'+chd[1]            
-##        if server == '75':
-##            result='http://121.156.46.75:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '76':
-##            result='http://121.156.46.76:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '77':
-##            result='http://121.156.46.77:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '79':
-##            result='http://121.156.46.79:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '80':
-##            result='http://121.156.46.80:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '81':
-##            result='http://121.156.46.81:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '82':
-##            result='http://121.156.46.82:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '83':
-##            result='http://121.156.46.83:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '84':
-##            result='http://121.156.46.84:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '85':
-##            result='http://121.156.46.85:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '86':
-##            result='http://121.156.46.86:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '87':
-##            result='http://121.156.46.87:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '88':
-##            result='http://121.156.46.88:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '89':
-##            result='http://121.156.46.89:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '90':
-##            result='http://121.156.46.90:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '91':
-##            result='http://121.156.46.91:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '92':
-##            result='http://121.156.46.92:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '93':
-##            result='http://121.156.46.93:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '94':
-##            result='http://121.156.46.94:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '95':
-##            result='http://121.156.46.95:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '96':
-##            result='http://121.156.46.96:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '97':
-##            result='http://121.156.46.97:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '98':
-##            result='http://121.156.46.98:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '99':
-##            result='http://121.156.46.99:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '100':
-##            result='http://121.156.46.100:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '101':
-##            result='http://121.156.46.101:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '102':
-##            result='http://121.156.46.102:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '103':
-##            result='http://121.156.46.103:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '104':
-##            result='http://121.156.46.104:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '105':
-##            result='http://121.156.46.105:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '106':
-##            result='http://121.156.46.106:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '107':
-##            result='http://121.156.46.107:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '108':
-##            result='http://121.156.46.108:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '109':
-##            result='http://121.156.46.109:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '110':
-##            result='http://121.156.46.110:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '111':
-##            result='http://121.156.46.111:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '112':
-##            result='http://121.156.46.112:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '113':
-##            result='http://121.156.46.113:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '114':
-##            result='http://121.156.46.114:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '115':
-##            result='http://121.156.46.115:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '116':
-##            result='http://121.156.46.116:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '117':
-##            result='http://121.156.46.117:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '118':
-##            result='http://121.156.46.118:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '119':
-##            result='http://121.156.46.119:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '120':
-##            result='http://121.156.46.120:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '121':
-##            result='http://121.156.46.121:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '122':
-##            result='http://121.156.46.122:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '123':
-##            result='http://121.156.46.123:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '124':
-##            result='http://121.156.46.124:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '125':
-##            result='http://121.156.46.125:80/'+str(cid)+'.m3u8'+chd[1]
-##        if server == '126':
-##            result='http://121.156.46.126:80/'+str(cid)+'.m3u8'+chd[1]
-##   
-##        else:
-##            result=chd[0]+str(cid)+'.m3u8'+chd[1]
-#    print 'no server selection ' + result
+        chd = result.split('10451.m3u8')
 
-    req = urllib2.Request(result,'', headers)
-    res = urllib2.urlopen(req)
-    finalurl = res.geturl()
-    
+        #result='http://121.156.46.112:80/'+str(cid)+'.m3u8'+chd[1]
+
+        
+    ##    #result=result.replace('10450',str(cid))
+    ##    result=result.replace('10451',str(cid))
+    ##    #result=result.replace('10452',str(cid))
+    ##    #result=result.replace('10453',str(cid))
+        serverfix = plugin.get_setting("Fixed Server", bool)
+        server = plugin.get_setting("Servers", str)
+        result='http://121.156.46.'+server+':80/'+str(cid)+'.m3u8'+chd[1]
+        print result
+    ##    if serverfix:
+    ##        if server == '69':
+    ##            result='http://121.156.46.69:80/'+str(cid)+'.m3u8'+chd[1]            
+    ##        if server == '75':
+    ##            result='http://121.156.46.75:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '76':
+    ##            result='http://121.156.46.76:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '77':
+    ##            result='http://121.156.46.77:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '79':
+    ##            result='http://121.156.46.79:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '80':
+    ##            result='http://121.156.46.80:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '81':
+    ##            result='http://121.156.46.81:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '82':
+    ##            result='http://121.156.46.82:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '83':
+    ##            result='http://121.156.46.83:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '84':
+    ##            result='http://121.156.46.84:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '85':
+    ##            result='http://121.156.46.85:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '86':
+    ##            result='http://121.156.46.86:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '87':
+    ##            result='http://121.156.46.87:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '88':
+    ##            result='http://121.156.46.88:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '89':
+    ##            result='http://121.156.46.89:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '90':
+    ##            result='http://121.156.46.90:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '91':
+    ##            result='http://121.156.46.91:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '92':
+    ##            result='http://121.156.46.92:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '93':
+    ##            result='http://121.156.46.93:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '94':
+    ##            result='http://121.156.46.94:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '95':
+    ##            result='http://121.156.46.95:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '96':
+    ##            result='http://121.156.46.96:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '97':
+    ##            result='http://121.156.46.97:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '98':
+    ##            result='http://121.156.46.98:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '99':
+    ##            result='http://121.156.46.99:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '100':
+    ##            result='http://121.156.46.100:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '101':
+    ##            result='http://121.156.46.101:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '102':
+    ##            result='http://121.156.46.102:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '103':
+    ##            result='http://121.156.46.103:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '104':
+    ##            result='http://121.156.46.104:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '105':
+    ##            result='http://121.156.46.105:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '106':
+    ##            result='http://121.156.46.106:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '107':
+    ##            result='http://121.156.46.107:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '108':
+    ##            result='http://121.156.46.108:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '109':
+    ##            result='http://121.156.46.109:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '110':
+    ##            result='http://121.156.46.110:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '111':
+    ##            result='http://121.156.46.111:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '112':
+    ##            result='http://121.156.46.112:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '113':
+    ##            result='http://121.156.46.113:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '114':
+    ##            result='http://121.156.46.114:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '115':
+    ##            result='http://121.156.46.115:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '116':
+    ##            result='http://121.156.46.116:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '117':
+    ##            result='http://121.156.46.117:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '118':
+    ##            result='http://121.156.46.118:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '119':
+    ##            result='http://121.156.46.119:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '120':
+    ##            result='http://121.156.46.120:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '121':
+    ##            result='http://121.156.46.121:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '122':
+    ##            result='http://121.156.46.122:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '123':
+    ##            result='http://121.156.46.123:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '124':
+    ##            result='http://121.156.46.124:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '125':
+    ##            result='http://121.156.46.125:80/'+str(cid)+'.m3u8'+chd[1]
+    ##        if server == '126':
+    ##            result='http://121.156.46.126:80/'+str(cid)+'.m3u8'+chd[1]
+    ##   
+    ##        else:
+    ##            result=chd[0]+str(cid)+'.m3u8'+chd[1]
+    #    print 'no server selection ' + result
+
+        req = urllib2.Request(result,'', headers)
+        res = urllib2.urlopen(req)
+        finalurl = res.geturl()
+        
+    except ValueError:
+        finalurl = cid
+
     plugin.play_video( {'label': title, 'path':finalurl} )
     return plugin.finish(None, succeeded=False)
+
 
 ##@plugin.route('/live/sports/High/')
 ##def High_list():

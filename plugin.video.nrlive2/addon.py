@@ -103,6 +103,12 @@ def main_menu():
     result.append(['XTM','','',10130])
     result.append(['SPOTV','','',10070])
     result.append(['SPOTV2','','',11990])
+    result.append(['SPOTV','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv'])
+    result.append(['SPOTV 2','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv2'])
+    result.append(['SPOTV On','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow1'])
+    result.append(['SPOTV On 2','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow2'])    
+    result.append(['SPOTV NBA TV','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=nbatv'])
+    result.append(['SPOTV Golf and Health','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvplus'])    
 
     if b:
         result.append(['SPOTV','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv'])

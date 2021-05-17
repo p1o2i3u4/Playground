@@ -7,6 +7,8 @@ from urllib2 import unquote
 import os
 import urllib2, urllib, re
 import requests, json
+import xbmc
+import xbmcgui
 
 plugin = Plugin()
 _L = plugin.get_string
@@ -31,7 +33,6 @@ def main_menu():
     ##print obj
 
     result=[]
-
 
 
     ##result = obj['data']['live_url']
@@ -90,33 +91,33 @@ def main_menu():
     #result.append(['KBS1','','','10170'])
     #result.append(['KBS1','','','11970'])
     #result.append(['KBS2','','','11980'])
-    result.append(['KBS1','','',10170])
-    result.append(['KBS2','','',10140])
+    result.append(['KBS1','','',10170,''])
+    result.append(['KBS2','','',10140,''])
         #result.append(['KBS2','','','10140'])
-    result.append(['MBC','','',10540])
-    result.append(['SBS','','',10550])
-    result.append(['SkySports','','',10440])
-    result.append(['KBS N SPORTS','','',10410])
-    result.append(['MBC Sports','','',10430])
-    result.append(['MBC Sports2','','',10490])
-    result.append(['SBS Sports','','',10420])
-    result.append(['XTM','','',10130])
-    result.append(['SPOTV','','',10070])
-    result.append(['SPOTV2','','',11990])
-    result.append(['SPOTV','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv'])
-    result.append(['SPOTV 2','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv2'])
+    result.append(['MBC','','',10540,''])
+    result.append(['SBS','','',10550,''])
+    result.append(['SkySports','','',10440,''])
+    result.append(['KBS N SPORTS','','',10410,''])
+    result.append(['MBC Sports','','',10430,''])
+    result.append(['MBC Sports2','','',10490,''])
+    result.append(['SBS Sports','','',10420,''])
+    result.append(['XTM','','',10130,''])
+    result.append(['SPOTV','','',10070,''])
+    result.append(['SPOTV2','','',11990,''])
+    result.append(['SPOTV','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv',''])
+    result.append(['SPOTV 2','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv2',''])
     #result.append(['SPOTV On','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow1'])
     #result.append(['SPOTV On 2','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow2'])    
-    result.append(['SPOTV NBA TV','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=nbatv'])
-    result.append(['SPOTV Golf and Health','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvplus'])    
+    result.append(['SPOTV NBA TV','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=nbatv',''])
+    result.append(['SPOTV Golf and Health','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvplus',''])    
 
-    if b:
-        result.append(['SPOTV1','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=1&mode=redirect&ch=football01'])
-        result.append(['SPOTV7','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=1&mode=redirect&ch=football07'])
-        result.append(['SPOTV8','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=1&mode=redirect&ch=football08'])
-        result.append(['SPOTV09','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=1&mode=redirect&ch=football09'])
-        result.append(['SPOTV10','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=1&mode=redirect&ch=football10'])
-        result.append(['SPOTV31','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=1&mode=redirect&ch=football31'])              
+##    if b:
+##        result.append(['SPOTV1','','','http://152.67.192.55:9999/command/api/execute?apikey=19F1AQDMIL&id=2&mode=redirect&ch=evt_football01',''])
+##        result.append(['SPOTV7','','','http://152.67.192.55:9999/command/api/execute?apikey=19F1AQDMIL&id=2&mode=redirect&ch=evt_football07',''])
+##        result.append(['SPOTV8','','','http://152.67.192.55:9999/command/api/execute?apikey=19F1AQDMIL&id=2&mode=redirect&ch=evt_football08',''])
+##        result.append(['SPOTV09','','','http://152.67.192.55:9999/command/api/execute?apikey=19F1AQDMIL&id=2&mode=redirect&ch=evt_football09',''])
+##        result.append(['SPOTV10','','','http://152.67.192.55:9999/command/api/execute?apikey=19F1AQDMIL&id=2&mode=redirect&ch=evt_football10',''])
+##        result.append(['SPOTV31','','','http://152.67.192.55:9999/command/api/execute?apikey=19F1AQDMIL&id=2&mode=redirect&ch=evt_football31',''])              
 #    result.append(['SPOTV GAMES','','','10710'])  
 ##    #result.append(['Mnet','','','10150'])
 ##    #result.append(['K shopping','','','11526'])
@@ -148,22 +149,25 @@ def main_menu():
 ####    result.append(['7','','','10240'])
 ####    result.append(['kbs1','','','10170'])
 ####    result.append(['billiards tv','','','10080'])
-
+    
     result2=[]
-    print result
+    #print result
     for i in range(len(result)):
         s=result[i][1].encode('latin1')
         unquoted = unquote(s)
         d=unquoted.decode('utf8').replace('+',' ')
         title=result[i][0]+' - ' + d
         a=result[i][2]
-        b=unquote(a)
-        b=b.decode('utf8')
+        e=unquote(a)
+        e=e.decode('utf8')
     ##        c=result[i][0]
-    ##        d=c.encode('utf8')
-        result2.append({'title':title,'thumbnail':b,'ch_no':result[i][3]})
+    ##        e=c.encode('utf8')
+        result2.append({'title':title,'thumbnail':e,'ch_no':result[i][3]})
      
     items2 = [{'label':item['title'], 'path':plugin.url_for('LiveTVplay', title=item['title'].encode('utf-8'),cid=item['ch_no']), 'thumbnail':item['thumbnail']} for item in result2]
+    p='SPOTV 채널입력'
+    if b:
+        items2.append({'label':p, 'path':plugin.url_for('LiveSPOTV', title='SPOTV 채널입력',cid='a'), 'thumbnail':p})
 ##
 ##    result3=[]
 ##
@@ -182,7 +186,7 @@ def main_menu():
 ##        
     return plugin.finish(items2, update_listing=False)
 
-@plugin.route('/<cid>/<title>/')
+@plugin.route('/<cid>/<title>/SPOTV/')
 def LiveTVplay(cid,title):
     try:
 
@@ -343,6 +347,16 @@ def LiveTVplay(cid,title):
     plugin.play_video( {'label': title, 'path':finalurl} )
     return plugin.finish(None, succeeded=False)
 
+@plugin.route('/<cid>/<title>/')
+def LiveSPOTV(cid,title):
+    kb = xbmc.Keyboard('', '01 부터 31까지')
+    kb.doModal()
+    if kb.isConfirmed():
+        enteredvalue = kb.getText()
+    finalurl='http://152.67.192.55:9999/command/api/execute?apikey=19F1AQDMIL&id=2&mode=redirect&ch=evt_football'+enteredvalue
+    
+    plugin.play_video( {'label': title, 'path':finalurl} )
+    return plugin.finish(None, succeeded=False)
 
 ##@plugin.route('/live/sports/High/')
 ##def High_list():

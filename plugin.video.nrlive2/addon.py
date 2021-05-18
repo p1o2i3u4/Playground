@@ -108,8 +108,8 @@ def main_menu():
     result.append(['SPOTV 2','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv2',''])
     #result.append(['SPOTV On','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow1'])
     #result.append(['SPOTV On 2','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow2'])    
-    result.append(['SPOTV NBA TV','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=nbatv',''])
-    result.append(['SPOTV Golf and Health','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvplus',''])    
+#    result.append(['SPOTV NBA TV','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=nbatv',''])
+#    result.append(['SPOTV Golf and Health','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvplus',''])    
 
 ##    if b:
 ##        result.append(['SPOTV1','','','http://152.67.192.55:9999/command/api/execute?apikey=19F1AQDMIL&id=2&mode=redirect&ch=evt_football01',''])
@@ -167,7 +167,12 @@ def main_menu():
     items2 = [{'label':item['title'], 'path':plugin.url_for('LiveTVplay', title=item['title'].encode('utf-8'),cid=item['ch_no']), 'thumbnail':item['thumbnail']} for item in result2]
     p='SPOTV 채널입력'
     if b:
-        items2.append({'label':p, 'path':plugin.url_for('LiveSPOTV', title='SPOTV 채널입력',cid='a'), 'thumbnail':p})
+        q=requests.get('http://152.67.192.55:9999/command/api/execute?apikey=19F1AQDMIL&id=1&mode=return&get=m3u')
+        a=re.compile('tvg-name="([^"]+)".*?\\n(http?\S+L)').findall(q.text)
+        for i in range(len(a)):
+            items2.append({'label':a[i][0], 'path':plugin.url_for('LiveTVplay', title=a[i][0].encode('utf-8'),cid=a[i][1]), 'thumbnail':p})
+        
+        #items2.append({'label':p, 'path':plugin.url_for('LiveSPOTV', title='SPOTV 채널입력',cid='a'), 'thumbnail':p})
 ##
 ##    result3=[]
 ##

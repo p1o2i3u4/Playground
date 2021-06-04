@@ -168,7 +168,7 @@ def main_menu():
     p='SPOTV 채널입력'
     if b:
         try:
-            q=requests.get('http://152.67.192.55:9999/command/api/execute?apikey=19F1AQDMIL&id=1&mode=return&get=m3u')
+            q=requests.get('http://152.67.192.55:9999/mod/api/spotv/m3u?apikey=19F1AQDMIL')
             #q=requests.get('http://www.jnas.info:9999/command/api/execute?apikey=V0CCW24DIT&id=4&mode=return&get=m3u')
             #a=re.compile('tvg-name="([^"]+)".*?\\n(http?\S+L)').findall(q.text)
             a=re.compile('tvg-name="([^"]+)".*?\\n(.*?)\\n').findall(q.text)

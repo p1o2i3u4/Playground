@@ -106,6 +106,8 @@ def main_menu():
     result.append(['SPOTV2','','',11990,''])
     result.append(['SPOTV','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv',''])
     result.append(['SPOTV 2','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv2',''])
+    result.append(['xtvn','','','chrome-extension://ckblfoghkjhaclegefojbgllenffajdc/player.html#http://rominc.synology.me:9999/klive/api/url.m3u8?m=url&s=tving&i=C01141&q=default&apikey=DOR0RCDXSE',''])
+    
     #result.append(['SPOTV On','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow1'])
     #result.append(['SPOTV On 2','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow2'])    
 #    result.append(['SPOTV NBA TV','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=nbatv',''])

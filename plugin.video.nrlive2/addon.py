@@ -91,6 +91,7 @@ def main_menu():
     #result.append(['KBS1','','','10170'])
     #result.append(['KBS1','','','11970'])
     #result.append(['KBS2','','','11980'])
+    result.append(['##Below may not work##','','','',''])
     result.append(['KBS1','','',10170,''])
     result.append(['KBS2','','',10140,''])
         #result.append(['KBS2','','','10140'])
@@ -215,13 +216,13 @@ def LiveTVplay(cid,title):
         #quality=plugin.get_setting('1080P', bool)
         if quality == '2':
             print '1080p'
-            cid=int(cid)+1
+            cid=str(cid)+'_H'
         elif quality == '1':
             print 'HD'
-            cid=int(cid)+2
+            cid=str(cid)+'_M'
         else:
             print 'SD'
-            cid=int(cid)+3        
+            cid=str(cid)+'_L'        
 
         url2='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_play?istest=1&ch_no=404&bit_rate=S&bit_rate_option=4000&user_model=LG-D852G&user_os=5.0.1&user_type=Android&user_net=WIFI'
         #url='http://menu.megatvdnp.co.kr:38080/app5/0/api/epg_proglist?istext=1&ch_no=404'
@@ -234,7 +235,7 @@ def LiveTVplay(cid,title):
 
         result = obj['data']['live_url']
 
-        chd = result.split('10451.m3u8')
+        #chd = result.split('10450_H.m3u8')
 
         #result='http://121.156.46.112:80/'+str(cid)+'.m3u8'+chd[1]
 
@@ -243,10 +244,10 @@ def LiveTVplay(cid,title):
     ##    result=result.replace('10451',str(cid))
     ##    #result=result.replace('10452',str(cid))
     ##    #result=result.replace('10453',str(cid))
-        serverfix = plugin.get_setting("Fixed Server", bool)
-        server = plugin.get_setting("Servers", str)
-        result='http://121.156.46.'+server+':80/'+str(cid)+'.m3u8'+chd[1]
-        print result
+        #serverfix = plugin.get_setting("Fixed Server", bool)
+        #server = plugin.get_setting("Servers", str)
+        #result='http://121.156.46.'+server+':80/'+str(cid)+'.m3u8'+chd[1]
+        #print result
     ##    if serverfix:
     ##        if server == '69':
     ##            result='http://121.156.46.69:80/'+str(cid)+'.m3u8'+chd[1]            
@@ -356,10 +357,11 @@ def LiveTVplay(cid,title):
     ##        else:
     ##            result=chd[0]+str(cid)+'.m3u8'+chd[1]
     #    print 'no server selection ' + result
-
-        req = urllib2.Request(result,'', headers)
-        res = urllib2.urlopen(req)
-        finalurl = res.geturl()
+        
+        res=requests.get(str(result))
+        res2=res.url
+        res3 = res2.split('10450_H.m3u8')
+        finalurl=res3[0]+str(cid)+'.m3u8'+res3[1]
         
     except ValueError:
         finalurl = cid

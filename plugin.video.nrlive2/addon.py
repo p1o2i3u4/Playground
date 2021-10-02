@@ -207,7 +207,7 @@ def main_menu():
 ##        
     return plugin.finish(items2, update_listing=False)
 
-@plugin.route('/<cid>/<title>/SPOTV/')
+@plugin.route('/<cid>/<title>/')
 def LiveTVplay(cid,title):
     try:
 
@@ -369,7 +369,7 @@ def LiveTVplay(cid,title):
     plugin.play_video( {'label': title, 'path':finalurl} )
     return plugin.finish(None, succeeded=False)
 
-@plugin.route('/<cid>/<title>/SPOTV/')
+@plugin.route('/LiveSPOTVplay/<cid>/<title>/')
 def LiveSPOTVplay(cid,title):
 
     finalurl = cid

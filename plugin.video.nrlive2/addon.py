@@ -179,7 +179,7 @@ def main_menu():
             a=re.compile('tvg-name="([^"]+)".*?\\n(.*?)\\n').findall(q.text)
             
             for i in range(len(a)):
-                items2.append({'label':a[i][0], 'path':plugin.url_for('LiveTVplay', title=a[i][0].encode('utf-8'),cid=a[i][1]), 'thumbnail':p})
+                items2.append({'label':a[i][0], 'path':plugin.url_for('LiveSPOTVplay', title=a[i][0].encode('utf-8'),cid=a[i][1]), 'thumbnail':p})
         except:
             #q=requests.get('http://152.67.192.55:9999/command/api/execute?apikey=19F1AQDMIL&id=1&mode=return&get=m3u')
             q=requests.get('http://www.jnas.info:9999/command/api/execute?apikey=V0CCW24DIT&id=4&mode=return&get=m3u')
@@ -187,7 +187,7 @@ def main_menu():
             a=re.compile('tvg-name="([^"]+)".*?\\n(.*?)\\n').findall(q.text)
             
             for i in range(len(a)):
-                items2.append({'label':a[i][0], 'path':plugin.url_for('LiveTVplay', title=a[i][0].encode('utf-8'),cid=a[i][1]), 'thumbnail':p})
+                items2.append({'label':a[i][0], 'path':plugin.url_for('LiveSPOTVplay', title=a[i][0].encode('utf-8'),cid=a[i][1]), 'thumbnail':p})
         #items2.append({'label':p, 'path':plugin.url_for('LiveSPOTV', title='SPOTV 채널입력',cid='a'), 'thumbnail':p})
 ##
 ##    result3=[]
@@ -365,6 +365,14 @@ def LiveTVplay(cid,title):
         
     except ValueError:
         finalurl = cid
+
+    plugin.play_video( {'label': title, 'path':finalurl} )
+    return plugin.finish(None, succeeded=False)
+
+@plugin.route('/<cid>/<title>/SPOTV/')
+def LiveSPOTVplay(cid,title):
+
+    finalurl = cid
 
     plugin.play_video( {'label': title, 'path':finalurl} )
     return plugin.finish(None, succeeded=False)

@@ -102,7 +102,7 @@ version="2.23.0"/>
   </extension>
 </addon>
 
-<addon id="plugin.video.nrlive2" name="LIVE" version="0.5.5" provider-name="Kevin Shin">
+<addon id="plugin.video.nrlive2" name="LIVE" version="0.5.6" provider-name="Kevin Shin">
   <requires>
     <import addon="xbmc.python" version="2.1.5"/>
 	<import addon="script.module.beautifulsoup" version="3.2.1"/>
@@ -191,26 +191,6 @@ version="2.23.0"/>
   </extension>
 </addon>
 
-<addon id="plugin.video.stalker" name="IPTV Stalker" version="9.0.19" provider-name="esxbr">
-    <requires>
-		<import addon="xbmc.python" version="2.19.0"/>
-	</requires>
-	<extension point="xbmc.python.pluginsource" library="addon.py">
-		<provides>video</provides>
-	</extension>
-	<extension point="xbmc.service" library="server.py" start="startup" />
-	<extension point="xbmc.addon.metadata">
-		<platform>all</platform>
-		<summary lang="en">IPTV Stalker-Fix</summary>
-		<description lang="en">IPTV Stalker modified for NFPS, Rocket and IPTV66 AND iVue</description>
-		<license>GNU General Public License, v2</license>
-		<language></language>
-		<forum>http://iptvtalk.org/showthread.php?2514-Kodi-Stalker-video-add-on-all-platforms</forum>
-		<source>https://github.com/esxbr/plugin.video.stalker</source>
-		<email>patrick.cabral@gmail.com</email>
-	</extension>
-</addon>
-
 <addon id="plugin.video.tbo" name="TBO" version="0.0.5" provider-name="Kevin Shin">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
@@ -243,24 +223,6 @@ version="2.23.0"/>
     <summary lang="en">Namu</summary>
     <description lang="en">My first addon! base: plugin.video.cybc</description>
   </extension>
-</addon>
-
-<addon id="repository.exodus" version="1.0.0" name="Exodus repository" provider-name="l*m*d*">
-	<extension point="xbmc.addon.repository" name="Exodus repository">
-		<dir>
-			<info compressed="false">https://offshoregit.com/tvaresolvers/tva-common-repository/raw/master/addons.xml</info>
-			<checksum>https://offshoregit.com/tvaresolvers/tva-common-repository/raw/master/addons.xml.md5</checksum>
-			<datadir zip="true">https://offshoregit.com/tvaresolvers/tva-common-repository/raw/master/zips/</datadir>
-		</dir>
-		<info compressed="false">https://offshoregit.com/exodus/addons.xml</info>
-		<checksum>https://offshoregit.com/exodus/addons.xml.md5</checksum>
-		<datadir zip="true">https://offshoregit.com/exodus/</datadir>
-	</extension>
-	<extension point="xbmc.addon.metadata">
-		<summary lang="en">Exodus repository</summary>
-		<description lang="en">Exodus repository</description>
-		<platform>all</platform>
-	</extension>
 </addon>
 
 <addon id="repository.playground" name="Playground22" version="1.0.0" provider-name="Playground">

@@ -171,23 +171,23 @@ def main_menu():
      
     items2 = [{'label':item['title'], 'path':plugin.url_for('LiveTVplay', title=item['title'].encode('utf-8'),cid=item['ch_no']), 'thumbnail':item['thumbnail']} for item in result2]
     p='SPOTV 채널입력'
-    if b:
-        try:
-            q=requests.get('http://152.67.192.55:9999/mod/api/spotv/m3u?apikey=19F1AQDMIL')
-            #q=requests.get('http://www.jnas.info:9999/command/api/execute?apikey=V0CCW24DIT&id=4&mode=return&get=m3u')
-            #a=re.compile('tvg-name="([^"]+)".*?\\n(http?\S+L)').findall(q.text)
-            a=re.compile('tvg-name="([^"]+)".*?\\n(.*?)\\n').findall(q.text)
-            
-            for i in range(len(a)):
-                items2.append({'label':a[i][0], 'path':plugin.url_for('LiveSPOTVplay', title=a[i][0].encode('utf-8'),cid=a[i][1]), 'thumbnail':p})
-        except:
-            #q=requests.get('http://152.67.192.55:9999/command/api/execute?apikey=19F1AQDMIL&id=1&mode=return&get=m3u')
-            q=requests.get('http://www.jnas.info:9999/command/api/execute?apikey=V0CCW24DIT&id=4&mode=return&get=m3u')
-            #a=re.compile('tvg-name="([^"]+)".*?\\n(http?\S+L)').findall(q.text)
-            a=re.compile('tvg-name="([^"]+)".*?\\n(.*?)\\n').findall(q.text)
-            
-            for i in range(len(a)):
-                items2.append({'label':a[i][0], 'path':plugin.url_for('LiveSPOTVplay', title=a[i][0].encode('utf-8'),cid=a[i][1]), 'thumbnail':p})
+#if b:
+    try:
+        q=requests.get('http://152.67.192.55:9999/mod/api/spotv/m3u?apikey=19F1AQDMIL')
+        #q=requests.get('http://www.jnas.info:9999/command/api/execute?apikey=V0CCW24DIT&id=4&mode=return&get=m3u')
+        #a=re.compile('tvg-name="([^"]+)".*?\\n(http?\S+L)').findall(q.text)
+        a=re.compile('tvg-name="([^"]+)".*?\\n(.*?)\\n').findall(q.text)
+        
+        for i in range(len(a)):
+            items2.append({'label':a[i][0], 'path':plugin.url_for('LiveSPOTVplay', title=a[i][0].encode('utf-8'),cid=a[i][1]), 'thumbnail':p})
+    except:
+        #q=requests.get('http://152.67.192.55:9999/command/api/execute?apikey=19F1AQDMIL&id=1&mode=return&get=m3u')
+        q=requests.get('http://www.jnas.info:9999/command/api/execute?apikey=V0CCW24DIT&id=4&mode=return&get=m3u')
+        #a=re.compile('tvg-name="([^"]+)".*?\\n(http?\S+L)').findall(q.text)
+        a=re.compile('tvg-name="([^"]+)".*?\\n(.*?)\\n').findall(q.text)
+        
+        for i in range(len(a)):
+            items2.append({'label':a[i][0], 'path':plugin.url_for('LiveSPOTVplay', title=a[i][0].encode('utf-8'),cid=a[i][1]), 'thumbnail':p})
         #items2.append({'label':p, 'path':plugin.url_for('LiveSPOTV', title='SPOTV 채널입력',cid='a'), 'thumbnail':p})
 ##
 ##    result3=[]

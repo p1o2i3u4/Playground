@@ -110,13 +110,13 @@ def main_menu():
 ##    result.append(['xtvn','','','http://rominc.synology.me:9999/klive/api/url.m3u8?m=url&s=tving&i=C01141&q=default&apikey=DOR0RCDXSE',''])
 ##    result.append(['tvn','','','http://rominc.synology.me:9999/klive/api/url.m3u8?m=url&s=tving&i=C00551&q=default&apikey=DOR0RCDXSE',''])
 ##    result.append(['tving','','','http://rominc.synology.me:9999/klive/api/url.m3u8?m=url&s=tving&i=C51353&q=default&apikey=DOR0RCDXSE',''])
-    result.append(['SPOTV','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1440421881?profile=pass',''])
-    result.append(['SPOTV2','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1563907820?profile=pass',''])
-    result.append(['SPOTV ON','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/946887344?profile=pass',''])
-    result.append(['SPOTV ON2','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/2089901129?profile=pass',''])
-    result.append(['SPOTV Prime','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1750457206?profile=pass',''])
-    result.append(['SPOTV Golf & Health','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1204735823?profile=pass',''])
-    result.append(['SPOTV NBA','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1753972822?profile=pass',''])
+##    result.append(['SPOTV','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1440421881?profile=pass',''])
+##    result.append(['SPOTV2','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1563907820?profile=pass',''])
+##    result.append(['SPOTV ON','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/946887344?profile=pass',''])
+##    result.append(['SPOTV ON2','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/2089901129?profile=pass',''])
+##    result.append(['SPOTV Prime','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1750457206?profile=pass',''])
+##    result.append(['SPOTV Golf & Health','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1204735823?profile=pass',''])
+##    result.append(['SPOTV NBA','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1753972822?profile=pass',''])
 
   
     #result.append(['SPOTV On','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow1'])
@@ -180,39 +180,46 @@ def main_menu():
     items2 = [{'label':item['title'], 'path':plugin.url_for('LiveTVplay', title=item['title'].encode('utf-8'),cid=item['ch_no']), 'thumbnail':item['thumbnail']} for item in result2]
     p='SPOTV 채널입력'
 #if b:
-    try:
-        q=requests.get('http://152.67.192.55:9999/mod/api/spotv/m3u?apikey=19F1AQDMIL')
-        #q=requests.get('http://www.jnas.info:9999/command/api/execute?apikey=V0CCW24DIT&id=4&mode=return&get=m3u')
-        #a=re.compile('tvg-name="([^"]+)".*?\\n(http?\S+L)').findall(q.text)
-        a=re.compile('tvg-name="([^"]+)".*?\\n(.*?)\\n').findall(q.text)
-        
-        for i in range(len(a)):
-            items2.append({'label':a[i][0], 'path':plugin.url_for('LiveSPOTVplay', title=a[i][0].encode('utf-8'),cid=a[i][1]), 'thumbnail':p})
-    except:
-        #q=requests.get('http://152.67.192.55:9999/command/api/execute?apikey=19F1AQDMIL&id=1&mode=return&get=m3u')
-        q=requests.get('http://www.jnas.info:9999/command/api/execute?apikey=V0CCW24DIT&id=4&mode=return&get=m3u')
-        #a=re.compile('tvg-name="([^"]+)".*?\\n(http?\S+L)').findall(q.text)
-        a=re.compile('tvg-name="([^"]+)".*?\\n(.*?)\\n').findall(q.text)
-        
-        for i in range(len(a)):
-            items2.append({'label':a[i][0], 'path':plugin.url_for('LiveSPOTVplay', title=a[i][0].encode('utf-8'),cid=a[i][1]), 'thumbnail':p})
+##    try:
+##        q=requests.get('http://152.67.192.55:9999/mod/api/spotv/m3u?apikey=19F1AQDMIL')
+##        #q=requests.get('http://www.jnas.info:9999/command/api/execute?apikey=V0CCW24DIT&id=4&mode=return&get=m3u')
+##        #a=re.compile('tvg-name="([^"]+)".*?\\n(http?\S+L)').findall(q.text)
+##        a=re.compile('tvg-name="([^"]+)".*?\\n(.*?)\\n').findall(q.text)
+##        
+##        for i in range(len(a)):
+##            items2.append({'label':a[i][0], 'path':plugin.url_for('LiveSPOTVplay', title=a[i][0].encode('utf-8'),cid=a[i][1]), 'thumbnail':p})
+##    except:
+##        #q=requests.get('http://152.67.192.55:9999/command/api/execute?apikey=19F1AQDMIL&id=1&mode=return&get=m3u')
+##        q=requests.get('http://www.jnas.info:9999/command/api/execute?apikey=V0CCW24DIT&id=4&mode=return&get=m3u')
+##        #a=re.compile('tvg-name="([^"]+)".*?\\n(http?\S+L)').findall(q.text)
+##        a=re.compile('tvg-name="([^"]+)".*?\\n(.*?)\\n').findall(q.text)
+##        
+##        for i in range(len(a)):
+##            items2.append({'label':a[i][0], 'path':plugin.url_for('LiveSPOTVplay', title=a[i][0].encode('utf-8'),cid=a[i][1]), 'thumbnail':p})
         #items2.append({'label':p, 'path':plugin.url_for('LiveSPOTV', title='SPOTV 채널입력',cid='a'), 'thumbnail':p})
 ##
 ##    result3=[]
 ##
-##    fixed=[]
-##    fixed.append(['SPOTV','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv'])
-##    fixed.append(['SPOTV 2','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv2'])
-##    fixed.append(['SPOTV On','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow1'])
-##    fixed.append(['SPOTV On 2','','','http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvno2'])
-##
-##    
-##    if b:
-##        items2.append({'label':fixed[0][0], 'path':plugin.url_for('LiveTVplayfixed', title='SPOTV',cid='http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv'), 'thumbnail':fixed[0][1]})
-##        items2.append({'label':fixed[1][0], 'path':plugin.url_for('LiveTVplayfixed', title='SPOTV2',cid='http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv2'), 'thumbnail':fixed[1][1]})
-##        items2.append({'label':fixed[2][0], 'path':plugin.url_for('LiveTVplayfixed', title='SPOTV On',cid='http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow1'), 'thumbnail':fixed[2][1]})
-##        items2.append({'label':fixed[3][0], 'path':plugin.url_for('LiveTVplayfixed', title='SPOTV On 2',cid='http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow2'), 'thumbnail':fixed[3][1]})
-##        
+    fixed=[]
+    fixed.append(['SPOTV','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1440421881?profile=pass'])
+    fixed.append(['SPOTV 2','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1563907820?profile=pass'])
+    fixed.append(['SPOTV On','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/946887344?profile=pass'])
+    fixed.append(['SPOTV On 2','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/2089901129?profile=pass'])
+
+    
+#if b:
+##    items2.append({'label':fixed[0][0], 'path':plugin.url_for('LiveSPOTVplay', title='SPOTV',cid='http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv'), 'thumbnail':fixed[0][1]})
+##    items2.append({'label':fixed[1][0], 'path':plugin.url_for('LiveSPOTVplay', title='SPOTV2',cid='http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotv2'), 'thumbnail':fixed[1][1]})
+##    items2.append({'label':fixed[2][0], 'path':plugin.url_for('LiveTVplayfixed', title='SPOTV On',cid='http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow1'), 'thumbnail':fixed[2][1]})
+##    items2.append({'label':fixed[3][0], 'path':plugin.url_for('LiveTVplayfixed', title='SPOTV On 2',cid='http://www.jnas.info:9999/command/api/execute?apikey=0220169BZA&id=2&mode=redirect&ch=spotvnow2'), 'thumbnail':fixed[3][1]})
+    items2.append({'label':'SPOTV', 'path':plugin.url_for('LiveSPOTVplay', title='SPOTV',cid='http://redsdr01.duckdns.org:9981/stream/channelid/1440421881?auth=PqUlaWkWJiovaHWv2XUHUz3C0QOU'), 'thumbnail':''})
+    items2.append({'label':'SPOTV2', 'path':plugin.url_for('LiveSPOTVplay', title='SPOTV2',cid='http://redsdr01.duckdns.org:9981/stream/channelid/1563907820?auth=PqUlaWkWJiovaHWv2XUHUz3C0QOU'), 'thumbnail':''})
+    items2.append({'label':'SPOTV ON', 'path':plugin.url_for('LiveSPOTVplay', title='SPOTV On',cid='http://redsdr01.duckdns.org:9981/stream/channelid/946887344?auth=PqUlaWkWJiovaHWv2XUHUz3C0QOU'), 'thumbnail':''})
+    items2.append({'label':'SPOTV On 2', 'path':plugin.url_for('LiveSPOTVplay', title='SPOTV On 2',cid='http://redsdr01.duckdns.org:9981/stream/channelid/2089901129?auth=PqUlaWkWJiovaHWv2XUHUz3C0QOU'), 'thumbnail':''})
+    items2.append({'label':'SPOTV Prime', 'path':plugin.url_for('LiveSPOTVplay', title='SPOTV Prime',cid='http://redsdr01.duckdns.org:9981/stream/channelid/1750457206?auth=PqUlaWkWJiovaHWv2XUHUz3C0QOU'), 'thumbnail':''})
+    items2.append({'label':'SPOTV Golf & Health', 'path':plugin.url_for('LiveSPOTVplay', title='SPOTV Golf & Health',cid='http://redsdr01.duckdns.org:9981/stream/channelid/1204735823?auth=PqUlaWkWJiovaHWv2XUHUz3C0QOU'), 'thumbnail':''})
+    items2.append({'label':'SPOTV NBA', 'path':plugin.url_for('LiveSPOTVplay', title='SPOTV NBA',cid='http://redsdr01.duckdns.org:9981/stream/channelid/1753972822?auth=PqUlaWkWJiovaHWv2XUHUz3C0QOU'), 'thumbnail':''})
+
     return plugin.finish(items2, update_listing=False)
 
 @plugin.route('/<cid>/<title>/')

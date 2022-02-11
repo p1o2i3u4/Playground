@@ -200,11 +200,11 @@ def main_menu():
 ##
 ##    result3=[]
 ##
-    fixed=[]
-    fixed.append(['SPOTV','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1440421881?profile=pass'])
-    fixed.append(['SPOTV 2','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1563907820?profile=pass'])
-    fixed.append(['SPOTV On','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/946887344?profile=pass'])
-    fixed.append(['SPOTV On 2','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/2089901129?profile=pass'])
+##    fixed=[]
+##    fixed.append(['SPOTV','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1440421881?profile=pass'])
+##    fixed.append(['SPOTV 2','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/1563907820?profile=pass'])
+##    fixed.append(['SPOTV On','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/946887344?profile=pass'])
+##    fixed.append(['SPOTV On 2','','','http://redsdr:aa1216@redsdr01.duckdns.org:9981/stream/channelid/2089901129?profile=pass'])
 
     
 #if b:
@@ -219,6 +219,10 @@ def main_menu():
     items2.append({'label':'SPOTV Prime', 'path':plugin.url_for('LiveSPOTVplay', title='SPOTV Prime',cid='http://redsdr01.duckdns.org:9981/stream/channelid/1750457206?auth=PqUlaWkWJiovaHWv2XUHUz3C0QOU'), 'thumbnail':''})
     items2.append({'label':'SPOTV Golf & Health', 'path':plugin.url_for('LiveSPOTVplay', title='SPOTV Golf & Health',cid='http://redsdr01.duckdns.org:9981/stream/channelid/1204735823?auth=PqUlaWkWJiovaHWv2XUHUz3C0QOU'), 'thumbnail':''})
     items2.append({'label':'SPOTV NBA', 'path':plugin.url_for('LiveSPOTVplay', title='SPOTV NBA',cid='http://redsdr01.duckdns.org:9981/stream/channelid/1753972822?auth=PqUlaWkWJiovaHWv2XUHUz3C0QOU'), 'thumbnail':''})
+    items2.append({'label':'KBS1', 'path':plugin.url_for('LiveSPOTVplay', title='KBS1',cid='https://chinh1.synology.me/klive/api/url.m3u8?m=url&s=wavve&i=K01&apikey=IBUXT4LNO0'), 'thumbnail':''})
+    items2.append({'label':'KBS2', 'path':plugin.url_for('LiveSPOTVplay', title='KBS2',cid='https://chinh1.synology.me/klive/api/url.m3u8?m=url&s=wavve&i=K02&apikey=IBUXT4LNO0'), 'thumbnail':''})
+    items2.append({'label':'SBS', 'path':plugin.url_for('LiveSPOTVplay', title='SBS',cid='https://chinh1.synology.me/klive/api/url.m3u8?m=url&s=wavve&i=S01&apikey=IBUXT4LNO0'), 'thumbnail':''})
+    items2.append({'label':'MBC', 'path':plugin.url_for('LiveSPOTVplay', title='MBC',cid='https://chinh1.synology.me/klive/api/url.m3u8?m=url&s=wavve&i=M01&apikey=IBUXT4LNO0'), 'thumbnail':''})
 
     return plugin.finish(items2, update_listing=False)
 
